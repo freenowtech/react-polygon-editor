@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "lib": ["es2017", "dom", "ES6"],
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "declarationDir": "dist",
+        "rootDirs": ["src", "stories"],
+        "outDir": "dist",
+        "baseUrl": "src",
+        "moduleResolution": "node",
+        "jsx": "react",
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "noUnusedLocals": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx", "declarations.d.ts"],
+    "exclude": ["./node_modules/*", "dist"],
+    "awesomeTypescriptLoaderOptions": {
+        "ignoreDiagnostics": [7005]
+    }
+}

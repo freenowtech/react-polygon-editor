@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PolygonVertex When point is NOT selected should render correctly 1`] = `
+<ForwardRef(Leaflet(CircleMarker))
+  bubblingMouseEvents={false}
+  center={
+    Object {
+      "lat": 0,
+      "lng": 0,
+    }
+  }
+  color="#096bdb"
+  draggable={true}
+  fillColor="#ffffff"
+  fillOpacity={1}
+  onClick={[Function]}
+  onMouseOut={[Function]}
+  onMouseOver={[Function]}
+  opacity={1}
+  radius={4}
+  weight={1}
+/>
+`;
+
+exports[`PolygonVertex When point is hovered should render correctly 1`] = `
+<ForwardRef(Leaflet(CircleMarker))
+  bubblingMouseEvents={false}
+  center={
+    Object {
+      "lat": 0,
+      "lng": 0,
+    }
+  }
+  color="#096bdb"
+  draggable={true}
+  fillColor="#ffffff"
+  fillOpacity={1}
+  onClick={[Function]}
+  onMouseOut={[Function]}
+  onMouseOver={[Function]}
+  opacity={1}
+  radius={6}
+  weight={4}
+/>
+`;
+
+exports[`PolygonVertex When point is selected should render correctly 1`] = `
+<ForwardRef(Leaflet(CircleMarker))
+  bubblingMouseEvents={false}
+  center={
+    Object {
+      "lat": 0,
+      "lng": 0,
+    }
+  }
+  color="#096bdb"
+  draggable={true}
+  fillColor="#ffffff"
+  fillOpacity={1}
+  onClick={[Function]}
+  onMouseOut={[Function]}
+  onMouseOver={[Function]}
+  opacity={1}
+  radius={6}
+  weight={4}
+/>
+`;
