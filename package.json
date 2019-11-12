@@ -11,6 +11,9 @@
         "build": "tsc",
         "prepublishOnly": "rm -rf ./dist && npm test && npm run lint && npm run build"
     },
+    "publishConfig": {
+        "access": "public"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/freenowtech/react-polygon-editor.git"

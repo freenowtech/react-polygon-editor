@@ -37,7 +37,6 @@ describe('ActionBar', () => {
     });
 
     describe('WHEN editable is truthy', () => {
-        
 
         it('should render the actions', () => {
             const wrapper = render(<ActionBar {...props} editable />);
