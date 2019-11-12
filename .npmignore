@@ -1,1 +1,31 @@
+# Logs
+logs
+
+*.log
+npm-debug.log*
+
+# Coverage
+coverage
+test-reports
+
+# Build
+dist
+
+# Dependency directories
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# Mac os files
+.DS_Store
+
+# IntelliJ IDEA
+.idea
++.iml
+
+# Other exclusion
 .git/
+.storybook/
+.github/
+stories/
