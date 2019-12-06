@@ -3,7 +3,12 @@ import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { MAP } from '../constants';
 
-import { subtractCoordinates, createLeafletLatLngFromCoordinate, getPolygonEdges, getCenterCoordinate } from '../helpers';
+import {
+    subtractCoordinates,
+    createLeafletLatLngFromCoordinate,
+    getPolygonEdges,
+    getCenterCoordinate
+} from '../helpers';
 import { Props, BaseMap, State } from './Map';
 import { MOCK_POLYGON } from '../mockPolygon';
 import { PolygonVertex } from './PolygonVertex';
@@ -19,7 +24,6 @@ describe('Map component', () => {
     let wrapper: ShallowWrapper<Props, State, BaseMap>;
 
     beforeEach(() => {
-
         initialProps = {
             polygonCoordinates: MOCK_POLYGON,
             boundaryPolygonCoordinates: MOCK_POLYGON,
@@ -32,7 +36,6 @@ describe('Map component', () => {
     });
 
     describe('WHEN polygon is NOT disabled', () => {
-
         it('should NOT enable pen tool', () => {
             wrapper = shallow(<BaseMap {...initialProps} editable={false} />);
             expect(wrapper.state().isPenToolActive).toBeFalsy();
@@ -55,7 +58,6 @@ describe('Map component', () => {
     });
 
     describe('WHEN polygon is disabled', () => {
-
         it('should enable pen tool', () => {
             wrapper = shallow(<BaseMap {...initialProps} />);
             expect(wrapper.state().isPenToolActive).toBeTruthy();
@@ -69,18 +71,18 @@ describe('Map component', () => {
 
                     // @ts-ignore
                     MapElement.prop('onclick')(event);
-                    setTimeout( () => {
+                    setTimeout(() => {
                         expect(initialProps.dispatch).toHaveBeenCalledWith(actions.deselectAllPoints());
                     });
                 });
 
                 it('should add point if polygon is open and the point is in boundary', () => {
-                    wrapper = shallow((<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />));
+                    wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />);
                     const MapElement = wrapper.find(Map);
 
                     // @ts-ignore
                     MapElement.prop('onclick')(event);
-                    setTimeout( () => {
+                    setTimeout(() => {
                         expect(initialProps.dispatch).toHaveBeenCalledWith(actions.addPoint(coordinate));
                     });
                 });
@@ -88,14 +90,14 @@ describe('Map component', () => {
 
             describe('when user moves mouse on map', () => {
                 it('should add point if polygon is open and the point is in boundary', () => {
-                    wrapper = shallow((<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />));
+                    wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />);
                     const MapElement = wrapper.find(Map);
 
                     expect(wrapper.state().newPointPosition).toEqual(null);
                     // @ts-ignore
                     MapElement.prop('onmousemove')(event);
 
-                    setTimeout( () => {
+                    setTimeout(() => {
                         expect(wrapper.state().newPointPosition).toEqual(coordinate);
                     });
                 });
@@ -109,7 +111,7 @@ describe('Map component', () => {
                     // @ts-ignore
                     MapElement.prop('onmousemove')(event);
 
-                    setTimeout( () => {
+                    setTimeout(() => {
                         expect(wrapper.state().newPointPosition).toEqual(null);
                     });
                 });
@@ -122,7 +124,7 @@ describe('Map component', () => {
                     // @ts-ignore
                     MapElement.prop('onmousemove')(event);
 
-                    setTimeout( () => {
+                    setTimeout(() => {
                         expect(wrapper.state().newPointPosition).toEqual(null);
                     });
                 });
@@ -131,12 +133,14 @@ describe('Map component', () => {
                     wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />);
                     const MapElement = wrapper.find(Map);
 
-                    const outsideEvent = { latlng: createLeafletLatLngFromCoordinate(MOCK_POLYGON[0]) } as LeafletMouseEvent;
+                    const outsideEvent = {
+                        latlng: createLeafletLatLngFromCoordinate(MOCK_POLYGON[0])
+                    } as LeafletMouseEvent;
                     expect(wrapper.state().newPointPosition).toEqual(null);
                     // @ts-ignore
                     MapElement.prop('onmousemove')(outsideEvent);
 
-                    setTimeout( () => {
+                    setTimeout(() => {
                         expect(wrapper.state().newPointPosition).toEqual(null);
                     });
                 });
@@ -150,7 +154,7 @@ describe('Map component', () => {
                     wrapper.setState({ newPointPosition: MOCK_POLYGON[0] });
                     // @ts-ignore
                     MapElement.prop('onmouseout')(event);
-                    setTimeout( () => {
+                    setTimeout(() => {
                         expect(wrapper.state().newPointPosition).toEqual(null);
                     });
                 });
@@ -162,7 +166,6 @@ describe('Map component', () => {
                 });
 
                 describe('when user clicks a vertex', () => {
-
                     it('should close polygon if user clicks the start vertex', () => {
                         const POLYGON = [MOCK_POLYGON[0], MOCK_POLYGON[1], MOCK_POLYGON[2]];
                         wrapper.setProps({ polygonCoordinates: POLYGON });
@@ -197,7 +200,6 @@ describe('Map component', () => {
                             expect(initialProps.dispatch).toHaveBeenCalledWith(actions.addPointsToSelection([2]));
                         });
                     });
-
                 });
 
                 describe('when user starts moving a vertex', () => {
@@ -215,10 +217,21 @@ describe('Map component', () => {
                 });
 
                 describe('when user moves a vertex', () => {
-                    const INSIDE_POLYGON = getPolygonEdges([MOCK_POLYGON[0], MOCK_POLYGON[2], MOCK_POLYGON[4], MOCK_POLYGON[6]]);
+                    const INSIDE_POLYGON = getPolygonEdges([
+                        MOCK_POLYGON[0],
+                        MOCK_POLYGON[2],
+                        MOCK_POLYGON[4],
+                        MOCK_POLYGON[6]
+                    ]);
 
                     beforeEach(() => {
-                        wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={INSIDE_POLYGON} selection={new Set<number>([0])} />);
+                        wrapper = shallow(
+                            <BaseMap
+                                {...initialProps}
+                                polygonCoordinates={INSIDE_POLYGON}
+                                selection={new Set<number>([0])}
+                            />
+                        );
                         wrapper.setState({ isMoveActive: true, previousMouseMovePosition: INSIDE_POLYGON[0] });
                     });
 
@@ -244,6 +257,5 @@ describe('Map component', () => {
                 });
             });
         });
-
-        });
+    });
 });

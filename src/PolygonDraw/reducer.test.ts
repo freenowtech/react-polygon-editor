@@ -1,5 +1,5 @@
 import { getCenterCoordinate, movePolygonCoordinates, removeSelectedPoints } from '../helpers';
-import { initialState, PolygonEditReducer, PolygonEditState } from './reducer';
+import { initialState, polygonEditReducer, PolygonEditState } from './reducer';
 import { actions } from './actions';
 import { MOCK_POLYGON } from '../mockPolygon';
 
@@ -11,7 +11,7 @@ describe('PolygonDraw reducer', () => {
                 polygon: MOCK_POLYGON,
                 selection: new Set()
             };
-            expect(PolygonEditReducer(initialState, action)).toEqual(expectedState);
+            expect(polygonEditReducer(initialState, action)).toEqual(expectedState);
         });
     });
 
@@ -26,7 +26,7 @@ describe('PolygonDraw reducer', () => {
                 polygon: movePolygonCoordinates(MOCK_POLYGON, state.selection, action.payload),
                 selection: state.selection
             };
-            expect(PolygonEditReducer(state, action)).toEqual(expectedState);
+            expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
     });
 
@@ -37,7 +37,7 @@ describe('PolygonDraw reducer', () => {
                 polygon: [],
                 selection: new Set([0, 1, 2])
             };
-            expect(PolygonEditReducer(initialState, action)).toEqual(expectedState);
+            expect(polygonEditReducer(initialState, action)).toEqual(expectedState);
         });
 
         it('should add the provided points to selection', () => {
@@ -50,7 +50,7 @@ describe('PolygonDraw reducer', () => {
                 polygon: [],
                 selection: new Set([0, 1, 2, 3])
             };
-            expect(PolygonEditReducer(state, action)).toEqual(expectedState);
+            expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
 
         it('should remove the provided points from selection', () => {
@@ -63,7 +63,7 @@ describe('PolygonDraw reducer', () => {
                 ...initialState,
                 selection: new Set([1, 2])
             };
-            expect(PolygonEditReducer(state, action)).toEqual(expectedState);
+            expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
 
         it('should select all points', () => {
@@ -76,7 +76,7 @@ describe('PolygonDraw reducer', () => {
                 polygon: MOCK_POLYGON,
                 selection: new Set(Array.from({ length: MOCK_POLYGON.length}, (_, index) => index))
             };
-            expect(PolygonEditReducer(state, action)).toEqual(expectedState);
+            expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
 
         it('should deselect all points', () => {
@@ -89,7 +89,7 @@ describe('PolygonDraw reducer', () => {
                 polygon: MOCK_POLYGON,
                 selection: new Set()
             };
-            expect(PolygonEditReducer(state, action)).toEqual(expectedState);
+            expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
     });
 
@@ -105,7 +105,7 @@ describe('PolygonDraw reducer', () => {
                 polygon: removeSelectedPoints(state.polygon, state.selection),
                 selection: new Set()
             };
-            expect(PolygonEditReducer(state, action)).toEqual(expectedState);
+            expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
     });
 
@@ -121,7 +121,7 @@ describe('PolygonDraw reducer', () => {
                 polygon: [MOCK_POLYGON[0], MOCK_POLYGON[1]],
                 selection: new Set([1])
             };
-            expect(PolygonEditReducer(state, action)).toEqual(expectedState);
+            expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
 
         it('should add point to the provided polygon edge and select it', () => {
@@ -136,7 +136,7 @@ describe('PolygonDraw reducer', () => {
                 polygon: [MOCK_POLYGON[0], newPoint, MOCK_POLYGON[1]],
                 selection: new Set([0])
             };
-            expect(PolygonEditReducer(state, action)).toEqual(expectedState);
+            expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
     });
 });

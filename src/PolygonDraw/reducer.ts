@@ -16,22 +16,31 @@ import { Coordinate } from 'types';
 import { movePolygonCoordinates, removeSelectedPoints } from '../helpers';
 
 export interface PolygonEditState {
-    polygon: Coordinate[];
+    activeIndex: number;
+    polygons: Coordinate[][];
     selection: Set<number>;
 }
 
 export const initialState: PolygonEditState = {
-    polygon: [],
+    activeIndex: 0,
+    polygons: [[]],
     selection: new Set()
 };
 
-export const PolygonEditReducer = (state: PolygonEditState, action: Actions): PolygonEditState => {
+export const polygonEditReducer = (state: PolygonEditState, action: Actions): PolygonEditState => {
     switch (action.type) {
         ///////////////////////////////////////////////////////////////////////////////////
         ///                            CHANGE POLYGON CASES                             ///
         ///////////////////////////////////////////////////////////////////////////////////
         case CHANGE_POLYGON: {
-            return { ...state, polygon: action.payload };
+            return {
+                ...state,
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    action.payload,
+                    ...state.polygons.slice(state.activeIndex + 1)
+                ]
+            };
         }
 
         ///////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +49,11 @@ export const PolygonEditReducer = (state: PolygonEditState, action: Actions): Po
         case MOVE_SELECTED_POINTS: {
             return {
                 ...state,
-                polygon: movePolygonCoordinates(state.polygon, state.selection, action.payload)
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    movePolygonCoordinates(state.polygons[state.activeIndex], state.selection, action.payload),
+                    ...state.polygons.slice(state.activeIndex + 1)
+                ]
             };
         }
 
@@ -68,7 +81,7 @@ export const PolygonEditReducer = (state: PolygonEditState, action: Actions): Po
         case SELECT_ALL_POINTS:
             return {
                 ...state,
-                selection: new Set(state.polygon.keys())
+                selection: new Set(state.polygons.keys())
             };
         case DESELECT_ALL_POINTS:
             return {
@@ -80,11 +93,13 @@ export const PolygonEditReducer = (state: PolygonEditState, action: Actions): Po
         ///                              DELETE POINTS CASE                             ///
         ///////////////////////////////////////////////////////////////////////////////////
         case DELETE_POLYGON_POINTS:
-            const newPolygonCoordinates = removeSelectedPoints(state.polygon, state.selection);
-
             return {
                 ...state,
-                polygon: newPolygonCoordinates,
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    removeSelectedPoints(state.polygons[state.activeIndex], state.selection),
+                    ...state.polygons.slice(state.activeIndex + 1)
+                ],
                 selection: new Set()
             };
 
@@ -94,21 +109,25 @@ export const PolygonEditReducer = (state: PolygonEditState, action: Actions): Po
         case ADD_POINT:
             return {
                 ...state,
-                polygon: [
-                    ...state.polygon,
-                    action.payload
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    [...state.polygons[state.activeIndex], action.payload],
+                    ...state.polygons.slice(state.activeIndex + 1)
                 ],
-                selection: new Set([state.polygon.length])
+                selection: new Set([state.polygons.length])
             };
         case ADD_POINT_TO_EDGE:
-            const polygonCoordinates = [
-                ...state.polygon.slice(0, action.payload.index + 1),
-                action.payload.coordinate,
-                ...state.polygon.slice(action.payload.index + 1)
-            ];
             return {
                 ...state,
-                polygon: polygonCoordinates,
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    [
+                        ...state.polygons[state.activeIndex].slice(0, action.payload.index + 1),
+                        action.payload.coordinate,
+                        ...state.polygons[state.activeIndex].slice(action.payload.index + 1)
+                    ],
+                    ...state.polygons.slice(state.activeIndex + 1)
+                ],
                 selection: new Set([action.payload.index])
             };
         default:

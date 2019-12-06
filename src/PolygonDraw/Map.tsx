@@ -11,12 +11,10 @@ import {
     addCoordinates,
     subtractCoordinates,
     getPolygonEdges,
-    isCoordinateInPolygon,
-    isPolygonClosed
+    isCoordinateInPolygon
 } from '../helpers';
 import { TileLayer } from '../leaflet/TileLayer';
 import { MAP } from '../constants';
-import { Actions, actions } from './actions';
 import { Map, Container } from '../leaflet/Map';
 import { ActionBar } from '../ActionBar/ActionBar';
 import { EdgeVertex } from './EdgeVertex';
@@ -28,14 +26,26 @@ interface MapSnapshot {
 }
 
 export interface Props {
-    polygonCoordinates: Coordinate[];
+    /**
+     * activePolygonIndex is the index of the polygon that is currently availbale for editing
+     */
+    activePolygonIndex: number;
+    polygonCoordinates: Coordinate[][];
     boundaryPolygonCoordinates: Coordinate[];
     selection: Set<number>;
     editable: boolean;
     initialCenter: LatLngTuple;
     initialZoom: number;
-
-    dispatch: (action: Actions) => void;
+    isPolygonClosed: boolean;
+    addPoint: (coord: Coordinate) => void;
+    addPointToEdge: (coordinate: Coordinate, index: number) => void;
+    deselectAllPoints: () => void;
+    removePointFromSelection: (index: number) => void;
+    addPointsToSelection: (indices: number[]) => void;
+    selectPoints: (indices: number[]) => void;
+    moveSelectedPoints: (newPosition: Coordinate) => void;
+    deletePolygonPoints: () => void;
+    selectAllPoints: () => void;
 }
 
 export interface State {
@@ -44,7 +54,7 @@ export interface State {
     isMoveActive: boolean;
     previousMouseMovePosition?: Coordinate;
     isPenToolActive: boolean;
-    newPointPosition: Coordinate|null;
+    newPointPosition: Coordinate | null;
 }
 
 export class BaseMap extends React.Component<Props, State> {
@@ -56,21 +66,14 @@ export class BaseMap extends React.Component<Props, State> {
         isMoveActive: false,
         previousMouseMovePosition: undefined,
         isPenToolActive: false,
-        newPointPosition: null,
+        newPointPosition: null
     };
-
-    dispatch: typeof actions = { ...actions };
 
     static getDerivedStateFromProps(props: Props, state: State): State {
         return {
             ...state,
             isPenToolActive: props.polygonCoordinates.length === 0 ? true : state.isPenToolActive
         };
-    }
-
-    constructor(props: Props) {
-        super(props);
-        this.setDispatcher();
     }
 
     componentDidMount() {
@@ -91,12 +94,11 @@ export class BaseMap extends React.Component<Props, State> {
     }
 
     getSnapshotBeforeUpdate(prevProps: Props, prevState: State): MapSnapshot {
-        const reframe = (
+        const reframe =
             // Reframe when the polygon loads for the first time
             (prevProps.polygonCoordinates.length === 0 && this.props.polygonCoordinates.length > 1) ||
             // Reframe when the boundary polygon loads for the first time
-            prevProps.boundaryPolygonCoordinates !== this.props.boundaryPolygonCoordinates
-        );
+            prevProps.boundaryPolygonCoordinates !== this.props.boundaryPolygonCoordinates;
         const size = this.getSize(this.mapRef.current);
 
         return { reframe, size };
@@ -112,20 +114,19 @@ export class BaseMap extends React.Component<Props, State> {
         }
     }
 
-    setDispatcher = () => {
-        this.dispatch = Object.keys(actions).reduce(
-            (acc, actionKey) => {
-                // tslint:disable-next-line
-                acc[actionKey] = (...args: any[]) => this.props.dispatch(actions[actionKey](...args));
-                return acc;
-            },
-            {}) as typeof actions;
-    };
-
     reframe = () => {
-        const { polygonCoordinates, boundaryPolygonCoordinates, initialCenter, initialZoom } = this.props;
-        if (polygonCoordinates.length > 1) {
-            this.reframeOnPolygon(polygonCoordinates);
+        const {
+            polygonCoordinates,
+            boundaryPolygonCoordinates,
+            initialCenter,
+            initialZoom,
+            activePolygonIndex
+        } = this.props;
+
+        const activePolygon = polygonCoordinates[activePolygonIndex];
+
+        if (activePolygon.length > 1) {
+            this.reframeOnPolygon(activePolygon);
         } else if (boundaryPolygonCoordinates.length > 0 && boundaryPolygonCoordinates !== MAP.WORLD_COORDINATES) {
             this.reframeOnPolygon(boundaryPolygonCoordinates);
         } else if (this.mapRef.current) {
@@ -151,7 +152,7 @@ export class BaseMap extends React.Component<Props, State> {
         });
     };
 
-    getSize = (map: LeafletMap|null): string => {
+    getSize = (map: LeafletMap | null): string => {
         return map && map.container ? `${map.container.clientHeight}x${map.container.clientWidth}` : '';
     };
 
@@ -161,12 +162,14 @@ export class BaseMap extends React.Component<Props, State> {
 
     handleMapClick = (event: LeafletMouseEvent) => {
         const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
-        if (this.state.isPenToolActive &&
-            !isPolygonClosed(this.props.polygonCoordinates) &&
-            isCoordinateInPolygon(coordinate, this.props.boundaryPolygonCoordinates)) {
-            this.dispatch.addPoint(coordinate);
+        if (
+            this.state.isPenToolActive &&
+            !this.props.isPolygonClosed &&
+            isCoordinateInPolygon(coordinate, this.props.boundaryPolygonCoordinates)
+        ) {
+            this.props.addPoint(coordinate);
         } else if (!this.state.isShiftPressed) {
-            this.dispatch.deselectAllPoints();
+            this.props.deselectAllPoints();
         }
     };
 
@@ -174,8 +177,10 @@ export class BaseMap extends React.Component<Props, State> {
         const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
         const newPointPosition =
             this.state.isPenToolActive &&
-            !isPolygonClosed(this.props.polygonCoordinates) &&
-            isCoordinateInPolygon(coordinate, this.props.boundaryPolygonCoordinates) ? coordinate : null;
+            !this.props.isPolygonClosed &&
+            isCoordinateInPolygon(coordinate, this.props.boundaryPolygonCoordinates)
+                ? coordinate
+                : null;
 
         this.setState({ newPointPosition });
     };
@@ -187,19 +192,17 @@ export class BaseMap extends React.Component<Props, State> {
     ///////////////////////////////////////////////////////////////////////////
 
     onPolygonVertexClick = (index: number) => {
-        if (index === 0 &&
-            this.props.polygonCoordinates.length > 2 &&
-            !isPolygonClosed(this.props.polygonCoordinates)) {
+        if (index === 0 && this.props.polygonCoordinates.length > 2 && !this.props.isPolygonClosed) {
             // Close polygon when user clicks the first point
-            this.dispatch.addPoint({...this.props.polygonCoordinates[0]});
+            this.props.addPoint({ ...this.props.polygonCoordinates[this.props.activePolygonIndex][0] });
         } else if (this.state.isShiftPressed) {
             if (this.props.selection.has(index)) {
-                this.dispatch.removePointFromSelection(index);
+                this.props.removePointFromSelection(index);
             } else {
-                this.dispatch.addPointsToSelection([index]);
+                this.props.addPointsToSelection([index]);
             }
         } else {
-            this.dispatch.selectPoints([index]);
+            this.props.selectPoints([index]);
         }
     };
 
@@ -215,9 +218,9 @@ export class BaseMap extends React.Component<Props, State> {
     onPolygonVertexDragStart = (latLng: LatLng, index: number) => {
         if (!this.props.selection.has(index)) {
             if (this.state.isShiftPressed) {
-                this.dispatch.addPointsToSelection([index]);
+                this.props.addPointsToSelection([index]);
             } else {
-                this.dispatch.selectPoints([index]);
+                this.props.selectPoints([index]);
             }
         }
         this.startVertexMove(latLng);
@@ -229,7 +232,7 @@ export class BaseMap extends React.Component<Props, State> {
             const moveVector = subtractCoordinates(coordinate, this.state.previousMouseMovePosition);
 
             const nextCoordinates = Array.from(this.props.selection)
-                .map(i => this.props.polygonCoordinates[i])
+                .map(i => this.props.polygonCoordinates[this.props.activePolygonIndex][i])
                 .map(coord => addCoordinates(coord, moveVector));
 
             const inBoundary = nextCoordinates.every(nextCoordinate =>
@@ -237,7 +240,7 @@ export class BaseMap extends React.Component<Props, State> {
             );
 
             if (inBoundary) {
-                this.dispatch.moveSelectedPoints(moveVector);
+                this.props.moveSelectedPoints(moveVector);
                 this.setState({ previousMouseMovePosition: coordinate, isMovedPointInBoundary: true });
             } else {
                 this.setState({ isMovedPointInBoundary: false });
@@ -262,10 +265,10 @@ export class BaseMap extends React.Component<Props, State> {
     handleKeyDown = (e: KeyboardEvent) => {
         switch (e.key) {
             case 'Escape':
-                this.dispatch.deselectAllPoints();
+                this.props.deselectAllPoints();
                 break;
             case 'Backspace':
-                this.dispatch.deletePolygonPoints();
+                this.props.deletePolygonPoints();
                 break;
             case 'Shift':
                 this.setState({ isShiftPressed: true });
@@ -275,12 +278,12 @@ export class BaseMap extends React.Component<Props, State> {
                 break;
             case 'd':
                 if (this.props.editable) {
-                    this.dispatch.deselectAllPoints();
+                    this.props.deselectAllPoints();
                 }
                 break;
             case 'a':
                 if (this.props.editable) {
-                    this.dispatch.selectAllPoints();
+                    this.props.selectAllPoints();
                 }
                 break;
             case 'f':
@@ -316,31 +319,34 @@ export class BaseMap extends React.Component<Props, State> {
         );
     };
 
-    renderPolygonPoints = () => this.props.polygonCoordinates.map(this.renderPolygonVertex);
+    renderActivePolygonPoints = () => {
+        return this.props.polygonCoordinates[this.props.activePolygonIndex].map(this.renderPolygonVertex);
+    };
 
     renderVertexEdge = (coordinate: Coordinate, index: number) => (
-        <EdgeVertex
-            key={index}
-            index={index}
-            coordinate={coordinate}
-            onClick={this.dispatch.addPointToEdge}
-        />
+        <EdgeVertex key={index} index={index} coordinate={coordinate} onClick={this.props.addPointToEdge} />
     );
 
-    renderPolygonEdges = () => getPolygonEdges(this.props.polygonCoordinates).map(this.renderVertexEdge);
+    renderPolygonEdges = () => {
+        return getPolygonEdges(this.props.polygonCoordinates[this.props.activePolygonIndex]).map(this.renderVertexEdge);
+    };
 
-    renderPolygon = () => (
+    renderPolygon = (coordinates: Coordinate[]) => (
         <Polygon
-            positions={this.props.polygonCoordinates.map(createLeafletLatLngFromCoordinate)}
+            positions={coordinates.map(createLeafletLatLngFromCoordinate)}
             fillColor={MAP.POLYGON_COLOR}
             color={MAP.POLYGON_COLOR}
             interactive={false}
         />
     );
 
+    renderPolygons = () => this.props.polygonCoordinates.map(this.renderPolygon);
+
     renderPolyline = () => {
         const { newPointPosition } = this.state;
-        const polygon = this.props.polygonCoordinates.map(createLeafletLatLngFromCoordinate);
+        const polygon = this.props.polygonCoordinates[this.props.activePolygonIndex].map(
+            createLeafletLatLngFromCoordinate
+        );
 
         if (polygon.length === 0) {
             return null;
@@ -353,17 +359,8 @@ export class BaseMap extends React.Component<Props, State> {
 
         return (
             <>
-                <Polyline
-                    positions={polygon}
-                    color={MAP.POLYGON_COLOR}
-                    interactive={false}
-                />
-                <Polyline
-                    positions={newPath}
-                    color={MAP.POLYGON_COLOR}
-                    dashArray="2 12"
-                    interactive={false}
-                />
+                <Polyline positions={polygon} color={MAP.POLYGON_COLOR} interactive={false} />
+                <Polyline positions={newPath} color={MAP.POLYGON_COLOR} dashArray="2 12" interactive={false} />
             </>
         );
     };
@@ -382,10 +379,8 @@ export class BaseMap extends React.Component<Props, State> {
     );
 
     render() {
-        const { polygonCoordinates, editable, selection, initialZoom, initialCenter } = this.props;
+        const { editable, selection, initialZoom, initialCenter } = this.props;
         const { newPointPosition, isPenToolActive } = this.state;
-
-        const polygonIsClosed = isPolygonClosed(polygonCoordinates);
 
         return (
             <Container>
@@ -406,21 +401,21 @@ export class BaseMap extends React.Component<Props, State> {
                     drawCursor={!!newPointPosition}
                 >
                     {this.renderBoundaryPolygon()}
-                    {polygonIsClosed ? this.renderPolygon() : this.renderPolyline()}
+                    {this.props.isPolygonClosed ? this.renderPolygons() : this.renderPolyline()}
 
-                    {editable &&
+                    {editable && (
                         <Pane>
-                            {this.renderPolygonPoints()}
-                            {polygonIsClosed && isPenToolActive && this.renderPolygonEdges()}}
+                            {this.renderActivePolygonPoints()}
+                            {this.props.isPolygonClosed && isPenToolActive && this.renderPolygonEdges()}}
                         </Pane>
-                    }
+                    )}
 
                     <TileLayer />
                 </Map>
                 <ActionBar
                     editable={editable}
                     isVectorModeEnabled={isPenToolActive}
-                    onDelete={this.dispatch.deletePolygonPoints}
+                    onDelete={this.props.deletePolygonPoints}
                     onFocus={this.reframe}
                     onEnableVectorMode={this.toggleVectorMode}
                     deleteInactive={selection.size === 0}
