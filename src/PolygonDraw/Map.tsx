@@ -1,6 +1,8 @@
 import React, { memo } from 'react';
 import { LatLng, LatLngTuple, LeafletMouseEvent } from 'leaflet';
 import { Map as LeafletMap, Pane, Polygon, Polyline } from 'react-leaflet';
+import LeafletGeometry from 'leaflet-geometryutil';
+
 
 import { Coordinate } from 'types';
 
@@ -44,7 +46,8 @@ export interface State {
     isMoveActive: boolean;
     previousMouseMovePosition?: Coordinate;
     isPenToolActive: boolean;
-    newPointPosition: Coordinate|null;
+    newPointPosition: Coordinate | null;
+    marker: Coordinate | null;
 }
 
 export class BaseMap extends React.Component<Props, State> {
@@ -57,6 +60,7 @@ export class BaseMap extends React.Component<Props, State> {
         previousMouseMovePosition: undefined,
         isPenToolActive: false,
         newPointPosition: null,
+        marker: null
     };
 
     dispatch: typeof actions = { ...actions };
@@ -170,7 +174,65 @@ export class BaseMap extends React.Component<Props, State> {
         }
     };
 
+    getClosestSnapCoordinate = (map: L.Map, coordinate: Coordinate, polygons: Coordinate[][], tolerance: number): Coordinate | null => {
+        const latLng = createLeafletLatLngFromCoordinate(coordinate);
+        const layers = polygons.map(p => p.map(createLeafletLatLngFromCoordinate));
+        const snapLatLng = this.getClosestSnapLatlng(map, latLng, layers, tolerance);
+
+        return snapLatLng ? createCoordinateFromLeafletLatLng(snapLatLng) : null;
+    }
+
+    getClosestSnapLatlng = (map: L.Map, latLng: LatLng, layers: LatLng[][], tolerance: number): LatLng | null => {
+        // Find closest point in the layers using the provided tolerance
+        const layerSnap = LeafletGeometry.closestLayerSnap(
+            map,
+            layers,
+            latLng,
+            tolerance
+        );
+
+        if (layerSnap) {
+            // Find the closest vertext to the point
+            const closestVertex = LeafletGeometry.closest(
+                map,
+                layerSnap.layer,
+                layerSnap.latlng,
+                true
+            );
+
+            if (closestVertex) {
+                // Get the distance between the point and the closest vertex
+                const closestVertexDistance = LeafletGeometry.distance(map, closestVertex, layerSnap.latlng);
+
+                if (closestVertexDistance < tolerance) {
+                    return closestVertex;
+                }
+            }
+
+            return layerSnap.latlng;
+        }
+
+        return null;
+    }
+
     handleMouseMoveOnMap = (event: LeafletMouseEvent) => {
+
+        if (this.mapRef.current) {
+            const polygons = [
+                this.props.polygonCoordinates,
+                this.props.polygonCoordinates.map(({ latitude, longitude}) => ({ latitude, longitude: longitude + 0.1 }))
+            ];
+            const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
+            
+            const snapCoordinates = this.getClosestSnapCoordinate(
+                this.mapRef.current.leafletElement,
+                coordinate,
+                polygons,
+                10
+            );
+
+            this.setState({ marker: snapCoordinates });
+        }
         const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
         const newPointPosition =
             this.state.isPenToolActive &&
@@ -410,6 +472,15 @@ export class BaseMap extends React.Component<Props, State> {
 
                     {editable &&
                         <Pane>
+                        {this.state.marker && 
+                            <EdgeVertex
+                                index={99}
+                                onClick={bla => {
+                                    // tslint:disable-next-line
+                                    console.log(bla)
+                                }}
+                                coordinate={this.state.marker}
+                            />}
                             {this.renderPolygonPoints()}
                             {polygonIsClosed && isPenToolActive && this.renderPolygonEdges()}}
                         </Pane>
