@@ -16,9 +16,8 @@ interface State {
 }
 
 export class EdgeVertex extends React.Component<Props, State> {
-
     state = {
-        isHoverActive: false,
+        isHoverActive: false
     };
 
     handleMouseOver = () => this.setState({ isHoverActive: true });
@@ -33,7 +32,7 @@ export class EdgeVertex extends React.Component<Props, State> {
             <CircleMarker
                 fillColor={MAP.VERTEX_FILL_COLOR}
                 fillOpacity={isHoverActive ? 1 : 0.8}
-                color={MAP.POLYGON_COLOR}
+                color={MAP.POLYGON_ACTIVE_COLOR}
                 opacity={isHoverActive ? 1 : 0.8}
                 weight={isHoverActive ? 2 : 0.5}
                 radius={isHoverActive ? 6 : 3}

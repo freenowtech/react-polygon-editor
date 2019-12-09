@@ -1,9 +1,4 @@
-import {
-    ACTION_BLUE_900,
-    FREEDOM_RED_900,
-    AUTHENTIC_BLUE_900,
-    WHITE
-} from './common/colors';
+import { ACTION_BLUE_900, FREEDOM_RED_900, AUTHENTIC_BLUE_900, AUTHENTIC_BLUE_200, WHITE } from './common/colors';
 import { LatLngTuple } from 'leaflet';
 
 export const LABELS = {
@@ -17,7 +12,8 @@ export const LEAFLET = {
 };
 
 export const MAP = {
-    POLYGON_COLOR: ACTION_BLUE_900,
+    POLYGON_ACTIVE_COLOR: ACTION_BLUE_900,
+    POLYGON_INACTIVE_COLOR: AUTHENTIC_BLUE_200,
     VERTEX_FILL_COLOR: WHITE,
     BOUNDARY_COLOR: AUTHENTIC_BLUE_900,
     ERROR_BOUNDARY_COLOR: FREEDOM_RED_900,

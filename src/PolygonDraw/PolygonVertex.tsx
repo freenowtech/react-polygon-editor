@@ -34,7 +34,7 @@ export class PolygonVertex extends React.Component<Props, State> {
     };
 
     static getDerivedStateFromProps = (props: Props, state: State) => {
-        return state.isDragged ? state : { ...state, latLng: createLeafletLatLngFromCoordinate(props.coordinate)};
+        return state.isDragged ? state : { ...state, latLng: createLeafletLatLngFromCoordinate(props.coordinate) };
     };
 
     componentDidMount() {
@@ -68,11 +68,13 @@ export class PolygonVertex extends React.Component<Props, State> {
         this.props.onDragStart(event.target.getLatLng(), this.props.index);
         this.setState({ isDragged: true });
     };
+
     handleDrag = (event: DragEvent) => {
         if (this.state.isDragged) {
             this.props.onDrag(event.target.getLatLng());
         }
     };
+
     handleDragEnd = () => {
         this.props.onDragEnd();
         this.setState({ isDragged: false });
@@ -89,7 +91,7 @@ export class PolygonVertex extends React.Component<Props, State> {
                 ref={this.setCircleMarkerRef}
                 fillColor={MAP.VERTEX_FILL_COLOR}
                 fillOpacity={1}
-                color={MAP.POLYGON_COLOR}
+                color={MAP.POLYGON_ACTIVE_COLOR}
                 opacity={hoveredAndNotSelected ? 0.6 : 1}
                 weight={selectedOrHovered ? 4 : 1}
                 radius={selectedOrHovered ? 6 : 4}
