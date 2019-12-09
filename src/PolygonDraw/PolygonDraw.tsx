@@ -7,7 +7,7 @@ import { MAP } from '../constants';
 import Map from './Map';
 import { usePolygonEditor } from './usePolygonEditor';
 
-type Props = {
+export type Props = {
     boundary?: Coordinate[];
     initialCenter?: Coordinate;
     initialZoom?: number;

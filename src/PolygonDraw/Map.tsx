@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { LatLng, LatLngTuple, LeafletMouseEvent } from 'leaflet';
-import { Map as LeafletMap, Pane, Polygon, Polyline } from 'react-leaflet';
+import { Map as LeafletMap, Pane, Polyline } from 'react-leaflet';
 
 import { Coordinate } from 'types';
 
@@ -19,6 +19,8 @@ import { Map, Container } from '../leaflet/Map';
 import { ActionBar } from '../ActionBar/ActionBar';
 import { EdgeVertex } from './EdgeVertex';
 import { PolygonVertex } from './PolygonVertex';
+import { BoundaryPolygon } from './BoundaryPolygon';
+import { Polygon } from './Polygon';
 
 interface MapSnapshot {
     reframe: boolean;
@@ -115,18 +117,10 @@ export class BaseMap extends React.Component<Props, State> {
     }
 
     reframe = () => {
-        const {
-            polygonCoordinates,
-            boundaryPolygonCoordinates,
-            initialCenter,
-            initialZoom,
-            activePolygonIndex
-        } = this.props;
+        const { polygonCoordinates, boundaryPolygonCoordinates, initialCenter, initialZoom } = this.props;
 
-        const activePolygon = polygonCoordinates[activePolygonIndex];
-
-        if (activePolygon.length > 1) {
-            this.reframeOnPolygon(activePolygon);
+        if (polygonCoordinates.length > 1) {
+            this.reframeOnPolygon(polygonCoordinates);
         } else if (boundaryPolygonCoordinates.length > 0 && boundaryPolygonCoordinates !== MAP.WORLD_COORDINATES) {
             this.reframeOnPolygon(boundaryPolygonCoordinates);
         } else if (this.mapRef.current) {
@@ -134,9 +128,9 @@ export class BaseMap extends React.Component<Props, State> {
         }
     };
 
-    reframeOnPolygon = (polygonCoordinates: Coordinate[]) => {
+    reframeOnPolygon = (polygonCoordinates: Coordinate[] | Coordinate[][]) => {
         if (this.mapRef.current && polygonCoordinates.length > 0) {
-            const bounds = createLeafletLatLngBoundsFromCoordinates(polygonCoordinates);
+            const bounds = createLeafletLatLngBoundsFromCoordinates(polygonCoordinates.flat());
 
             this.mapRef.current.leafletElement.fitBounds(bounds);
         }
@@ -154,6 +148,15 @@ export class BaseMap extends React.Component<Props, State> {
 
     getSize = (map: LeafletMap | null): string => {
         return map && map.container ? `${map.container.clientHeight}x${map.container.clientWidth}` : '';
+    };
+
+    handleOnFocusClicked = () => {
+        const activePolygon = this.props.polygonCoordinates[this.props.activePolygonIndex];
+        if (activePolygon) {
+            this.reframeOnPolygon(activePolygon);
+        } else {
+            this.reframe();
+        }
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -331,16 +334,16 @@ export class BaseMap extends React.Component<Props, State> {
         return getPolygonEdges(this.props.polygonCoordinates[this.props.activePolygonIndex]).map(this.renderVertexEdge);
     };
 
-    renderPolygon = (coordinates: Coordinate[]) => (
-        <Polygon
-            positions={coordinates.map(createLeafletLatLngFromCoordinate)}
-            fillColor={MAP.POLYGON_COLOR}
-            color={MAP.POLYGON_COLOR}
-            interactive={false}
-        />
-    );
-
-    renderPolygons = () => this.props.polygonCoordinates.map(this.renderPolygon);
+    renderPolygons = () =>
+        this.props.polygonCoordinates.map((coordinates, index) => {
+            return (
+                <Polygon
+                    key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
+                    coordinates={coordinates}
+                    isActive={index === this.props.activePolygonIndex}
+                />
+            );
+        });
 
     renderPolyline = () => {
         const { newPointPosition } = this.state;
@@ -359,24 +362,11 @@ export class BaseMap extends React.Component<Props, State> {
 
         return (
             <>
-                <Polyline positions={polygon} color={MAP.POLYGON_COLOR} interactive={false} />
-                <Polyline positions={newPath} color={MAP.POLYGON_COLOR} dashArray="2 12" interactive={false} />
+                <Polyline positions={polygon} color={MAP.POLYGON_ACTIVE_COLOR} interactive={false} />
+                <Polyline positions={newPath} color={MAP.POLYGON_ACTIVE_COLOR} dashArray="2 12" interactive={false} />
             </>
         );
     };
-
-    renderBoundaryPolygon = () => (
-        <Polygon
-            positions={[
-                MAP.WORLD_LAT_LNG_COORDINATES,
-                this.props.boundaryPolygonCoordinates.map(createLeafletLatLngFromCoordinate)
-            ]}
-            fillColor={MAP.BOUNDARY_COLOR}
-            color={this.state.isMovedPointInBoundary ? MAP.BOUNDARY_COLOR : MAP.ERROR_BOUNDARY_COLOR}
-            weight={this.state.isMovedPointInBoundary ? 0.4 : MAP.BORDER_WIDTH}
-            interactive={false}
-        />
-    );
 
     render() {
         const { editable, selection, initialZoom, initialCenter } = this.props;
@@ -400,7 +390,10 @@ export class BaseMap extends React.Component<Props, State> {
                     boxZoom={false}
                     drawCursor={!!newPointPosition}
                 >
-                    {this.renderBoundaryPolygon()}
+                    <BoundaryPolygon
+                        coordinates={this.props.boundaryPolygonCoordinates}
+                        hasError={!this.state.isMovedPointInBoundary}
+                    />
                     {this.props.isPolygonClosed ? this.renderPolygons() : this.renderPolyline()}
 
                     {editable && (
@@ -416,7 +409,7 @@ export class BaseMap extends React.Component<Props, State> {
                     editable={editable}
                     isVectorModeEnabled={isPenToolActive}
                     onDelete={this.props.deletePolygonPoints}
-                    onFocus={this.reframe}
+                    onFocus={this.handleOnFocusClicked}
                     onEnableVectorMode={this.toggleVectorMode}
                     deleteInactive={selection.size === 0}
                 />
