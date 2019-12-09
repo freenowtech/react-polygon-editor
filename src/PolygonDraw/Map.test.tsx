@@ -40,21 +40,6 @@ describe('Map component', () => {
             wrapper = shallow(<BaseMap {...initialProps} editable={false} />);
             expect(wrapper.state().isPenToolActive).toBeFalsy();
         });
-
-        describe('when user moves mouse on map', () => {
-            it('should not track mouse position if pen tool is disabled', () => {
-                wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />);
-                const MapElement = wrapper.find(Map);
-
-                expect(wrapper.state().newPointPosition).toEqual(null);
-                // @ts-ignore
-                MapElement.prop('onmousemove')(event);
-
-                setTimeout(() => {
-                    expect(wrapper.state().newPointPosition).toEqual(null);
-                });
-            });
-        });
     });
 
     describe('WHEN polygon is disabled', () => {
@@ -64,102 +49,6 @@ describe('Map component', () => {
         });
 
         describe('Map events', () => {
-            describe('when user clicks on map', () => {
-                it('should deselect all points if polygon is closed and shift is not pressed', () => {
-                    wrapper = shallow(<BaseMap {...initialProps} />);
-                    const MapElement = wrapper.find(Map);
-
-                    // @ts-ignore
-                    MapElement.prop('onclick')(event);
-                    setTimeout(() => {
-                        expect(initialProps.dispatch).toHaveBeenCalledWith(actions.deselectAllPoints());
-                    });
-                });
-
-                it('should add point if polygon is open and the point is in boundary', () => {
-                    wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />);
-                    const MapElement = wrapper.find(Map);
-
-                    // @ts-ignore
-                    MapElement.prop('onclick')(event);
-                    setTimeout(() => {
-                        expect(initialProps.dispatch).toHaveBeenCalledWith(actions.addPoint(coordinate));
-                    });
-                });
-            });
-
-            describe('when user moves mouse on map', () => {
-                it('should add point if polygon is open and the point is in boundary', () => {
-                    wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />);
-                    const MapElement = wrapper.find(Map);
-
-                    expect(wrapper.state().newPointPosition).toEqual(null);
-                    // @ts-ignore
-                    MapElement.prop('onmousemove')(event);
-
-                    setTimeout(() => {
-                        expect(wrapper.state().newPointPosition).toEqual(coordinate);
-                    });
-                });
-
-                it('should not track mouse position if pen tool is disabled', () => {
-                    wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />);
-                    wrapper.setState({ isPenToolActive: false });
-                    const MapElement = wrapper.find(Map);
-
-                    expect(wrapper.state().newPointPosition).toEqual(null);
-                    // @ts-ignore
-                    MapElement.prop('onmousemove')(event);
-
-                    setTimeout(() => {
-                        expect(wrapper.state().newPointPosition).toEqual(null);
-                    });
-                });
-
-                it('should not track mouse position if polygon is closed', () => {
-                    wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={MOCK_POLYGON} />);
-                    const MapElement = wrapper.find(Map);
-
-                    expect(wrapper.state().newPointPosition).toEqual(null);
-                    // @ts-ignore
-                    MapElement.prop('onmousemove')(event);
-
-                    setTimeout(() => {
-                        expect(wrapper.state().newPointPosition).toEqual(null);
-                    });
-                });
-
-                it('should not track mouse position if point is outside the boundary', () => {
-                    wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={OPEN_POLYGON} />);
-                    const MapElement = wrapper.find(Map);
-
-                    const outsideEvent = {
-                        latlng: createLeafletLatLngFromCoordinate(MOCK_POLYGON[0])
-                    } as LeafletMouseEvent;
-                    expect(wrapper.state().newPointPosition).toEqual(null);
-                    // @ts-ignore
-                    MapElement.prop('onmousemove')(outsideEvent);
-
-                    setTimeout(() => {
-                        expect(wrapper.state().newPointPosition).toEqual(null);
-                    });
-                });
-            });
-
-            describe('when user moves mouse outside the map', () => {
-                it('should not track mouse postion', () => {
-                    wrapper = shallow(<BaseMap {...initialProps} />);
-                    const MapElement = wrapper.find(Map);
-
-                    wrapper.setState({ newPointPosition: MOCK_POLYGON[0] });
-                    // @ts-ignore
-                    MapElement.prop('onmouseout')(event);
-                    setTimeout(() => {
-                        expect(wrapper.state().newPointPosition).toEqual(null);
-                    });
-                });
-            });
-
             describe('Vertex events', () => {
                 beforeEach(() => {
                     wrapper = shallow(<BaseMap {...initialProps} polygonCoordinates={MOCK_POLYGON} />);
