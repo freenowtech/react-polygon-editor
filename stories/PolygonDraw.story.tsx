@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 
 import { PolygonDraw } from '../src/PolygonDraw/PolygonDraw';
 import { Coordinate } from '../src/types';
-import { BOUNDARY, POLYGON } from './polygons';
+import { BOUNDARY, POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from './polygons';
 import { StateContainer } from './StateContainer';
 
 const polygonUpdateAction = action('polygon changed');
@@ -23,8 +23,9 @@ storiesOf('PolygonDraw', module)
             )}
         </StateContainer>
     ))
+    .add('Multiple Polygons', () => <PolygonDraw polygon={[POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]} highlighted={0} />)
     .add('New', () => (
-        <StateContainer initialState={{ polygon: ([] as Coordinate[]) }}>
+        <StateContainer initialState={{ polygon: [] as Coordinate[] }}>
             {(state, setState) => (
                 <PolygonDraw
                     polygon={state.polygon}
@@ -36,13 +37,7 @@ storiesOf('PolygonDraw', module)
             )}
         </StateContainer>
     ))
-    .add('Not Editable', () => (
-        <PolygonDraw
-            editable={false}
-            polygon={POLYGON}
-            boundary={BOUNDARY}
-        />
-    ))
+    .add('Not Editable', () => <PolygonDraw editable={false} polygon={POLYGON} boundary={BOUNDARY} />)
     .add('With Boundary', () => (
         <StateContainer initialState={{ polygon: POLYGON }}>
             {(state, setState) => (
@@ -58,16 +53,6 @@ storiesOf('PolygonDraw', module)
         </StateContainer>
     ))
     .add('With initial center', () => (
-        <PolygonDraw
-            editable={false}
-            polygon={[]}
-            initialCenter={{ longitude: 2.1734, latitude: 41.3851 }}
-        />
+        <PolygonDraw editable={false} polygon={[]} initialCenter={{ longitude: 2.1734, latitude: 41.3851 }} />
     ))
-    .add('With initial zoom', () => (
-        <PolygonDraw
-            editable={false}
-            polygon={[]}
-            initialZoom={6}
-        />
-    ));
+    .add('With initial zoom', () => <PolygonDraw editable={false} polygon={[]} initialZoom={6} />);
