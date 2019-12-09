@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ES6",
-        "lib": ["es2017", "dom", "ES6"],
+        "lib": ["esnext", "dom"],
         "sourceMap": true,
         "skipLibCheck": true,
         "declaration": true,
@@ -24,7 +24,7 @@
         "emitDecoratorMetadata": true
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "declarations.d.ts"],
-    "exclude": ["./node_modules/*", "dist"],
+    "exclude": ["./node_modules/*", "dist", "src/**/*.test.ts", "src/**/*.test.tsx"],
     "awesomeTypescriptLoaderOptions": {
         "ignoreDiagnostics": [7005]
     }
