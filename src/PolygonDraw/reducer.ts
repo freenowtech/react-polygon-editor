@@ -60,16 +60,18 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         ///////////////////////////////////////////////////////////////////////////////////
         ///                              SELECTION CASES                                ///
         ///////////////////////////////////////////////////////////////////////////////////
-        case SELECT_POINTS:
+        case SELECT_POINTS: {
             return {
                 ...state,
                 selection: new Set(action.payload)
             };
-        case ADD_POINT_TO_SELECTION:
+        }
+        case ADD_POINT_TO_SELECTION: {
             return {
                 ...state,
                 selection: new Set([...state.selection.values(), ...action.payload])
             };
+        }
         case REMOVE_POINT_FROM_SELECTION: {
             const selection = new Set(state.selection);
             selection.delete(action.payload);
@@ -78,21 +80,23 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                 selection
             };
         }
-        case SELECT_ALL_POINTS:
+        case SELECT_ALL_POINTS: {
             return {
                 ...state,
-                selection: new Set(state.polygons.keys())
+                selection: new Set(state.polygons[state.activeIndex].map((_, i) => i))
             };
-        case DESELECT_ALL_POINTS:
+        }
+        case DESELECT_ALL_POINTS: {
             return {
                 ...state,
                 selection: new Set()
             };
+        }
 
         ///////////////////////////////////////////////////////////////////////////////////
         ///                              DELETE POINTS CASE                             ///
         ///////////////////////////////////////////////////////////////////////////////////
-        case DELETE_POLYGON_POINTS:
+        case DELETE_POLYGON_POINTS: {
             return {
                 ...state,
                 polygons: [
@@ -102,11 +106,12 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                 ],
                 selection: new Set()
             };
+        }
 
         ///////////////////////////////////////////////////////////////////////////////////
         ///                              ADD POINT CASE                                 ///
         ///////////////////////////////////////////////////////////////////////////////////
-        case ADD_POINT:
+        case ADD_POINT: {
             return {
                 ...state,
                 polygons: [
@@ -116,7 +121,8 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                 ],
                 selection: new Set([state.polygons.length])
             };
-        case ADD_POINT_TO_EDGE:
+        }
+        case ADD_POINT_TO_EDGE: {
             return {
                 ...state,
                 polygons: [
@@ -130,7 +136,9 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                 ],
                 selection: new Set([action.payload.index])
             };
-        default:
+        }
+        default: {
             return state;
+        }
     }
 };

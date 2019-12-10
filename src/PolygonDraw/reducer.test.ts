@@ -8,7 +8,8 @@ describe('PolygonDraw reducer', () => {
         it('should change the polygon', () => {
             const action = actions.changePolygon(MOCK_POLYGON);
             const expectedState: PolygonEditState = {
-                polygon: MOCK_POLYGON,
+                activeIndex: 0,
+                polygons: [MOCK_POLYGON],
                 selection: new Set()
             };
             expect(polygonEditReducer(initialState, action)).toEqual(expectedState);
@@ -19,11 +20,13 @@ describe('PolygonDraw reducer', () => {
         it('should move selected points', () => {
             const action = actions.moveSelectedPoints({ longitude: 0.1, latitude: 0.2 });
             const state: PolygonEditState = {
-                polygon: MOCK_POLYGON,
+                activeIndex: 0,
+                polygons: [MOCK_POLYGON],
                 selection: new Set([0, 1])
             };
             const expectedState: PolygonEditState = {
-                polygon: movePolygonCoordinates(MOCK_POLYGON, state.selection, action.payload),
+                activeIndex: 0,
+                polygons: [movePolygonCoordinates(MOCK_POLYGON, state.selection, action.payload)],
                 selection: state.selection
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
@@ -34,7 +37,8 @@ describe('PolygonDraw reducer', () => {
         it('should select provied points', () => {
             const action = actions.selectPoints([0, 1, 2]);
             const expectedState: PolygonEditState = {
-                polygon: [],
+                activeIndex: 0,
+                polygons: [[]],
                 selection: new Set([0, 1, 2])
             };
             expect(polygonEditReducer(initialState, action)).toEqual(expectedState);
@@ -47,7 +51,8 @@ describe('PolygonDraw reducer', () => {
                 selection: new Set([0, 1, 2])
             };
             const expectedState: PolygonEditState = {
-                polygon: [],
+                activeIndex: 0,
+                polygons: [[]],
                 selection: new Set([0, 1, 2, 3])
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
@@ -67,26 +72,29 @@ describe('PolygonDraw reducer', () => {
         });
 
         it('should select all points', () => {
-            const action = actions.selectAllPoints();
             const state: PolygonEditState = {
-                polygon: MOCK_POLYGON,
+                activeIndex: 0,
+                polygons: [MOCK_POLYGON],
                 selection: new Set([0, 1, 2])
             };
             const expectedState: PolygonEditState = {
-                polygon: MOCK_POLYGON,
-                selection: new Set(Array.from({ length: MOCK_POLYGON.length}, (_, index) => index))
+                activeIndex: 0,
+                polygons: [MOCK_POLYGON],
+                selection: new Set(Array.from({ length: MOCK_POLYGON.length }, (_, index) => index))
             };
-            expect(polygonEditReducer(state, action)).toEqual(expectedState);
+            expect(polygonEditReducer(state, actions.selectAllPoints())).toEqual(expectedState);
         });
 
         it('should deselect all points', () => {
             const action = actions.deselectAllPoints();
             const state: PolygonEditState = {
-                polygon: MOCK_POLYGON,
+                activeIndex: 0,
+                polygons: [MOCK_POLYGON],
                 selection: new Set([0, 1, 2])
             };
             const expectedState: PolygonEditState = {
-                polygon: MOCK_POLYGON,
+                activeIndex: 0,
+                polygons: [MOCK_POLYGON],
                 selection: new Set()
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
@@ -98,11 +106,13 @@ describe('PolygonDraw reducer', () => {
             const action = actions.deletePolygonPoints();
 
             const state: PolygonEditState = {
-                polygon: MOCK_POLYGON,
+                activeIndex: 0,
+                polygons: [MOCK_POLYGON],
                 selection: new Set([0])
             };
             const expectedState: PolygonEditState = {
-                polygon: removeSelectedPoints(state.polygon, state.selection),
+                activeIndex: 0,
+                polygons: [removeSelectedPoints(state.polygons[0], state.selection)],
                 selection: new Set()
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
@@ -114,11 +124,13 @@ describe('PolygonDraw reducer', () => {
             const action = actions.addPoint(MOCK_POLYGON[1]);
 
             const state: PolygonEditState = {
-                polygon: [MOCK_POLYGON[0]],
+                activeIndex: 0,
+                polygons: [[MOCK_POLYGON[0]]],
                 selection: new Set([0])
             };
             const expectedState: PolygonEditState = {
-                polygon: [MOCK_POLYGON[0], MOCK_POLYGON[1]],
+                activeIndex: 0,
+                polygons: [[MOCK_POLYGON[0], MOCK_POLYGON[1]]],
                 selection: new Set([1])
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
@@ -129,11 +141,13 @@ describe('PolygonDraw reducer', () => {
             const action = actions.addPointToEdge(newPoint, 0);
 
             const state: PolygonEditState = {
-                polygon: [MOCK_POLYGON[0], MOCK_POLYGON[1]],
+                activeIndex: 0,
+                polygons: [[MOCK_POLYGON[0], MOCK_POLYGON[1]]],
                 selection: new Set([1])
             };
             const expectedState: PolygonEditState = {
-                polygon: [MOCK_POLYGON[0], newPoint, MOCK_POLYGON[1]],
+                activeIndex: 0,
+                polygons: [[MOCK_POLYGON[0], newPoint, MOCK_POLYGON[1]]],
                 selection: new Set([0])
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
