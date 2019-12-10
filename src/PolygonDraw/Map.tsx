@@ -24,6 +24,8 @@ import { ActionBar } from '../ActionBar/ActionBar';
 import { EdgeVertex } from './EdgeVertex';
 import { PolygonVertex } from './PolygonVertex';
 
+type SnapResult = null | { point: Coordinate, polygonIndex?: number, distance: number };
+
 interface MapSnapshot {
     reframe: boolean;
     size: string;
@@ -174,6 +176,80 @@ export class BaseMap extends React.Component<Props, State> {
         }
     };
 
+    // Solution 1
+
+    getDistance = (p1: Coordinate, p2: Coordinate): number => Math.sqrt(Math.pow(p1.latitude - p2.latitude, 2) + Math.pow(p1.longitude - p2.longitude, 2));
+
+    getClosestPointOnSegment = (point: Coordinate, segment: [Coordinate, Coordinate]): Coordinate|null => {
+
+        const [p1, p2] = segment;
+        const xDelta = p2.latitude - p1.latitude;
+        const yDelta = p2.longitude - p1.longitude;
+
+        if ((xDelta === 0) && (yDelta === 0)) {
+            return null;
+        }
+
+        const u = ((point.latitude - p1.latitude) * xDelta + (point.longitude - p1.longitude) * yDelta) / (xDelta * xDelta + yDelta * yDelta);
+
+        if (u < 0) {
+            return p1;
+        }
+        if (u > 1) {
+            return p2;
+        }
+        return  { latitude: p1.latitude + u * xDelta, longitude: p1.longitude + u * yDelta };
+
+    }
+
+    getClosestPointOnPolygon = (point: Coordinate, polygon: Coordinate[], tolerance: number) =>
+        polygon.reduce<SnapResult>((acc, currentPoint, index) => {
+            if (!polygon[index + 1]) {
+                return acc;
+            }
+
+            const closestPointOnSegment = this.getClosestPointOnSegment(point, [currentPoint, polygon[index + 1]]);
+            if (!closestPointOnSegment) {
+                return acc;
+            }
+
+            const distanceToPointOnSegment = this.getDistance(point, closestPointOnSegment);
+            if (this.getDistance(point, closestPointOnSegment) > tolerance) {
+                return acc;
+            }
+
+            const distanceToStartPoint = this.getDistance(point, currentPoint);
+            const distanceToEndPoint = this.getDistance(point, polygon[index + 1]);
+
+            if (distanceToStartPoint <= tolerance && distanceToStartPoint < distanceToEndPoint) {
+                return { point: currentPoint, distance: distanceToStartPoint };
+            }
+
+            if (distanceToStartPoint <= tolerance && distanceToEndPoint < distanceToStartPoint) {
+                return { point: polygon[index + 1], distance: distanceToEndPoint };
+            }
+
+            return { point: closestPointOnSegment, distance: distanceToPointOnSegment };
+        }, null)
+
+
+    getClosestPointOnPolygonList = (point: Coordinate, polygonList: Coordinate[][], tolerance: number) =>
+        polygonList.reduce<SnapResult>((acc, polygon, polygonIndex) => {
+            let snapResult = this.getClosestPointOnPolygon(point, polygon, tolerance);
+            if (!snapResult) {
+                return acc;
+            }
+            snapResult.polygonIndex = polygonIndex;
+
+            if (!acc) {
+                return snapResult;
+            }
+
+            return snapResult.distance < acc.distance ? snapResult : acc;
+        }, null);
+
+
+    // Solution 2
     getClosestSnapCoordinate = (map: L.Map, coordinate: Coordinate, polygons: Coordinate[][], tolerance: number): Coordinate | null => {
         const latLng = createLeafletLatLngFromCoordinate(coordinate);
         const layers = polygons.map(p => p.map(createLeafletLatLngFromCoordinate));
@@ -218,20 +294,32 @@ export class BaseMap extends React.Component<Props, State> {
     handleMouseMoveOnMap = (event: LeafletMouseEvent) => {
 
         if (this.mapRef.current) {
+            const map = this.mapRef.current.leafletElement;
             const polygons = [
                 this.props.polygonCoordinates,
                 this.props.polygonCoordinates.map(({ latitude, longitude}) => ({ latitude, longitude: longitude + 0.1 }))
             ];
-            const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
-            
-            const snapCoordinates = this.getClosestSnapCoordinate(
-                this.mapRef.current.leafletElement,
-                coordinate,
-                polygons,
-                10
-            );
+            const point = createCoordinateFromLeafletLatLng(event.latlng);
 
-            this.setState({ marker: snapCoordinates });
+            // Run Solution 1 //
+            // const snapCoordinates = this.getClosestSnapCoordinate(
+            //     this.mapRef.current.leafletElement,
+            //     point,
+            //     polygons,
+            //     10
+            // );
+            // this.setState({ marker: snapCoordinates });
+            
+            // Run Solution 1 //
+            // Calculate tolerance in latlng dimensions
+            const pointA = { lat: 0, lng: 0 };
+            const pointB = { lat: 0.1, lng: 0 };
+            const tolerance = 10 * 0.1 / map.latLngToLayerPoint(pointA).distanceTo(map.latLngToLayerPoint(pointB));
+            // Get the closes point
+            const snap = this.getClosestPointOnPolygonList(point, polygons, tolerance);
+
+            console.log(tolerance, snap);
+            this.setState({ marker: snap ? snap.point : null });
         }
         const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
         const newPointPosition =
