@@ -196,7 +196,11 @@ export class BaseMap extends React.Component<Props, State> {
     ///////////////////////////////////////////////////////////////////////////
 
     onPolygonVertexClick = (index: number) => {
-        if (index === 0 && this.props.polygonCoordinates.length > 2 && !this.props.isPolygonClosed) {
+        if (
+            index === 0 &&
+            this.props.polygonCoordinates[this.props.activePolygonIndex].length > 2 &&
+            !this.props.isPolygonClosed
+        ) {
             // Close polygon when user clicks the first point
             this.props.addPoint({ ...this.props.polygonCoordinates[this.props.activePolygonIndex][0] });
         } else if (this.state.isShiftPressed) {
