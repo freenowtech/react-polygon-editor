@@ -99,7 +99,8 @@ export class BaseMap extends React.Component<Props, State> {
     getSnapshotBeforeUpdate(prevProps: Props, prevState: State): MapSnapshot {
         const reframe =
             // Reframe when the polygon loads for the first time
-            (prevProps.polygonCoordinates.length === 0 && this.props.polygonCoordinates.length > 1) ||
+            (prevProps.polygonCoordinates[prevProps.activePolygonIndex].length === 0 &&
+                this.props.polygonCoordinates[this.props.activePolygonIndex].length > 1) ||
             // Reframe when the boundary polygon loads for the first time
             prevProps.boundaryPolygonCoordinates !== this.props.boundaryPolygonCoordinates;
         const size = this.getSize(this.mapRef.current);
