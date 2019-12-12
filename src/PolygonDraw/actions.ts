@@ -24,8 +24,8 @@ export const CHANGE_POLYGON = 'POLYGON_DRAW/CHANGE_POLYGON';
 export const actions = {
     // Selections action creators
     selectPoints: (indices: number[]) => createAction(SELECT_POINTS, indices),
-    addPointsToSelection: (indices: number[]) => createAction(ADD_POINT_TO_SELECTION , indices),
-    removePointFromSelection: (index: number) => createAction(REMOVE_POINT_FROM_SELECTION , index),
+    addPointsToSelection: (indices: number[]) => createAction(ADD_POINT_TO_SELECTION, indices),
+    removePointFromSelection: (index: number) => createAction(REMOVE_POINT_FROM_SELECTION, index),
     selectAllPoints: () => createAction(SELECT_ALL_POINTS),
     deselectAllPoints: () => createAction(DESELECT_ALL_POINTS),
 
@@ -40,7 +40,7 @@ export const actions = {
     deletePolygonPoints: () => createAction(DELETE_POLYGON_POINTS),
 
     // Change Polygon
-    changePolygon: (polygon: Coordinate[]) => createAction(CHANGE_POLYGON, polygon)
+    changePolygon: (polygon: Coordinate[][]) => createAction(CHANGE_POLYGON, polygon)
 };
 
 export type Actions = ActionsUnion<typeof actions>;

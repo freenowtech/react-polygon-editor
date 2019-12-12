@@ -35,11 +35,7 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         case CHANGE_POLYGON: {
             return {
                 ...state,
-                polygons: [
-                    ...state.polygons.slice(0, state.activeIndex),
-                    action.payload,
-                    ...state.polygons.slice(state.activeIndex + 1)
-                ]
+                polygons: [...action.payload]
             };
         }
 

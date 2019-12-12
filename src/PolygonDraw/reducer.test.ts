@@ -1,18 +1,34 @@
 import { getCenterCoordinate, movePolygonCoordinates, removeSelectedPoints } from '../helpers';
 import { initialState, polygonEditReducer, PolygonEditState } from './reducer';
 import { actions } from './actions';
-import { MOCK_POLYGON } from '../mockPolygon';
+import { MOCK_POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from '../mockPolygon';
 
 describe('PolygonDraw reducer', () => {
     describe('changePolygon', () => {
-        it('should change the polygon', () => {
-            const action = actions.changePolygon(MOCK_POLYGON);
+        it('should change single polygon', () => {
+            const action = actions.changePolygon([MOCK_POLYGON]);
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
                 selection: new Set()
             };
             expect(polygonEditReducer(initialState, action)).toEqual(expectedState);
+        });
+
+        it('should change multiple polygons', () => {
+            const state: PolygonEditState = {
+                activeIndex: 0,
+                polygons: [MOCK_POLYGON],
+                selection: new Set()
+            };
+            const expectedState: PolygonEditState = {
+                activeIndex: 0,
+                polygons: [POLYGON_ONE, POLYGON_TWO, POLYGON_THREE],
+                selection: new Set()
+            };
+            expect(polygonEditReducer(state, actions.changePolygon([POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]))).toEqual(
+                expectedState
+            );
         });
     });
 
