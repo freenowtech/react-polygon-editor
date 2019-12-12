@@ -120,7 +120,7 @@ export class BaseMap extends React.Component<Props, State> {
     reframe = () => {
         const { polygonCoordinates, boundaryPolygonCoordinates, initialCenter, initialZoom } = this.props;
 
-        if (polygonCoordinates.length > 1) {
+        if (polygonCoordinates[this.props.activePolygonIndex].length > 1) {
             this.reframeOnPolygon(polygonCoordinates);
         } else if (boundaryPolygonCoordinates.length > 0 && boundaryPolygonCoordinates !== MAP.WORLD_COORDINATES) {
             this.reframeOnPolygon(boundaryPolygonCoordinates);
