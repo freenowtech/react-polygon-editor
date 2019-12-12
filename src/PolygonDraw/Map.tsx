@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { LatLng, LatLngTuple, LeafletMouseEvent } from 'leaflet';
 import { Map as LeafletMap, Pane, Polyline } from 'react-leaflet';
+import flatten from 'lodash.flatten';
 
 import { Coordinate } from 'types';
 
@@ -130,7 +131,7 @@ export class BaseMap extends React.Component<Props, State> {
 
     reframeOnPolygon = (polygonCoordinates: Coordinate[] | Coordinate[][]) => {
         if (this.mapRef.current && polygonCoordinates.length > 0) {
-            const bounds = createLeafletLatLngBoundsFromCoordinates(polygonCoordinates.flat());
+            const bounds = createLeafletLatLngBoundsFromCoordinates(flatten(polygonCoordinates));
 
             this.mapRef.current.leafletElement.fitBounds(bounds);
         }
