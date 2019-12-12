@@ -23,7 +23,16 @@ storiesOf('PolygonDraw', module)
             )}
         </StateContainer>
     ))
-    .add('Multiple Polygons', () => <PolygonDraw polygon={[POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]} highlighted={0} />)
+    .add('Multiple Polygons', () => (
+        <PolygonDraw
+            polygon={[POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]}
+            highlighted={0}
+            onClick={index => console.log('click', index)}
+            onChange={index => console.log('change', index)}
+            onMouseEnter={index => console.log('mouseenter', index)}
+            onMouseLeave={index => console.log('mouseleave', index)}
+        />
+    ))
     .add('New', () => (
         <StateContainer initialState={{ polygon: [] as Coordinate[] }}>
             {(state, setState) => (

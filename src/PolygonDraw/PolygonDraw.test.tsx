@@ -1,7 +1,3 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import { PolygonDraw } from './PolygonDraw';
-
 const POLYGON_ONE = [
     { longitude: 10.204147696495056, latitude: 53.354382476941005 },
     { longitude: 10.204142332077025, latitude: 53.35428482109631 },
@@ -31,11 +27,6 @@ describe('PolygonDraw', () => {
         jest.resetAllMocks();
     });
 
-    test('passing a list of polygons renders all of them', () => {
-        const { getAllByTestId } = render(<PolygonDraw polygon={[POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]} />);
-
-        expect(getAllByTestId('polygon')).toHaveLength(3);
-    });
-
+    test.todo('passing a list of polygons renders all of them');
     test.todo('passing a list of polygons and a highlighted index will render all polygons and one');
 });

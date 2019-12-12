@@ -40,6 +40,9 @@ export interface Props {
     initialCenter: LatLngTuple;
     initialZoom: number;
     isPolygonClosed: boolean;
+    onClick?: (index: number) => void;
+    onMouseEnter?: (index: number) => void;
+    onMouseLeave?: (index: number) => void;
     addPoint: (coord: Coordinate) => void;
     addPointToEdge: (coordinate: Coordinate, index: number) => void;
     deselectAllPoints: () => void;
@@ -347,6 +350,9 @@ export class BaseMap extends React.Component<Props, State> {
                     key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
                     coordinates={coordinates}
                     isActive={index === this.props.activePolygonIndex}
+                    onClick={() => this.props.onClick && this.props.onClick(index)}
+                    onMouseEnter={() => this.props.onMouseEnter && this.props.onMouseEnter(index)}
+                    onMouseLeave={() => this.props.onMouseLeave && this.props.onMouseLeave(index)}
                 />
             );
         });

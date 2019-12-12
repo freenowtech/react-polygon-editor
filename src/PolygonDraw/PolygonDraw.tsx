@@ -15,6 +15,9 @@ export type Props = {
     onChange?: (polygon: Coordinate[], isValid: boolean) => void;
     polygon: Coordinate[] | Coordinate[][];
     highlighted?: number;
+    onClick?: (index: number) => void;
+    onMouseEnter?: (index: number) => void;
+    onMouseLeave?: (index: number) => void;
 };
 
 export const PolygonDraw: FunctionComponent<Props> = ({
@@ -24,7 +27,10 @@ export const PolygonDraw: FunctionComponent<Props> = ({
     initialCenter,
     initialZoom,
     editable = true,
-    onChange
+    onChange,
+    onClick,
+    onMouseEnter,
+    onMouseLeave
 }) => {
     const {
         polygons,
@@ -60,6 +66,9 @@ export const PolygonDraw: FunctionComponent<Props> = ({
             deletePolygonPoints={deletePolygonPoints}
             selectAllPoints={selectAllPoints}
             isPolygonClosed={isPolygonClosed}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         />
     );
 };
