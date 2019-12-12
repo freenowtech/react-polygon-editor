@@ -21,7 +21,7 @@ export const Polygon: React.FC<Props> = ({ isActive, coordinates, onClick, onMou
         color={isActive ? MAP.POLYGON_ACTIVE_COLOR : MAP.POLYGON_INACTIVE_COLOR}
         interactive={false}
         data-testid="polygon"
-        onclick={onClick()}
+        onclick={onClick}
         onmouseover={onMouseEnter}
         onmouseout={onMouseLeave}
     />
