@@ -2,23 +2,9 @@ import { useReducer, useEffect, useMemo, useCallback } from 'react';
 import { Coordinate } from 'types';
 
 import { actions } from './actions';
-import { isPolygonClosed } from '../helpers';
+import { ensurePolygonList, isPolygonClosed } from '../helpers';
 import { polygonEditReducer, initialState } from './reducer';
 import { isValidPolygon } from './validators';
-
-const ensurePolygonList = (polygons: Coordinate[] | Coordinate[][]): Coordinate[][] => {
-    if (polygons.length === 0) {
-        return [[]];
-    }
-
-    if (Array.isArray(polygons[0])) {
-        // we have to cast here because ts can not infer the type from Array.isArray
-        return [polygons] as Coordinate[][];
-    }
-
-    // we have to cast here because ts can not infer the type from Array.isArray
-    return polygons as Coordinate[][];
-};
 
 export const usePolygonEditor = (
     onChange: (polygon: Coordinate[], isValid: boolean) => void = () => {},
@@ -35,10 +21,6 @@ export const usePolygonEditor = (
 
     const activePolygon = useMemo(() => state.polygons[state.activeIndex], [state.polygons, state.activeIndex]);
     const polygonIsClosed: boolean = useMemo(() => isPolygonClosed(activePolygon), [activePolygon]);
-
-    useEffect(() => {
-        dispatch(actions.changePolygon(ensurePolygonList(polygons)));
-    }, polygons);
 
     useEffect(() => {
         if (onChange) {
