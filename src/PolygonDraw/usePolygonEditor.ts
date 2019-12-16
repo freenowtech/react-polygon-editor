@@ -18,14 +18,14 @@ function usePrevious(value: Coordinate[][]) {
 export const usePolygonEditor = (
     onChange: (polygon: Coordinate[], isValid: boolean) => void = () => {},
     polygons: Coordinate[] | Coordinate[][],
-    highlighted: number
+    activeIndex: number
 ) => {
     const polygonList = ensurePolygonList(polygons);
 
     const [state, dispatch] = useReducer(polygonEditReducer, initialState, init => {
         return {
             ...init,
-            activeIndex: highlighted,
+            activeIndex: activeIndex,
             polygons: polygonList
         };
     });

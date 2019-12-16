@@ -14,7 +14,7 @@ export type Props = {
     editable?: boolean;
     onChange?: (polygon: Coordinate[], isValid: boolean) => void;
     polygon: Coordinate[] | Coordinate[][];
-    highlighted?: number;
+    activeIndex?: number;
     onClick?: (index: number) => void;
     onMouseEnter?: (index: number) => void;
     onMouseLeave?: (index: number) => void;
@@ -22,7 +22,7 @@ export type Props = {
 
 export const PolygonDraw: FunctionComponent<Props> = ({
     polygon = [],
-    highlighted = 0,
+    activeIndex = 0,
     boundary,
     initialCenter,
     initialZoom,
@@ -45,7 +45,7 @@ export const PolygonDraw: FunctionComponent<Props> = ({
         deletePolygonPoints,
         selectAllPoints,
         isPolygonClosed
-    } = usePolygonEditor(onChange, polygon, highlighted);
+    } = usePolygonEditor(onChange, polygon, activeIndex);
 
     return (
         <Map
@@ -54,7 +54,7 @@ export const PolygonDraw: FunctionComponent<Props> = ({
             initialCenter={initialCenter ? createLeafletLatLngTupleFromCoordinate(initialCenter) : MAP.DEFAULT_CENTER}
             initialZoom={initialZoom || MAP.DEFAULT_ZOOM}
             boundaryPolygonCoordinates={boundary || MAP.WORLD_COORDINATES}
-            activePolygonIndex={highlighted}
+            activePolygonIndex={activeIndex}
             polygonCoordinates={polygons}
             addPoint={addPoint}
             addPointToEdge={addPointToEdge}

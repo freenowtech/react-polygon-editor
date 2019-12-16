@@ -31,7 +31,7 @@ storiesOf('PolygonDraw', module)
     .add('Multiple Polygons', () => (
         <PolygonDraw
             polygon={SAMPLES}
-            highlighted={0}
+            activeIndex={0}
             onClick={index => polygonClickedAction(index)}
             onChange={index => polygonChangeAction(index)}
             onMouseEnter={index => polygonMouseEnterAction(index)}
@@ -53,7 +53,7 @@ storiesOf('PolygonDraw', module)
         return (
             <PolygonDraw
                 polygon={SAMPLES[index]}
-                highlighted={0}
+                activeIndex={0}
                 onClick={i => polygonClickedAction(i)}
                 onChange={i => polygonChangeAction(i)}
                 onMouseEnter={i => polygonMouseEnterAction(i)}

@@ -28,5 +28,5 @@ describe('PolygonDraw', () => {
     });
 
     test.todo('passing a list of polygons renders all of them');
-    test.todo('passing a list of polygons and a highlighted index will render all polygons and one');
+    test.todo('passing a list of polygons and a active index will render all polygons and one');
 });
