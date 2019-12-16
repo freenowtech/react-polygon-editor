@@ -41,12 +41,16 @@ You can also link the css style from a CDN in your index.html
 
 **Props**
 
--   **polygon**: _Coordinate[]_
+-   **polygon**: _Coordinate[] | Coordinate[][]_ (Single or list of polygons to render)
+-   **activeIndex**?: _number_ (index of currently active polygon, can be omitted when only one polygon exists. **Default value: 0**)
 -   **boundary**?: _Coordinate[]_
 -   **initialCenter**?: _Coordinate_ (The initial center will be used to localize the map on the first render if no polygon or boundary polygon were provided)
 -   **initialZoom**?: _number_ (The initial zoom will be used to localize the map on the first render if no polygon or boundary polygon were provided)
 -   **editable**?: _boolean_ (Allows enabling and disabling polygon editing. **Default value: true**)
 -   **onChange**?: _(polygonCoordinates: Coordinate[], isValid: boolean) => void_
+-   **onClick**?: _(index: number) => void_ (called with the index of the polygon that was clicked on)
+-   **onMouseEnter**?: _(index: number) => void_ (called with the index of the polygon that was entered)
+-   **onMouseLeave**?: _(index: number) => void_ (called with the index of the polygon that was left)
 
 The initialCenter and initialZoom props are applicable only when both the polygon and the boundary coordinates are empty.
 This flow explains which parameters are used to focus the map:
