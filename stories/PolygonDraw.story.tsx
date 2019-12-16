@@ -7,7 +7,10 @@ import { Coordinate } from '../src/types';
 import { BOUNDARY, POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from './polygons';
 import { StateContainer } from './StateContainer';
 
-const polygonUpdateAction = action('polygon changed');
+const polygonChangeAction = action('polygon changed');
+const polygonClickedAction = action('polygon clicked');
+const polygonMouseEnterAction = action('polygon mouseenter');
+const polygonMouseLeaveAction = action('polygon mouseleave');
 
 storiesOf('PolygonDraw', module)
     .add('Default', () => (
@@ -17,7 +20,7 @@ storiesOf('PolygonDraw', module)
                     polygon={state.polygon}
                     onChange={(polygon, isValid) => {
                         setState({ polygon });
-                        polygonUpdateAction(polygon, isValid);
+                        polygonChangeAction(polygon, isValid);
                     }}
                 />
             )}
@@ -27,10 +30,10 @@ storiesOf('PolygonDraw', module)
         <PolygonDraw
             polygon={[POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]}
             highlighted={0}
-            onClick={index => console.log('click', index)}
-            onChange={index => console.log('change', index)}
-            onMouseEnter={index => console.log('mouseenter', index)}
-            onMouseLeave={index => console.log('mouseleave', index)}
+            onClick={index => polygonClickedAction(index)}
+            onChange={index => polygonChangeAction(index)}
+            onMouseEnter={index => polygonMouseEnterAction(index)}
+            onMouseLeave={index => polygonMouseLeaveAction(index)}
         />
     ))
     .add('New', () => (
@@ -40,7 +43,7 @@ storiesOf('PolygonDraw', module)
                     polygon={state.polygon}
                     onChange={(polygon, isValid) => {
                         setState({ polygon });
-                        polygonUpdateAction(polygon, isValid);
+                        polygonChangeAction(polygon, isValid);
                     }}
                 />
             )}
@@ -55,7 +58,7 @@ storiesOf('PolygonDraw', module)
                     boundary={BOUNDARY}
                     onChange={(polygon, isValid) => {
                         setState({ polygon });
-                        polygonUpdateAction(polygon, isValid);
+                        polygonChangeAction(polygon, isValid);
                     }}
                 />
             )}

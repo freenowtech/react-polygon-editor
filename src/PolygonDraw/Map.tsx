@@ -336,7 +336,7 @@ export class BaseMap extends React.Component<Props, State> {
     };
 
     renderVertexEdge = (coordinate: Coordinate, index: number) => (
-        <EdgeVertex key={index} index={index} coordinate={coordinate} onClick={this.props.addPointToEdge}/>
+        <EdgeVertex key={index} index={index} coordinate={coordinate} onClick={this.props.addPointToEdge} />
     );
 
     renderPolygonEdges = () => {
