@@ -23,6 +23,10 @@ npm i -S @freenow/react-polygon-editor
 
 Make sure you have also installed all peer dependencies. Have a look at [package.json](package.json) for more information.
 
+```bash
+npm i -S react react-dom react-leaflet leaflet styled-components
+```
+
 inject the leaflet css style.
 
 ```typescript
