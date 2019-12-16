@@ -43,7 +43,7 @@ describe('PolygonVertex', () => {
 
     describe('When point is hovered', () => {
         it('should render correctly', () => {
-            wrapper.setState({  isHovered: true });
+            wrapper.setState({ isHovered: true });
             expect(wrapper).toMatchSnapshot();
         });
     });

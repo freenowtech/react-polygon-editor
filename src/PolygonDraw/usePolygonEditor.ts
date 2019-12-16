@@ -1,26 +1,45 @@
-import { useReducer, useEffect, useMemo, useCallback } from 'react';
+import { useReducer, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Coordinate } from 'types';
+import isEqual from 'lodash.isequal';
 
 import { actions } from './actions';
 import { ensurePolygonList, isPolygonClosed } from '../helpers';
 import { polygonEditReducer, initialState } from './reducer';
 import { isValidPolygon } from './validators';
 
+function usePrevious(value: Coordinate[][]) {
+    const ref = useRef<Coordinate[][]>();
+    useEffect(() => {
+        ref.current = value;
+    }, [value]);
+    return ref.current;
+}
+
 export const usePolygonEditor = (
     onChange: (polygon: Coordinate[], isValid: boolean) => void = () => {},
     polygons: Coordinate[] | Coordinate[][],
     highlighted: number
 ) => {
+    const polygonList = ensurePolygonList(polygons);
+
     const [state, dispatch] = useReducer(polygonEditReducer, initialState, init => {
         return {
             ...init,
             activeIndex: highlighted,
-            polygons: ensurePolygonList(polygons)
+            polygons: polygonList
         };
     });
 
     const activePolygon = useMemo(() => state.polygons[state.activeIndex], [state.polygons, state.activeIndex]);
     const polygonIsClosed: boolean = useMemo(() => isPolygonClosed(activePolygon), [activePolygon]);
+
+    const prevPolygons = usePrevious(polygonList);
+
+    useEffect(() => {
+        if (!isEqual(prevPolygons, polygonList)) {
+            dispatch(actions.changePolygon(polygonList));
+        }
+    }, [polygonList]);
 
     useEffect(() => {
         if (onChange) {

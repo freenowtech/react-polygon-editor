@@ -20,7 +20,6 @@ describe('ActionBar', () => {
     });
 
     describe('WHEN editable is falsy', () => {
-
         it('should only render the action buttons', () => {
             const wrapper = render(<ActionBar {...props} />);
             expect(wrapper.getByText(LABELS.FOCUS)).toBeTruthy();
@@ -37,7 +36,6 @@ describe('ActionBar', () => {
     });
 
     describe('WHEN editable is truthy', () => {
-
         it('should render the actions', () => {
             const wrapper = render(<ActionBar {...props} editable />);
             expect(wrapper.getByText(LABELS.FOCUS)).toBeTruthy();

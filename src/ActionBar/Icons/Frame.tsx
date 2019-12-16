@@ -4,7 +4,7 @@ interface Props extends SVGProps<SVGSVGElement> {
     iconColor?: string;
 }
 
-export const Frame: FunctionComponent<Props> = ({ iconColor, ...props}) => (
+export const Frame: FunctionComponent<Props> = ({ iconColor, ...props }) => (
     <svg width={24} height={24} viewBox="0 0 24 24" {...props}>
         <path
             fill={iconColor}

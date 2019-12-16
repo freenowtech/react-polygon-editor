@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
@@ -6,6 +6,8 @@ import { PolygonDraw } from '../src/PolygonDraw/PolygonDraw';
 import { Coordinate } from '../src/types';
 import { BOUNDARY, POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from './polygons';
 import { StateContainer } from './StateContainer';
+
+const SAMPLES = [POLYGON_ONE, POLYGON_TWO, POLYGON_THREE];
 
 const polygonChangeAction = action('polygon changed');
 const polygonClickedAction = action('polygon clicked');
@@ -28,7 +30,7 @@ storiesOf('PolygonDraw', module)
     ))
     .add('Multiple Polygons', () => (
         <PolygonDraw
-            polygon={[POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]}
+            polygon={SAMPLES}
             highlighted={0}
             onClick={index => polygonClickedAction(index)}
             onChange={index => polygonChangeAction(index)}
@@ -36,6 +38,29 @@ storiesOf('PolygonDraw', module)
             onMouseLeave={index => polygonMouseLeaveAction(index)}
         />
     ))
+    .add('Multiple Polygons with automatic change', () => {
+        const [index, setIndex] = useState(0);
+
+        useEffect(() => {
+            const id = setInterval(() => {
+                setIndex(oldIndex => {
+                    return (oldIndex + 1) % SAMPLES.length;
+                });
+            }, 1000);
+            return () => clearInterval(id);
+        }, []);
+
+        return (
+            <PolygonDraw
+                polygon={SAMPLES[index]}
+                highlighted={0}
+                onClick={i => polygonClickedAction(i)}
+                onChange={i => polygonChangeAction(i)}
+                onMouseEnter={i => polygonMouseEnterAction(i)}
+                onMouseLeave={i => polygonMouseLeaveAction(i)}
+            />
+        );
+    })
     .add('New', () => (
         <StateContainer initialState={{ polygon: [] as Coordinate[] }}>
             {(state, setState) => (

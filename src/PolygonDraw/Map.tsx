@@ -108,10 +108,10 @@ export class BaseMap extends React.Component<Props, State> {
             prevProps.boundaryPolygonCoordinates !== this.props.boundaryPolygonCoordinates;
         const size = this.getSize(this.mapRef.current);
 
-        return {reframe, size};
+        return { reframe, size };
     }
 
-    componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, {reframe, size}: MapSnapshot): void {
+    componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, { reframe, size }: MapSnapshot): void {
         if (reframe) {
             this.reframe();
         }
@@ -122,7 +122,7 @@ export class BaseMap extends React.Component<Props, State> {
     }
 
     reframe = () => {
-        const {polygonCoordinates, boundaryPolygonCoordinates, initialCenter, initialZoom} = this.props;
+        const { polygonCoordinates, boundaryPolygonCoordinates, initialCenter, initialZoom } = this.props;
 
         if (polygonCoordinates[this.props.activePolygonIndex].length > 1) {
             this.reframeOnPolygon(polygonCoordinates);
@@ -190,10 +190,10 @@ export class BaseMap extends React.Component<Props, State> {
                 ? coordinate
                 : null;
 
-        this.setState({newPointPosition});
+        this.setState({ newPointPosition });
     };
 
-    handleMouseOutOfMap = () => this.setState({newPointPosition: null});
+    handleMouseOutOfMap = () => this.setState({ newPointPosition: null });
 
     ///////////////////////////////////////////////////////////////////////////
     //                           Vertex methods                              //
@@ -206,7 +206,7 @@ export class BaseMap extends React.Component<Props, State> {
             !this.props.isPolygonClosed
         ) {
             // Close polygon when user clicks the first point
-            this.props.addPoint({...this.props.polygonCoordinates[this.props.activePolygonIndex][0]});
+            this.props.addPoint({ ...this.props.polygonCoordinates[this.props.activePolygonIndex][0] });
         } else if (this.state.isShiftPressed) {
             if (this.props.selection.has(index)) {
                 this.props.removePointFromSelection(index);
@@ -253,9 +253,9 @@ export class BaseMap extends React.Component<Props, State> {
 
             if (inBoundary) {
                 this.props.moveSelectedPoints(moveVector);
-                this.setState({previousMouseMovePosition: coordinate, isMovedPointInBoundary: true});
+                this.setState({ previousMouseMovePosition: coordinate, isMovedPointInBoundary: true });
             } else {
-                this.setState({isMovedPointInBoundary: false});
+                this.setState({ isMovedPointInBoundary: false });
             }
         }
     };
@@ -283,7 +283,7 @@ export class BaseMap extends React.Component<Props, State> {
                 this.props.deletePolygonPoints();
                 break;
             case 'Shift':
-                this.setState({isShiftPressed: true});
+                this.setState({ isShiftPressed: true });
                 break;
             case 'p':
                 this.toggleVectorMode();
@@ -307,7 +307,7 @@ export class BaseMap extends React.Component<Props, State> {
     handleKeyUp = (e: KeyboardEvent) => {
         switch (e.key) {
             case 'Shift':
-                this.setState({isShiftPressed: false});
+                this.setState({ isShiftPressed: false });
                 break;
         }
     };
@@ -345,17 +345,16 @@ export class BaseMap extends React.Component<Props, State> {
 
     renderInactivePolygons = () =>
         this.props.polygonCoordinates.map((coordinates, index) => {
-            return index === this.props.activePolygonIndex ?
-                null : (
-                    <Polygon
-                        key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
-                        coordinates={coordinates}
-                        isActive={false}
-                        onClick={() => this.props.onClick && this.props.onClick(index)}
-                        onMouseEnter={() => this.props.onMouseEnter && this.props.onMouseEnter(index)}
-                        onMouseLeave={() => this.props.onMouseLeave && this.props.onMouseLeave(index)}
-                    />
-                );
+            return index === this.props.activePolygonIndex ? null : (
+                <Polygon
+                    key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
+                    coordinates={coordinates}
+                    isActive={false}
+                    onClick={() => this.props.onClick && this.props.onClick(index)}
+                    onMouseEnter={() => this.props.onMouseEnter && this.props.onMouseEnter(index)}
+                    onMouseLeave={() => this.props.onMouseLeave && this.props.onMouseLeave(index)}
+                />
+            );
         });
 
     renderActivePolygon = () => {
@@ -374,7 +373,6 @@ export class BaseMap extends React.Component<Props, State> {
                 onMouseLeave={() => this.props.onMouseLeave && this.props.onMouseLeave(index)}
             />
         );
-
     };
 
     renderPolyline = () => {

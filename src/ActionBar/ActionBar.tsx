@@ -32,9 +32,16 @@ export interface Props {
     deleteInactive: boolean;
 }
 
-export const ActionBar: FunctionComponent<Props> = ({ editable, deleteInactive, isVectorModeEnabled, onEnableVectorMode, onFocus, onDelete }) => (
+export const ActionBar: FunctionComponent<Props> = ({
+    editable,
+    deleteInactive,
+    isVectorModeEnabled,
+    onEnableVectorMode,
+    onFocus,
+    onDelete
+}) => (
     <Container>
-        {editable &&
+        {editable && (
             <>
                 <ActionButton
                     onClick={onEnableVectorMode}
@@ -53,10 +60,9 @@ export const ActionBar: FunctionComponent<Props> = ({ editable, deleteInactive, 
                     {LABELS.DELETE}
                 </ActionButton>
             </>
-        }
+        )}
         <ActionButton onClick={onFocus} icon={ActionButtonIcons.FRAME}>
             {LABELS.FOCUS}
         </ActionButton>
     </Container>
 );
-
