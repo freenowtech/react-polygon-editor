@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 import { AUTHENTIC_BLUE_900, AUTHENTIC_BLUE_200, ACTION_BLUE_900, WHITE } from '../common/colors';
@@ -72,7 +72,7 @@ export interface Props {
     activeIconColor?: string;
     className?: string;
 }
-export const ActionButton: React.FunctionComponent<Props> = ({
+export const ActionButton: FunctionComponent<Props> = ({
     icon,
     children,
     inactive,

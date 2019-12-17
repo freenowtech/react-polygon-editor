@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Polygon } from 'react-leaflet';
 
 import { Coordinate } from 'types';
@@ -10,7 +10,7 @@ interface Props {
     hasError: boolean;
 }
 
-export const BoundaryPolygon: React.FC<Props> = ({ coordinates, hasError }) => (
+export const BoundaryPolygon: FunctionComponent<Props> = ({ coordinates, hasError }) => (
     <Polygon
         positions={[MAP.WORLD_LAT_LNG_COORDINATES, coordinates.map(createLeafletLatLngFromCoordinate)]}
         fillColor={MAP.BOUNDARY_COLOR}
