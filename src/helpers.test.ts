@@ -18,8 +18,13 @@ describe('helpers', () => {
             expect(isPolygonClosed([MOCK_POLYGON[0], MOCK_POLYGON[0]])).toBeFalsy();
         });
 
-        it('should emit false if the first aad last point are not equal', () => {
+        it('should emit false if the first and last point are not equal', () => {
             expect(isPolygonClosed(MOCK_POLYGON.slice(3))).toBeFalsy();
+        });
+
+        it('should emit true if the first and last point are equal', () => {
+            // this would be a polyline
+            expect(isPolygonClosed([MOCK_POLYGON[0], MOCK_POLYGON[1], MOCK_POLYGON[0]])).toBeTruthy();
         });
 
         it('should emit true if the polygon is closed', () => {

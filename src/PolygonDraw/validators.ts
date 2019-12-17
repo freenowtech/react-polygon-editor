@@ -1,4 +1,4 @@
 import { Coordinate } from 'types';
 import { isPolygonClosed } from '../helpers';
 
-export const isValidPolygon = (polygon: Coordinate[]) => polygon && polygon.length > 3 && isPolygonClosed(polygon);
+export const isValidPolygon = (coordinates: Coordinate[]) => coordinates && coordinates.length > 3 && isPolygonClosed(coordinates);
