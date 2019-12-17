@@ -1,7 +1,7 @@
+import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { LeafletMouseEvent } from 'leaflet';
-import React from 'react';
-import { CircleMarker } from 'react-leaflet';
+import { CircleMarker as LeafletCircleMarker } from 'react-leaflet';
 
 import { Coordinate } from '../types';
 
@@ -49,7 +49,7 @@ describe('PolygonVertex', () => {
     });
 
     it('should tirgger the onClick callback when user clicks the vertex', () => {
-        wrapper.find(CircleMarker).prop('onClick')(leafletMouseEvent);
+        wrapper.find(LeafletCircleMarker).prop('onClick')(leafletMouseEvent);
 
         expect(props.onClick).toHaveBeenCalledWith(props.index);
     });

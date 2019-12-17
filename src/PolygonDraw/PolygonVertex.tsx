@@ -1,7 +1,7 @@
 import 'leaflet-path-drag';
-import { CircleMarker as CircleMarkerElement, LatLng } from 'leaflet';
 import React from 'react';
-import { CircleMarker } from 'react-leaflet';
+import { CircleMarker, LatLng } from 'leaflet';
+import { CircleMarker as ReactLeafletCircleMarker } from 'react-leaflet';
 
 import { Coordinate } from 'types';
 import { createLeafletLatLngFromCoordinate } from '../helpers';
@@ -26,7 +26,7 @@ export interface State {
 }
 
 export class PolygonVertex extends React.Component<Props, State> {
-    private circleMarkerElement: CircleMarkerElement;
+    private circleMarkerElement: CircleMarker;
     state = {
         isHovered: false,
         isDragged: false,
@@ -87,7 +87,7 @@ export class PolygonVertex extends React.Component<Props, State> {
         const hoveredAndNotSelected = isHovered && !isSelected;
 
         return (
-            <CircleMarker
+            <ReactLeafletCircleMarker
                 ref={this.setCircleMarkerRef}
                 fillColor={MAP.VERTEX_FILL_COLOR}
                 fillOpacity={1}
