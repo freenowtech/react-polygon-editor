@@ -83,6 +83,9 @@ storiesOf('PolygonDraw', module)
         </StateContainer>
     ))
     .add('Not Editable', () => <PolygonDraw editable={false} polygon={POLYGON} boundary={BOUNDARY} />)
+    .add('Highlighted', () => (
+        <PolygonDraw editable={false} highlightedIndex={2} polygon={SAMPLES} boundary={BOUNDARY} />
+    ))
     .add('With Boundary', () => (
         <StateContainer initialState={{ polygon: POLYGON }}>
             {(state, setState) => (

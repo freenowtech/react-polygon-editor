@@ -47,6 +47,7 @@ You can also link the css style from a CDN in your index.html
 
 -   **polygon**: _Coordinate[] | Coordinate[][]_ (Single or list of polygons to render)
 -   **activeIndex**?: _number_ (index of currently active polygon, can be omitted when only one polygon exists. **Default value: 0**)
+-   **highlightedIndex**?: _number_ (index of the polygon that should be highlighted.)
 -   **boundary**?: _Coordinate[]_
 -   **initialCenter**?: _Coordinate_ (The initial center will be used to localize the map on the first render if no polygon or boundary polygon were provided)
 -   **initialZoom**?: _number_ (The initial zoom will be used to localize the map on the first render if no polygon or boundary polygon were provided)
