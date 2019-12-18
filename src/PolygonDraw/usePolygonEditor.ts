@@ -27,15 +27,13 @@ export const usePolygonEditor = (
         if (!isEqual(selection, newSelection)) {
             setSelection(newSelection);
         }
-        onChange(
-            isPolygonList(polygons) ? newPolygons : newPolygons[0], newPolygons.every(isValidPolygon)
-        );
+        onChange(isPolygonList(polygons) ? newPolygons : newPolygons[0], newPolygons.every(isValidPolygon));
     };
 
     const activePolygon = useMemo(() => state.polygons[state.activeIndex], [state.polygons, state.activeIndex]);
     const polygonIsClosed: boolean = useMemo(() => isPolygonClosed(activePolygon), [activePolygon]);
 
-    polygonEditReducer(state, (actions.changePolygon(polygonList)));
+    polygonEditReducer(state, actions.changePolygon(polygonList));
 
     const addPoint = (coordinate: Coordinate) => {
         dispatch(actions.addPoint(coordinate));

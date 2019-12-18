@@ -72,13 +72,7 @@ export interface Props {
     activeIconColor?: string;
     className?: string;
 }
-export const ActionButton: FunctionComponent<Props> = ({
-    icon,
-    children,
-    inactive,
-    activeIconColor,
-    ...props
-}) => {
+export const ActionButton: FunctionComponent<Props> = ({ icon, children, inactive, activeIconColor, ...props }) => {
     return (
         <Container {...props}>
             <div>{renderIcon(icon, inactive, activeIconColor)}</div>
