@@ -127,11 +127,15 @@ export const ensurePolygonList = (polygons: Coordinate[] | Coordinate[][]): Coor
         return [[]];
     }
 
-    if (Array.isArray(polygons[0])) {
+    if (isPolygonList(polygons)) {
         // we have to cast here because ts can not infer the type from Array.isArray
-        return polygons as Coordinate[][];
+        return polygons;
     }
 
     // we have to cast here because ts can not infer the type from Array.isArray
-    return [polygons] as Coordinate[][];
+    return [polygons];
+};
+
+export const isPolygonList = (polygons: Coordinate[] | Coordinate[][]): polygons is Coordinate[][] => {
+    return Array.isArray(polygons[0]);
 };

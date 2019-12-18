@@ -21,12 +21,6 @@ export interface PolygonEditState {
     selection: Set<number>;
 }
 
-export const initialState: PolygonEditState = {
-    activeIndex: 0,
-    polygons: [[]],
-    selection: new Set()
-};
-
 export const polygonEditReducer = (state: PolygonEditState, action: Actions): PolygonEditState => {
     switch (action.type) {
         ///////////////////////////////////////////////////////////////////////////////////

@@ -1,87 +1,77 @@
-import { useReducer, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useMemo, useState } from 'react';
 import { Coordinate } from 'types';
 import isEqual from 'lodash.isequal';
 
-import { actions } from './actions';
-import { ensurePolygonList, isPolygonClosed } from '../helpers';
-import { polygonEditReducer, initialState } from './reducer';
+import { Actions, actions } from './actions';
+import { ensurePolygonList, isPolygonClosed, isPolygonList } from '../helpers';
+import { polygonEditReducer, PolygonEditState } from './reducer';
 import { isValidPolygon } from './validators';
 
-function usePrevious(value: Coordinate[][]) {
-    const ref = useRef<Coordinate[][]>();
-    useEffect(() => {
-        ref.current = value;
-    }, [value]);
-    return ref.current;
-}
-
 export const usePolygonEditor = (
-    onChange: (polygon: Coordinate[], isValid: boolean) => void = () => {},
+    onChange: (polygon: Coordinate[] | Coordinate[][], isValid: boolean) => void = () => {},
     polygons: Coordinate[] | Coordinate[][],
     activeIndex: number
 ) => {
     const polygonList = ensurePolygonList(polygons);
 
-    const [state, dispatch] = useReducer(polygonEditReducer, initialState, init => {
-        return {
-            ...init,
-            activeIndex: activeIndex,
-            polygons: polygonList
-        };
-    });
+    const [selection, setSelection] = useState<Set<number>>(new Set());
+
+    const state: PolygonEditState = {
+        polygons: polygonList,
+        activeIndex: activeIndex,
+        selection: selection
+    };
+
+    const dispatch = (action: Actions) => {
+        const { polygons: newPolygons, selection: newSelection } = polygonEditReducer(state, action);
+        if (!isEqual(selection, newSelection)) {
+            setSelection(newSelection);
+        }
+        onChange(
+            isPolygonList(polygons) ? newPolygons : newPolygons[0], newPolygons.every(isValidPolygon)
+        );
+    };
 
     const activePolygon = useMemo(() => state.polygons[state.activeIndex], [state.polygons, state.activeIndex]);
     const polygonIsClosed: boolean = useMemo(() => isPolygonClosed(activePolygon), [activePolygon]);
 
-    const prevPolygons = usePrevious(polygonList);
+    polygonEditReducer(state, (actions.changePolygon(polygonList)));
 
-    useEffect(() => {
-        if (!isEqual(prevPolygons, polygonList)) {
-            dispatch(actions.changePolygon(polygonList));
-        }
-    }, [polygonList]);
-
-    useEffect(() => {
-        if (onChange) {
-            onChange(activePolygon, isValidPolygon(activePolygon));
-        }
-    }, [activePolygon]);
-
-    const addPoint = useCallback((coordinate: Coordinate) => {
+    const addPoint = (coordinate: Coordinate) => {
         dispatch(actions.addPoint(coordinate));
-    }, []);
+    };
 
-    const addPointToEdge = useCallback((coordinate: Coordinate, index: number) => {
+    const addPointToEdge = (coordinate: Coordinate, index: number) => {
         dispatch(actions.addPointToEdge(coordinate, index));
-    }, []);
+    };
 
-    const deselectAllPoints = useCallback(() => {
+    const deselectAllPoints = () => {
         dispatch(actions.deselectAllPoints());
-    }, []);
+    };
 
-    const removePointFromSelection = useCallback((index: number) => {
+    const removePointFromSelection = (index: number) => {
         dispatch(actions.removePointFromSelection(index));
-    }, []);
+    };
 
-    const addPointsToSelection = useCallback((indices: number[]) => {
+    const addPointsToSelection = (indices: number[]) => {
         dispatch(actions.addPointsToSelection(indices));
-    }, []);
+    };
 
-    const selectPoints = useCallback((indices: number[]) => {
+    const selectPoints = (indices: number[]) => {
         dispatch(actions.selectPoints(indices));
-    }, []);
+    };
 
-    const moveSelectedPoints = useCallback((movement: Coordinate) => {
+    const moveSelectedPoints = (movement: Coordinate) => {
         dispatch(actions.moveSelectedPoints(movement));
-    }, []);
+    };
 
-    const deletePolygonPoints = useCallback(() => {
+    const deletePolygonPoints = () => {
         dispatch(actions.deletePolygonPoints());
-    }, []);
+    };
 
-    const selectAllPoints = useCallback(() => {
+    const selectAllPoints = () => {
         dispatch(actions.selectAllPoints());
-    }, []);
+    };
 
     return {
         selection: state.selection,
