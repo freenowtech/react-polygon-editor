@@ -45,7 +45,7 @@ storiesOf('PolygonDraw', module)
             />
         );
     })
-    .add('Multiple Polygons with automatic change', () => {
+    .add('Automatic replace', () => {
         const [index, setIndex] = useState(0);
 
         useEffect(() => {
@@ -61,6 +61,7 @@ storiesOf('PolygonDraw', module)
             <PolygonDraw
                 polygon={SAMPLES[index]}
                 activeIndex={0}
+                editable={false}
                 onClick={i => polygonClickedAction(i)}
                 onChange={i => polygonChangeAction(i)}
                 onMouseEnter={i => polygonMouseEnterAction(i)}
