@@ -30,16 +30,18 @@ storiesOf('PolygonDraw', module)
     ))
     .add('Multiple Polygons', () => {
         const [activeIndex, setActiveIndex] = useState(0);
+        const [highlightedIndex, setHighlightedIndex] = useState<number | undefined>(undefined);
         const [polygons, setPolygons] = useState(SAMPLES);
 
         return (
             <PolygonDraw
                 polygon={polygons}
                 activeIndex={activeIndex}
+                highlightedIndex={highlightedIndex}
                 onClick={setActiveIndex}
                 onChange={newPolygons => setPolygons(newPolygons)}
-                onMouseEnter={index => polygonMouseEnterAction(index)}
-                onMouseLeave={index => polygonMouseLeaveAction(index)}
+                onMouseEnter={index => setHighlightedIndex(index)}
+                onMouseLeave={index => setHighlightedIndex(oldIndex => (oldIndex === index ? undefined : oldIndex))}
             />
         );
     })

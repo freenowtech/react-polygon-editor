@@ -8,21 +8,30 @@ import { MAP } from '../constants';
 // refers to https://leafletjs.com/reference-1.6.0.html#path-dasharray and
 // https://developer.mozilla.org/de/docs/Web/SVG/Attribute/stroke-dasharray
 // 4 describes the dash size, 12 the gap size
-const DASH_STROKE_SIZE = '4 12';
+const DASH_STROKE_SIZE = '1 4';
 
 interface Props {
     coordinates: Coordinate[];
     isActive: boolean;
+    isHighlighted: boolean;
     onClick?: () => void;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
 }
 
-export const Polygon: FunctionComponent<Props> = ({ isActive, coordinates, onClick, onMouseEnter, onMouseLeave }) => (
+export const Polygon: FunctionComponent<Props> = ({
+    isActive,
+    isHighlighted,
+    coordinates,
+    onClick,
+    onMouseEnter,
+    onMouseLeave
+}) => (
     <LeafletPolygon
         positions={coordinates.map(createLeafletLatLngFromCoordinate)}
         dashArray={isActive ? '' : DASH_STROKE_SIZE}
-        fillColor={isActive ? MAP.POLYGON_ACTIVE_COLOR : MAP.POLYGON_INACTIVE_COLOR}
+        fillColor={isActive || isHighlighted ? MAP.POLYGON_ACTIVE_COLOR : MAP.POLYGON_INACTIVE_COLOR}
+        weight={MAP.BORDER_WIDTH}
         color={isActive ? MAP.POLYGON_ACTIVE_COLOR : MAP.POLYGON_INACTIVE_COLOR}
         data-testid="polygon"
         onclick={onClick}

@@ -14,8 +14,8 @@ export const BoundaryPolygon: FunctionComponent<Props> = ({ coordinates, hasErro
     <LeafletPolygon
         positions={[MAP.WORLD_LAT_LNG_COORDINATES, coordinates.map(createLeafletLatLngFromCoordinate)]}
         fillColor={MAP.BOUNDARY_COLOR}
-        color={hasError ? MAP.BOUNDARY_COLOR : MAP.ERROR_BOUNDARY_COLOR}
-        weight={hasError ? 0.4 : MAP.BORDER_WIDTH}
+        color={hasError ? MAP.ERROR_BOUNDARY_COLOR : MAP.BOUNDARY_COLOR}
+        weight={hasError ? MAP.BORDER_WIDTH : 0.4}
         interactive={false}
     />
 );

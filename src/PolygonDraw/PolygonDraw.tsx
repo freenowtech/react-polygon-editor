@@ -15,6 +15,7 @@ export type Props<T extends Coordinate[] | Coordinate[][]> = {
     onChange?: (polygon: T, isValid: boolean) => void;
     polygon: T;
     activeIndex?: number;
+    highlightedIndex?: number;
     onClick?: (index: number) => void;
     onMouseEnter?: (index: number) => void;
     onMouseLeave?: (index: number) => void;
@@ -23,6 +24,7 @@ export type Props<T extends Coordinate[] | Coordinate[][]> = {
 export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
     polygon,
     activeIndex = 0,
+    highlightedIndex,
     boundary,
     initialCenter,
     initialZoom,
@@ -55,6 +57,7 @@ export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
             initialZoom={initialZoom || MAP.DEFAULT_ZOOM}
             boundaryPolygonCoordinates={boundary || MAP.WORLD_COORDINATES}
             activePolygonIndex={activeIndex}
+            highlightedPolygonIndex={highlightedIndex}
             polygonCoordinates={polygons}
             addPoint={addPoint}
             addPointToEdge={addPointToEdge}

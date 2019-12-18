@@ -34,6 +34,7 @@ export interface Props {
      * activePolygonIndex is the index of the polygon that is currently available for editing
      */
     activePolygonIndex: number;
+    highlightedPolygonIndex?: number;
     polygonCoordinates: Coordinate[][];
     boundaryPolygonCoordinates: Coordinate[];
     selection: Set<number>;
@@ -359,6 +360,7 @@ export class BaseMap extends React.Component<Props, State> {
                     key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
                     coordinates={coordinates}
                     isActive={false}
+                    isHighlighted={index === this.props.highlightedPolygonIndex}
                     {...(activePolygonIsClosed ? eventHandler : {})}
                 />
             );
@@ -372,6 +374,7 @@ export class BaseMap extends React.Component<Props, State> {
             <Polygon
                 coordinates={coordinates}
                 isActive
+                isHighlighted={false}
                 onClick={() => this.props.onClick && this.props.onClick(index)}
                 onMouseEnter={() => this.props.onMouseEnter && this.props.onMouseEnter(index)}
                 onMouseLeave={() => this.props.onMouseLeave && this.props.onMouseLeave(index)}
@@ -428,8 +431,8 @@ export class BaseMap extends React.Component<Props, State> {
                         coordinates={this.props.boundaryPolygonCoordinates}
                         hasError={!this.state.isMovedPointInBoundary}
                     />
-                    {this.renderInactivePolygons()}
                     {this.props.isPolygonClosed ? this.renderActivePolygon() : this.renderPolyline()}
+                    {this.renderInactivePolygons()}
 
                     {editable && (
                         <Pane>
