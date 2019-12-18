@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 
 import { Coordinate } from 'types';
 import { createLeafletLatLngTupleFromCoordinate } from '../helpers';
@@ -7,21 +7,21 @@ import { MAP } from '../constants';
 import Map from './Map';
 import { usePolygonEditor } from './usePolygonEditor';
 
-export type Props = {
+export type Props<T extends Coordinate[] | Coordinate[][]> = {
     boundary?: Coordinate[];
     initialCenter?: Coordinate;
     initialZoom?: number;
     editable?: boolean;
-    onChange?: (polygon: Coordinate[], isValid: boolean) => void;
-    polygon: Coordinate[] | Coordinate[][];
+    onChange?: (polygon: T, isValid: boolean) => void;
+    polygon: T;
     activeIndex?: number;
     onClick?: (index: number) => void;
     onMouseEnter?: (index: number) => void;
     onMouseLeave?: (index: number) => void;
 };
 
-export const PolygonDraw: FunctionComponent<Props> = ({
-    polygon = [],
+export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
+    polygon,
     activeIndex = 0,
     boundary,
     initialCenter,
@@ -31,7 +31,7 @@ export const PolygonDraw: FunctionComponent<Props> = ({
     onClick,
     onMouseEnter,
     onMouseLeave
-}) => {
+}: Props<T>): React.ReactElement {
     const {
         polygons,
         selection,
@@ -71,4 +71,4 @@ export const PolygonDraw: FunctionComponent<Props> = ({
             onMouseLeave={onMouseLeave}
         />
     );
-};
+}

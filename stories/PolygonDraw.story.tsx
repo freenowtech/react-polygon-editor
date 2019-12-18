@@ -7,7 +7,7 @@ import { Coordinate } from '../src/types';
 import { BOUNDARY, POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from './polygons';
 import { StateContainer } from './StateContainer';
 
-const SAMPLES = [POLYGON_ONE, POLYGON_TWO, POLYGON_THREE];
+const SAMPLES: Coordinate[][] = [POLYGON_ONE, POLYGON_TWO, POLYGON_THREE];
 
 const polygonChangeAction = action('polygon changed');
 const polygonClickedAction = action('polygon clicked');
@@ -28,16 +28,21 @@ storiesOf('PolygonDraw', module)
             )}
         </StateContainer>
     ))
-    .add('Multiple Polygons', () => (
-        <PolygonDraw
-            polygon={SAMPLES}
-            activeIndex={0}
-            onClick={index => polygonClickedAction(index)}
-            onChange={index => polygonChangeAction(index)}
-            onMouseEnter={index => polygonMouseEnterAction(index)}
-            onMouseLeave={index => polygonMouseLeaveAction(index)}
-        />
-    ))
+    .add('Multiple Polygons', () => {
+        const [activeIndex, setActiveIndex] = useState(0);
+        const [polygons, setPolygons] = useState(SAMPLES);
+
+        return (
+            <PolygonDraw
+                polygon={polygons}
+                activeIndex={activeIndex}
+                onClick={setActiveIndex}
+                onChange={newPolygons => setPolygons(newPolygons)}
+                onMouseEnter={index => polygonMouseEnterAction(index)}
+                onMouseLeave={index => polygonMouseLeaveAction(index)}
+            />
+        );
+    })
     .add('Multiple Polygons with automatic change', () => {
         const [index, setIndex] = useState(0);
 
