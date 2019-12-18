@@ -13,9 +13,9 @@ const DASH_STROKE_SIZE = '4 12';
 interface Props {
     coordinates: Coordinate[];
     isActive: boolean;
-    onClick: () => void;
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
+    onClick?: () => void;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
 }
 
 export const Polygon: FunctionComponent<Props> = ({ isActive, coordinates, onClick, onMouseEnter, onMouseLeave }) => (

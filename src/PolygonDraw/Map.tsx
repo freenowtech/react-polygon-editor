@@ -12,7 +12,8 @@ import {
     addCoordinates,
     subtractCoordinates,
     getPolygonEdges,
-    isCoordinateInPolygon
+    isCoordinateInPolygon,
+    isPolygonClosed
 } from '../helpers';
 import { TileLayer } from '../leaflet/TileLayer';
 import { MAP } from '../constants';
@@ -343,21 +344,26 @@ export class BaseMap extends React.Component<Props, State> {
         return getPolygonEdges(this.props.polygonCoordinates[this.props.activePolygonIndex]).map(this.renderVertexEdge);
     };
 
-    renderInactivePolygons = () =>
-        this.props.polygonCoordinates.map((coordinates, index) => {
-            return index === this.props.activePolygonIndex
-                ? null
-                : (
-                    <Polygon
-                        key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
-                        coordinates={coordinates}
-                        isActive={false}
-                        onClick={() => this.props.onClick && this.props.onClick(index)}
-                        onMouseEnter={() => this.props.onMouseEnter && this.props.onMouseEnter(index)}
-                        onMouseLeave={() => this.props.onMouseLeave && this.props.onMouseLeave(index)}
-                    />
-                );
+    renderInactivePolygons = () => {
+        const activePolygonIsClosed = isPolygonClosed(this.props.polygonCoordinates[this.props.activePolygonIndex]);
+
+        return this.props.polygonCoordinates.map((coordinates, index) => {
+            const eventHandler = {
+                onClick: () => this.props.onClick && this.props.onClick(index),
+                onMouseEnter: () => this.props.onMouseEnter && this.props.onMouseEnter(index),
+                onMouseLeave: () => this.props.onMouseLeave && this.props.onMouseLeave(index)
+            };
+
+            return index === this.props.activePolygonIndex ? null : (
+                <Polygon
+                    key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
+                    coordinates={coordinates}
+                    isActive={false}
+                    {...(activePolygonIsClosed ? eventHandler : {})}
+                />
+            );
         });
+    };
 
     renderActivePolygon = () => {
         const coordinates = this.props.polygonCoordinates[this.props.activePolygonIndex];
