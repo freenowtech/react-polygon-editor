@@ -21,7 +21,7 @@ storiesOf('PolygonDraw', module)
                 <PolygonDraw
                     polygon={state.polygon}
                     onChange={(polygon, isValid) => {
-                        setState({ polygon });
+                        setState({ polygon: polygon });
                         polygonChangeAction(polygon, isValid);
                     }}
                 />

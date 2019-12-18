@@ -345,27 +345,25 @@ export class BaseMap extends React.Component<Props, State> {
 
     renderInactivePolygons = () =>
         this.props.polygonCoordinates.map((coordinates, index) => {
-            return index === this.props.activePolygonIndex ? null : (
-                <Polygon
-                    key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
-                    coordinates={coordinates}
-                    isActive={false}
-                    onClick={() => this.props.onClick && this.props.onClick(index)}
-                    onMouseEnter={() => this.props.onMouseEnter && this.props.onMouseEnter(index)}
-                    onMouseLeave={() => this.props.onMouseLeave && this.props.onMouseLeave(index)}
-                />
-            );
+            return index === this.props.activePolygonIndex
+                ? null
+                : (
+                    <Polygon
+                        key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
+                        coordinates={coordinates}
+                        isActive={false}
+                        onClick={() => this.props.onClick && this.props.onClick(index)}
+                        onMouseEnter={() => this.props.onMouseEnter && this.props.onMouseEnter(index)}
+                        onMouseLeave={() => this.props.onMouseLeave && this.props.onMouseLeave(index)}
+                    />
+                );
         });
 
     renderActivePolygon = () => {
-        if (!this.props.activePolygonIndex && this.props.activePolygonIndex !== 0) {
-            return null;
-        }
         const coordinates = this.props.polygonCoordinates[this.props.activePolygonIndex];
         const index = this.props.activePolygonIndex;
         return (
             <Polygon
-                key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
                 coordinates={coordinates}
                 isActive
                 onClick={() => this.props.onClick && this.props.onClick(index)}
