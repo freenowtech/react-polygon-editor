@@ -1,5 +1,5 @@
 import React from 'react';
-import { CircleMarker } from 'react-leaflet';
+import { CircleMarker as LeafletCircleMarker } from 'react-leaflet';
 
 import { Coordinate } from 'types';
 import { createLeafletLatLngFromCoordinate } from '../helpers';
@@ -16,9 +16,8 @@ interface State {
 }
 
 export class EdgeVertex extends React.Component<Props, State> {
-
     state = {
-        isHoverActive: false,
+        isHoverActive: false
     };
 
     handleMouseOver = () => this.setState({ isHoverActive: true });
@@ -30,10 +29,10 @@ export class EdgeVertex extends React.Component<Props, State> {
         const { coordinate } = this.props;
 
         return (
-            <CircleMarker
+            <LeafletCircleMarker
                 fillColor={MAP.VERTEX_FILL_COLOR}
                 fillOpacity={isHoverActive ? 1 : 0.8}
-                color={MAP.POLYGON_COLOR}
+                color={MAP.POLYGON_ACTIVE_COLOR}
                 opacity={isHoverActive ? 1 : 0.8}
                 weight={isHoverActive ? 2 : 0.5}
                 radius={isHoverActive ? 6 : 3}
