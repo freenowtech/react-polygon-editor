@@ -63,6 +63,7 @@ export interface State {
     isRectangleSelectionDragActive: boolean;
     rectangleSelectionStartPosition: Coordinate|null;
     rectangleSelectionEndPosition: Coordinate|null;
+    rectangleSelectionStartTime: number|null;
     previousMouseMovePosition?: Coordinate;
     isPenToolActive: boolean;
     newPointPosition: Coordinate|null;
@@ -78,6 +79,7 @@ export class BaseMap extends React.Component<Props, State> {
         isRectangleSelectionDragActive: false,
         rectangleSelectionStartPosition: null,
         rectangleSelectionEndPosition: null,
+        rectangleSelectionStartTime: null,
         previousMouseMovePosition: undefined,
         isPenToolActive: false,
         newPointPosition: null
@@ -196,7 +198,8 @@ export class BaseMap extends React.Component<Props, State> {
             this.setState({
                 isRectangleSelectionDragActive: true,
                 rectangleSelectionStartPosition: coordinate,
-                rectangleSelectionEndPosition: coordinate
+                rectangleSelectionEndPosition: coordinate,
+                rectangleSelectionStartTime: new Date().getTime()
             });
         }
     };
@@ -213,7 +216,11 @@ export class BaseMap extends React.Component<Props, State> {
 
     handleMouseMoveOnMap = (event: LeafletMouseEvent) => {
         const mouseCoordinate = createCoordinateFromLeafletLatLng(event.latlng);
-        if (this.state.isRectangleSelectionDragActive) {
+        if (
+            this.state.isRectangleSelectionDragActive &&
+            this.state.rectangleSelectionStartTime &&
+            (new Date().getTime() - this.state.rectangleSelectionStartTime) >= 100
+        ) {
             const start = this.state.rectangleSelectionStartPosition;
             if (start) {
                 const bounds: LatLngBounds = latLngBounds(createLeafletLatLngFromCoordinate(start), event.latlng);
