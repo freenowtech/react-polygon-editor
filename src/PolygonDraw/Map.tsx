@@ -469,7 +469,7 @@ export class BaseMap extends React.Component<Props, State> {
             );
 
             return (
-                <Rectangle bounds={bounds} />
+                <Rectangle color={MAP.RECTANGLE_SELECTION_COLOR} fillColor={MAP.RECTANGLE_SELECTION_COLOR} bounds={bounds} />
             );
         }
         return null;
