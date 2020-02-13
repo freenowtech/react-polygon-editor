@@ -60,10 +60,11 @@ export interface State {
     isMovedPointInBoundary: boolean;
     isShiftPressed: boolean;
     isMoveActive: boolean;
-    isRectangleSelectionDragActive: boolean;
-    rectangleSelectionStartPosition: Coordinate|null;
-    rectangleSelectionEndPosition: Coordinate|null;
-    rectangleSelectionStartTime: number|null;
+    rectangleSelection: {
+        startPosition: Coordinate;
+        endPosition: Coordinate;
+        startTime: number;
+    }|null;
     previousMouseMovePosition?: Coordinate;
     isPenToolActive: boolean;
     newPointPosition: Coordinate|null;
@@ -76,10 +77,7 @@ export class BaseMap extends React.Component<Props, State> {
         isMovedPointInBoundary: true,
         isShiftPressed: false,
         isMoveActive: false,
-        isRectangleSelectionDragActive: false,
-        rectangleSelectionStartPosition: null,
-        rectangleSelectionEndPosition: null,
-        rectangleSelectionStartTime: null,
+        rectangleSelection: null,
         previousMouseMovePosition: undefined,
         isPenToolActive: false,
         newPointPosition: null
@@ -196,20 +194,19 @@ export class BaseMap extends React.Component<Props, State> {
 
         if (this.state.isShiftPressed) {
             this.setState({
-                isRectangleSelectionDragActive: true,
-                rectangleSelectionStartPosition: coordinate,
-                rectangleSelectionEndPosition: coordinate,
-                rectangleSelectionStartTime: new Date().getTime()
+                rectangleSelection: {
+                    startPosition: coordinate,
+                    endPosition: coordinate,
+                    startTime: new Date().getTime()
+                }
             });
         }
     };
 
     handleMouseUpOnMap = () => {
-        if (this.state.isRectangleSelectionDragActive) {
+        if (this.state.rectangleSelection) {
             this.setState({
-                isRectangleSelectionDragActive: false,
-                rectangleSelectionStartPosition: null,
-                rectangleSelectionEndPosition: null
+                rectangleSelection: null
             });
         }
     };
@@ -217,11 +214,10 @@ export class BaseMap extends React.Component<Props, State> {
     handleMouseMoveOnMap = (event: LeafletMouseEvent) => {
         const mouseCoordinate = createCoordinateFromLeafletLatLng(event.latlng);
         if (
-            this.state.isRectangleSelectionDragActive &&
-            this.state.rectangleSelectionStartTime &&
-            (new Date().getTime() - this.state.rectangleSelectionStartTime) >= 100
+            this.state.rectangleSelection &&
+            (new Date().getTime() - this.state.rectangleSelection?.startTime) >= 100
         ) {
-            const start = this.state.rectangleSelectionStartPosition;
+            const start = this.state.rectangleSelection.startPosition;
             if (start) {
                 const bounds: LatLngBounds = latLngBounds(createLeafletLatLngFromCoordinate(start), event.latlng);
 
@@ -237,7 +233,10 @@ export class BaseMap extends React.Component<Props, State> {
                 }
             }
             this.setState({
-                rectangleSelectionEndPosition: mouseCoordinate
+                rectangleSelection: {
+                    ...this.state.rectangleSelection,
+                    endPosition: mouseCoordinate
+                }
             });
         } else {
             const newPointPosition =
@@ -253,9 +252,7 @@ export class BaseMap extends React.Component<Props, State> {
 
     handleMouseOutOfMap = () => this.setState({
         newPointPosition: null,
-        isRectangleSelectionDragActive: false,
-        rectangleSelectionStartPosition: null,
-        rectangleSelectionEndPosition: null
+        rectangleSelection: null
     });
 
     ///////////////////////////////////////////////////////////////////////////
@@ -467,12 +464,10 @@ export class BaseMap extends React.Component<Props, State> {
     };
 
     renderSelectionRectangle = () => {
-        const start = this.state.rectangleSelectionStartPosition;
-        const end = this.state.rectangleSelectionEndPosition;
-        if (start  && end) {
+        if (this.state.rectangleSelection) {
             const bounds: LatLngBounds = latLngBounds(
-                createLeafletLatLngFromCoordinate(start),
-                createLeafletLatLngFromCoordinate(end)
+                createLeafletLatLngFromCoordinate(this.state.rectangleSelection.startPosition),
+                createLeafletLatLngFromCoordinate(this.state.rectangleSelection.endPosition)
             );
 
             return (
@@ -520,7 +515,7 @@ export class BaseMap extends React.Component<Props, State> {
                         </Pane>
                     )}
 
-                    {this.state.isRectangleSelectionDragActive && this.renderSelectionRectangle()}
+                    {this.state.rectangleSelection && this.renderSelectionRectangle()}
 
                     <TileLayer />
                 </Map>
