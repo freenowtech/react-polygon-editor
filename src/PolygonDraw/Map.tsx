@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { LatLng, LatLngTuple, LeafletMouseEvent } from 'leaflet';
-import { Map as LeafletMap, Pane, Polyline } from 'react-leaflet';
+import { LatLng, latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaflet';
+import { Map as LeafletMap, Pane, Polyline, Rectangle } from 'react-leaflet';
 import flatten from 'lodash.flatten';
 
 import { Coordinate } from 'types';
@@ -60,6 +60,11 @@ export interface State {
     isMovedPointInBoundary: boolean;
     isShiftPressed: boolean;
     isMoveActive: boolean;
+    rectangleSelection: {
+        startPosition: Coordinate;
+        endPosition: Coordinate;
+        startTime: number;
+    }|null;
     previousMouseMovePosition?: Coordinate;
     isPenToolActive: boolean;
     newPointPosition: Coordinate | null;
@@ -72,6 +77,7 @@ export class BaseMap extends React.Component<Props, State> {
         isMovedPointInBoundary: true,
         isShiftPressed: false,
         isMoveActive: false,
+        rectangleSelection: null,
         previousMouseMovePosition: undefined,
         isPenToolActive: false,
         newPointPosition: null
@@ -183,19 +189,71 @@ export class BaseMap extends React.Component<Props, State> {
         }
     };
 
-    handleMouseMoveOnMap = (event: LeafletMouseEvent) => {
+    handleMouseDownOnMap = (event: LeafletMouseEvent) => {
         const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
-        const newPointPosition =
-            this.state.isPenToolActive &&
-            !this.props.isPolygonClosed &&
-            isCoordinateInPolygon(coordinate, this.props.boundaryPolygonCoordinates)
-                ? coordinate
-                : null;
 
-        this.setState({ newPointPosition });
+        if (this.state.isShiftPressed) {
+            this.setState({
+                rectangleSelection: {
+                    startPosition: coordinate,
+                    endPosition: coordinate,
+                    startTime: new Date().getTime()
+                }
+            });
+        }
     };
 
-    handleMouseOutOfMap = () => this.setState({ newPointPosition: null });
+    handleMouseUpOnMap = () => {
+        if (this.state.rectangleSelection) {
+            this.setState({
+                rectangleSelection: null
+            });
+        }
+    };
+
+    handleMouseMoveOnMap = (event: LeafletMouseEvent) => {
+        const mouseCoordinate = createCoordinateFromLeafletLatLng(event.latlng);
+        if (
+            this.state.rectangleSelection &&
+            (new Date().getTime() - this.state.rectangleSelection?.startTime) >= 100
+        ) {
+            const start = this.state.rectangleSelection.startPosition;
+            if (start) {
+                const bounds: LatLngBounds = latLngBounds(createLeafletLatLngFromCoordinate(start), event.latlng);
+
+                const activePolygon: Coordinate[]|undefined = this.props.polygonCoordinates[this.props.activePolygonIndex];
+                if (activePolygon) {
+                    const pointsInsideBounds: number[] = [];
+                    activePolygon.forEach((point, index) => {
+                        if (bounds.contains(createLeafletLatLngFromCoordinate(point))) {
+                            pointsInsideBounds.push(index);
+                        }
+                    });
+                    this.props.selectPoints(pointsInsideBounds);
+                }
+            }
+            this.setState({
+                rectangleSelection: {
+                    ...this.state.rectangleSelection,
+                    endPosition: mouseCoordinate
+                }
+            });
+        } else {
+            const newPointPosition =
+                this.state.isPenToolActive &&
+                !this.props.isPolygonClosed &&
+                isCoordinateInPolygon(mouseCoordinate, this.props.boundaryPolygonCoordinates)
+                    ? mouseCoordinate
+                    : null;
+
+            this.setState({ newPointPosition });
+        }
+    };
+
+    handleMouseOutOfMap = () => this.setState({
+        newPointPosition: null,
+        rectangleSelection: null
+    });
 
     ///////////////////////////////////////////////////////////////////////////
     //                           Vertex methods                              //
@@ -405,6 +463,20 @@ export class BaseMap extends React.Component<Props, State> {
         );
     };
 
+    renderSelectionRectangle = () => {
+        if (this.state.rectangleSelection) {
+            const bounds: LatLngBounds = latLngBounds(
+                createLeafletLatLngFromCoordinate(this.state.rectangleSelection.startPosition),
+                createLeafletLatLngFromCoordinate(this.state.rectangleSelection.endPosition)
+            );
+
+            return (
+                <Rectangle color={MAP.RECTANGLE_SELECTION_COLOR} fillColor={MAP.RECTANGLE_SELECTION_COLOR} bounds={bounds} />
+            );
+        }
+        return null;
+    };
+
     render() {
         const { editable, selection, initialZoom, initialCenter } = this.props;
         const { newPointPosition, isPenToolActive } = this.state;
@@ -422,6 +494,8 @@ export class BaseMap extends React.Component<Props, State> {
                     zoomDelta={2}
                     zoomSnap={1.5}
                     onclick={this.handleMapClick}
+                    onmousedown={this.handleMouseDownOnMap}
+                    onmouseup={this.handleMouseUpOnMap}
                     onmousemove={this.handleMouseMoveOnMap}
                     onmouseout={this.handleMouseOutOfMap}
                     boxZoom={false}
@@ -440,6 +514,8 @@ export class BaseMap extends React.Component<Props, State> {
                             {this.props.isPolygonClosed && isPenToolActive && this.renderPolygonEdges()}}
                         </Pane>
                     )}
+
+                    {this.state.rectangleSelection && this.renderSelectionRectangle()}
 
                     <TileLayer />
                 </Map>
