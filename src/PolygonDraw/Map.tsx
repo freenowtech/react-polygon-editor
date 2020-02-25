@@ -151,6 +151,10 @@ export class BaseMap extends React.Component<Props, State> {
         });
     };
 
+    handlePolygonExport = () => {
+        // TODO: implement export
+    };
+
     getSize = (map: LeafletMap|null): string => {
         return map && map.container ? `${map.container.clientHeight}x${map.container.clientWidth}` : '';
     };
@@ -424,6 +428,7 @@ export class BaseMap extends React.Component<Props, State> {
                     onFocus={this.reframe}
                     onEnableVectorMode={this.toggleVectorMode}
                     deleteInactive={selection.size === 0}
+                    onExport={this.handlePolygonExport}
                 />
             </Container>
         );

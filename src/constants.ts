@@ -9,7 +9,8 @@ import { LatLngTuple } from 'leaflet';
 export const LABELS = {
     PEN: 'Pen',
     DELETE: 'Delete',
-    FOCUS: 'Focus'
+    FOCUS: 'Focus',
+    EXPORT: 'Export'
 };
 
 export const LEAFLET = {
