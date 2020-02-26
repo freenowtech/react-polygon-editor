@@ -6,7 +6,7 @@ module.exports = {
         '!**/node_modules/**',
         '!**/*.d.ts'
     ],
-    setupFilesAfterEnv: ['<rootDir>/env-setup.js'],
+    setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
     moduleFileExtensions: [
         "ts",
         "tsx",
