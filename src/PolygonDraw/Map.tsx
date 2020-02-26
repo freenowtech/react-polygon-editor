@@ -14,6 +14,8 @@ import {
     isCoordinateInPolygon,
     isPolygonClosed
 } from '../helpers';
+import { Modal } from '../common/components/Modal';
+import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
 import { TileLayer } from '../leaflet/TileLayer';
 import { MAP } from '../constants';
 import { Actions, actions } from './actions';
@@ -44,7 +46,8 @@ export interface State {
     isMoveActive: boolean;
     previousMouseMovePosition?: Coordinate;
     isPenToolActive: boolean;
-    newPointPosition: Coordinate|null;
+    newPointPosition: Coordinate | null;
+    showExportPolygonModal: boolean;
 }
 
 export class BaseMap extends React.Component<Props, State> {
@@ -57,6 +60,7 @@ export class BaseMap extends React.Component<Props, State> {
         previousMouseMovePosition: undefined,
         isPenToolActive: false,
         newPointPosition: null,
+        showExportPolygonModal: false
     };
 
     dispatch: typeof actions = { ...actions };
@@ -91,12 +95,11 @@ export class BaseMap extends React.Component<Props, State> {
     }
 
     getSnapshotBeforeUpdate(prevProps: Props, prevState: State): MapSnapshot {
-        const reframe = (
+        const reframe =
             // Reframe when the polygon loads for the first time
             (prevProps.polygonCoordinates.length === 0 && this.props.polygonCoordinates.length > 1) ||
             // Reframe when the boundary polygon loads for the first time
-            prevProps.boundaryPolygonCoordinates !== this.props.boundaryPolygonCoordinates
-        );
+            prevProps.boundaryPolygonCoordinates !== this.props.boundaryPolygonCoordinates;
         const size = this.getSize(this.mapRef.current);
 
         return { reframe, size };
@@ -113,13 +116,11 @@ export class BaseMap extends React.Component<Props, State> {
     }
 
     setDispatcher = () => {
-        this.dispatch = Object.keys(actions).reduce(
-            (acc, actionKey) => {
-                // tslint:disable-next-line
-                acc[actionKey] = (...args: any[]) => this.props.dispatch(actions[actionKey](...args));
-                return acc;
-            },
-            {}) as typeof actions;
+        this.dispatch = Object.keys(actions).reduce((acc, actionKey) => {
+            // tslint:disable-next-line
+            acc[actionKey] = (...args: any[]) => this.props.dispatch(actions[actionKey](...args));
+            return acc;
+        }, {}) as typeof actions;
     };
 
     reframe = () => {
@@ -151,12 +152,24 @@ export class BaseMap extends React.Component<Props, State> {
         });
     };
 
-    handlePolygonExport = () => {
+    getSize = (map: LeafletMap | null): string => {
+        return map && map.container ? `${map.container.clientHeight}x${map.container.clientWidth}` : '';
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+    //                          Export methods                               //
+    ///////////////////////////////////////////////////////////////////////////
+
+    handleExportPolygon = () => {
         // TODO: implement export
     };
 
-    getSize = (map: LeafletMap|null): string => {
-        return map && map.container ? `${map.container.clientHeight}x${map.container.clientWidth}` : '';
+    handleExportPolygonActionClicked = () => {
+        this.setState({ showExportPolygonModal: true });
+    };
+
+    handleExportPolygonModalClosed = () => {
+        this.setState({ showExportPolygonModal: false });
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -165,9 +178,11 @@ export class BaseMap extends React.Component<Props, State> {
 
     handleMapClick = (event: LeafletMouseEvent) => {
         const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
-        if (this.state.isPenToolActive &&
+        if (
+            this.state.isPenToolActive &&
             !isPolygonClosed(this.props.polygonCoordinates) &&
-            isCoordinateInPolygon(coordinate, this.props.boundaryPolygonCoordinates)) {
+            isCoordinateInPolygon(coordinate, this.props.boundaryPolygonCoordinates)
+        ) {
             this.dispatch.addPoint(coordinate);
         } else if (!this.state.isShiftPressed) {
             this.dispatch.deselectAllPoints();
@@ -179,7 +194,9 @@ export class BaseMap extends React.Component<Props, State> {
         const newPointPosition =
             this.state.isPenToolActive &&
             !isPolygonClosed(this.props.polygonCoordinates) &&
-            isCoordinateInPolygon(coordinate, this.props.boundaryPolygonCoordinates) ? coordinate : null;
+            isCoordinateInPolygon(coordinate, this.props.boundaryPolygonCoordinates)
+                ? coordinate
+                : null;
 
         this.setState({ newPointPosition });
     };
@@ -191,11 +208,13 @@ export class BaseMap extends React.Component<Props, State> {
     ///////////////////////////////////////////////////////////////////////////
 
     onPolygonVertexClick = (index: number) => {
-        if (index === 0 &&
+        if (
+            index === 0 &&
             this.props.polygonCoordinates.length > 2 &&
-            !isPolygonClosed(this.props.polygonCoordinates)) {
+            !isPolygonClosed(this.props.polygonCoordinates)
+        ) {
             // Close polygon when user clicks the first point
-            this.dispatch.addPoint({...this.props.polygonCoordinates[0]});
+            this.dispatch.addPoint({ ...this.props.polygonCoordinates[0] });
         } else if (this.state.isShiftPressed) {
             if (this.props.selection.has(index)) {
                 this.dispatch.removePointFromSelection(index);
@@ -323,12 +342,7 @@ export class BaseMap extends React.Component<Props, State> {
     renderPolygonPoints = () => this.props.polygonCoordinates.map(this.renderPolygonVertex);
 
     renderVertexEdge = (coordinate: Coordinate, index: number) => (
-        <EdgeVertex
-            key={index}
-            index={index}
-            coordinate={coordinate}
-            onClick={this.dispatch.addPointToEdge}
-        />
+        <EdgeVertex key={index} index={index} coordinate={coordinate} onClick={this.dispatch.addPointToEdge} />
     );
 
     renderPolygonEdges = () => getPolygonEdges(this.props.polygonCoordinates).map(this.renderVertexEdge);
@@ -357,17 +371,8 @@ export class BaseMap extends React.Component<Props, State> {
 
         return (
             <>
-                <Polyline
-                    positions={polygon}
-                    color={MAP.POLYGON_COLOR}
-                    interactive={false}
-                />
-                <Polyline
-                    positions={newPath}
-                    color={MAP.POLYGON_COLOR}
-                    dashArray="2 12"
-                    interactive={false}
-                />
+                <Polyline positions={polygon} color={MAP.POLYGON_COLOR} interactive={false} />
+                <Polyline positions={newPath} color={MAP.POLYGON_COLOR} dashArray="2 12" interactive={false} />
             </>
         );
     };
@@ -412,12 +417,12 @@ export class BaseMap extends React.Component<Props, State> {
                     {this.renderBoundaryPolygon()}
                     {polygonIsClosed ? this.renderPolygon() : this.renderPolyline()}
 
-                    {editable &&
+                    {editable && (
                         <Pane>
                             {this.renderPolygonPoints()}
                             {polygonIsClosed && isPenToolActive && this.renderPolygonEdges()}}
                         </Pane>
-                    }
+                    )}
 
                     <TileLayer />
                 </Map>
@@ -428,8 +433,17 @@ export class BaseMap extends React.Component<Props, State> {
                     onFocus={this.reframe}
                     onEnableVectorMode={this.toggleVectorMode}
                     deleteInactive={selection.size === 0}
-                    onExport={this.handlePolygonExport}
+                    onExport={this.handleExportPolygonActionClicked}
                 />
+
+                {this.state.showExportPolygonModal && (
+                    <Modal onClose={this.handleExportPolygonModalClosed}>
+                        <ExportPolygonForm
+                            polygon={this.props.polygonCoordinates}
+                            onSubmit={this.handleExportPolygon}
+                        />
+                    </Modal>
+                )}
             </Container>
         );
     }

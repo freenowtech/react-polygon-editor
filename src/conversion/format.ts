@@ -1,8 +1,8 @@
-import geojsonhint from '@mapbox/geojsonhint';
-import { GeoJSON } from 'geojson';
+import type { GeoJSON } from 'geojson';
 
 import { Coordinate } from '../types';
 
+// tslint:disable-next-line: no-any
 const prettyPrint = (value: any) => JSON.stringify(value, null, 2);
 
 export enum FormatType {
@@ -40,7 +40,9 @@ export const format: Record<FormatType, Format> = {
         deserialize: (raw: string) => {
             throw new Error('not implemented yet');
         },
-        validate: (value: string) => geojsonhint.hint(value, { precisionWarning: false }).length === 0
+        validate: (value: string) => {
+            throw new Error('not implemented yet');
+        }
     },
     [FormatType.LATLNG]: {
         name: FormatType.LATLNG,

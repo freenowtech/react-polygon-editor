@@ -1,6 +1,7 @@
 import React, { FormEventHandler, useState, useMemo, ChangeEventHandler } from 'react';
 
-import { Coordinate } from '../types';
+import { useDismiss } from '../common/components/Modal';
+import { Coordinate } from '../types';
 import { format } from './format';
 
 interface Props {
@@ -9,6 +10,8 @@ interface Props {
 }
 
 export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
+    const dismiss = useDismiss();
+
     const [outputFormat, setOutputFormat] = useState(format.geojson);
 
     const value = useMemo(() => outputFormat.serialize(polygon), [polygon, outputFormat.serialize]);
@@ -32,7 +35,7 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
             </select>
             <textarea value={value} readOnly />
             <button type="submit">Copy code</button>
-            <button>Close</button>
+            <button onClick={dismiss}>Close</button>
         </form>
     );
 };
