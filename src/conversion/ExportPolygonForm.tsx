@@ -1,8 +1,19 @@
 import React, { FormEventHandler, useState, useMemo, ChangeEventHandler } from 'react';
+import styled from 'styled-components';
 
+import { Button } from '../common/components/Button';
+import { ButtonGroup } from '../common/components/ButtonGroup';
+import { Headline } from '../common/components/Headline';
 import { useDismiss } from '../common/components/Modal';
+import { Select } from '../common/components/Select';
+import { Textarea } from '../common/components/Textarea';
 import { Coordinate } from '../types';
 import { format } from './format';
+
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+`;
 
 interface Props {
     polygon: Coordinate[];
@@ -26,16 +37,24 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
     };
 
     return (
-        <form onSubmit={handleOnSubmit}>
-            <h2>Export Polygon</h2>
-            <label htmlFor="fn-export-format-select">Export format</label>
-            <select id="fn-export-format-select" value={outputFormat.name} onChange={handleOutputFormatChanged}>
+        <Form onSubmit={handleOnSubmit}>
+            <Headline>Export Polygon</Headline>
+            <Select
+                id="fn-export-format-select"
+                label="Export format"
+                value={outputFormat.name}
+                onChange={handleOutputFormatChanged}
+            >
                 <option value={format.geojson.name}>GeoJSON</option>
                 <option value={format.latlng.name}>LatLng</option>
-            </select>
-            <textarea value={value} readOnly />
-            <button type="submit">Copy code</button>
-            <button onClick={dismiss}>Close</button>
-        </form>
+            </Select>
+            <Textarea value={value} readOnly />
+            <ButtonGroup>
+                <Button type="submit">Copy code</Button>
+                <Button secondary onClick={dismiss}>
+                    Close
+                </Button>
+            </ButtonGroup>
+        </Form>
     );
 };
