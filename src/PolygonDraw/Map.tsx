@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { LatLng, LatLngTuple, LeafletMouseEvent } from 'leaflet';
 import { Map as LeafletMap, Pane, Polygon, Polyline } from 'react-leaflet';
+import * as clipboard from 'clipboard-polyfill';
 
 import { Coordinate } from 'types';
 
@@ -160,8 +161,8 @@ export class BaseMap extends React.Component<Props, State> {
     //                          Export methods                               //
     ///////////////////////////////////////////////////////////////////////////
 
-    handleExportPolygon = () => {
-        // TODO: implement export
+    handleExportPolygon = (serialized: string) => {
+        clipboard.writeText(serialized);
     };
 
     handleExportPolygonActionClicked = () => {
