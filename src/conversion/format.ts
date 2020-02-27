@@ -29,7 +29,7 @@ export const format: Record<FormatType, Format> = {
                         properties: {},
                         geometry: {
                             type: 'Polygon',
-                            coordinates: [coordinates.map(({ latitude, longitude }) => [latitude, longitude])]
+                            coordinates: [coordinates.map(({ longitude, latitude }) => [longitude, latitude])]
                         }
                     }
                 ]
@@ -47,7 +47,7 @@ export const format: Record<FormatType, Format> = {
     [FormatType.LATLNG]: {
         name: FormatType.LATLNG,
         serialize: coordinates => {
-            return prettyPrint(coordinates.map(({ latitude, longitude }) => [latitude, longitude]));
+            return prettyPrint(coordinates.map(({ longitude, latitude }) => [longitude, latitude]));
         },
         deserialize: (raw: string) => {
             throw new Error('not implemented yet');
