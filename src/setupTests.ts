@@ -24,10 +24,7 @@ expect.extend({
 
         return {
             pass: errors.length === 0,
-            message: () => (
-                `Expected GeoJSON to be valid but has the following errors:\n` +
-                `${formattedErrors}\n`
-            )
+            message: () => `Expected GeoJSON to be valid but has the following errors:\n${formattedErrors}\n`
         };
     }
 });

@@ -8,8 +8,8 @@ import { FormatType } from './format';
 
 const polygon: Coordinate[] = [
     { latitude: 0, longitude: 0 },
-    { latitude: 1, longitude: 0 },
     { latitude: 1, longitude: 1 },
+    { latitude: 1, longitude: 0 },
     { latitude: 0, longitude: 0 }
 ];
 
@@ -29,39 +29,39 @@ describe('ExportPolygonForm', () => {
 
             expect(getTextarea(wrapper).value).toBeValidGeoJSON();
             expect(getTextarea(wrapper).value).toMatchInlineSnapshot(`
-        "{
-          \\"type\\": \\"FeatureCollection\\",
-          \\"features\\": [
-            {
-              \\"type\\": \\"Feature\\",
-              \\"properties\\": {},
-              \\"geometry\\": {
-                \\"type\\": \\"Polygon\\",
-                \\"coordinates\\": [
-                  [
-                    [
-                      0,
-                      0
-                    ],
-                    [
-                      1,
-                      0
-                    ],
-                    [
-                      1,
-                      1
-                    ],
-                    [
-                      0,
-                      0
-                    ]
+                "{
+                  \\"type\\": \\"FeatureCollection\\",
+                  \\"features\\": [
+                    {
+                      \\"type\\": \\"Feature\\",
+                      \\"properties\\": {},
+                      \\"geometry\\": {
+                        \\"type\\": \\"Polygon\\",
+                        \\"coordinates\\": [
+                          [
+                            [
+                              0,
+                              0
+                            ],
+                            [
+                              1,
+                              1
+                            ],
+                            [
+                              0,
+                              1
+                            ],
+                            [
+                              0,
+                              0
+                            ]
+                          ]
+                        ]
+                      }
+                    }
                   ]
-                ]
-              }
-            }
-          ]
-        }"
-      `);
+                }"
+            `);
         });
     });
 
@@ -73,25 +73,25 @@ describe('ExportPolygonForm', () => {
             userEvent.selectOptions(formatSelect, FormatType.LATLNG);
 
             expect(getTextarea(wrapper).value).toMatchInlineSnapshot(`
-        "[
-          [
-            0,
-            0
-          ],
-          [
-            1,
-            0
-          ],
-          [
-            1,
-            1
-          ],
-          [
-            0,
-            0
-          ]
-        ]"
-      `);
+                "[
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    1,
+                    1
+                  ],
+                  [
+                    0,
+                    1
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]"
+            `);
         });
     });
 });
