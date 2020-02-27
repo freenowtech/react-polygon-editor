@@ -12,6 +12,7 @@ export enum FormatType {
 
 export interface Format {
     name: FormatType;
+    description?: string;
     serialize: (coordinates: Coordinate[]) => string;
     deserialize: (raw: string) => Coordinate[];
     validate: (value: string) => boolean;
@@ -20,6 +21,7 @@ export interface Format {
 export const format: Record<FormatType, Format> = {
     [FormatType.GEOJSON]: {
         name: FormatType.GEOJSON,
+        description: `GeoJSON is a format for encoding a variety of geographic data structures. <a href="https://geojson.org/" target="_blank">More info</a>`,
         serialize: coordinates => {
             const geoJSON: GeoJSON = {
                 type: 'FeatureCollection',
@@ -38,10 +40,10 @@ export const format: Record<FormatType, Format> = {
             return prettyPrint(geoJSON);
         },
         deserialize: (raw: string) => {
-            throw new Error('not implemented yet');
+            throw new Error('not implemented');
         },
         validate: (value: string) => {
-            throw new Error('not implemented yet');
+            throw new Error('not implemented');
         }
     },
     [FormatType.LATLNG]: {
@@ -50,10 +52,10 @@ export const format: Record<FormatType, Format> = {
             return prettyPrint(coordinates.map(({ longitude, latitude }) => [longitude, latitude]));
         },
         deserialize: (raw: string) => {
-            throw new Error('not implemented yet');
+            throw new Error('not implemented');
         },
         validate: (value: string) => {
-            throw new Error('not implemented yet');
+            throw new Error('not implemented');
         }
     }
 };

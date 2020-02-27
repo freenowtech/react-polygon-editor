@@ -7,6 +7,7 @@ import { Headline } from '../common/components/Headline';
 import { useDismiss } from '../common/components/Modal';
 import { Select } from '../common/components/Select';
 import { Textarea } from '../common/components/Textarea';
+import { Text } from '../common/components/Text';
 import { Coordinate } from '../types';
 import { format } from './format';
 
@@ -48,6 +49,7 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
                 <option value={format.geojson.name}>GeoJSON</option>
                 <option value={format.latlng.name}>LatLng</option>
             </Select>
+            {outputFormat.description && <Text dangerouslySetInnerHTML={{ __html: outputFormat.description }} />}
             <Textarea value={value} readOnly />
             <ButtonGroup>
                 <Button type="submit">Copy code</Button>

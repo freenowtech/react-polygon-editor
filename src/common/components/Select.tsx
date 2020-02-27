@@ -12,7 +12,7 @@ interface Props extends React.SelectHTMLAttributes<HTMLSelectElement> {
 const Container = styled.div`
     box-sizing: border-box;
     display: inline-block;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     position: relative;
 `;
 

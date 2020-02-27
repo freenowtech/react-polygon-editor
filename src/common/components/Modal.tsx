@@ -58,7 +58,7 @@ export const Modal: React.FC<Props> = ({ children, onClose }) => {
 
     return (
         <>
-            <Dimming />
+            <Dimming onClick={dismiss} />
             <Card>
                 <TopRightCloseIcon onClick={dismiss} />
                 <DismissContext.Provider value={dismiss}>{children}</DismissContext.Provider>
