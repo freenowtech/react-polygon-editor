@@ -9,8 +9,7 @@ export const Textarea = styled.textarea`
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 16px;
-    height: 200px;
-    margin: 0 0 24px;
+    min-height: 200px;
     padding: 12px 12px 0;
     resize: none;
     transition: box-shadow 100ms, border 100ms;
