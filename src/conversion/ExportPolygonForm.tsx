@@ -1,6 +1,7 @@
 import React, { FormEventHandler, useState, useMemo, ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 
+import { Export } from '../ActionBar/Icons/Export';
 import { Button } from '../common/components/Button';
 import { ButtonGroup } from '../common/components/ButtonGroup';
 import { Headline } from '../common/components/Headline';
@@ -18,37 +19,33 @@ const Form = styled.form`
 `;
 
 const CopyOverlay = styled.div`
-    background-color: ${AUTHENTIC_BLUE_1100}00;
+    align-items: center;
+    background-color: ${AUTHENTIC_BLUE_1100};
     border-radius: 4px;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
     height: 200px;
-    margin-bottom: 24px;
+    justify-content: center;
+    margin-bottom: calc(24px - 200px);
     position: relative;
-    transition: background-color 0.1s linear;
+    opacity: 0;
+    top: -200px;
+    transition: opacity 0.1s linear;
 
     &:hover {
-        background-color: ${AUTHENTIC_BLUE_1100}99;
+        background-color: ${AUTHENTIC_BLUE_1100};
+        opacity: 0.6;
     }
 `;
 
-const CopyOverlayContent = styled.div`
-    left: 50%;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-`;
-
-const CopyOverlayLabel = styled.span`
+const CopyOverlayLabel = styled.p`
     color: ${WHITE};
     font-size: 16px;
 `;
 
 const CopyTextarea = styled(Textarea)`
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
+    height: 200px;
     z-index: -1;
 `;
 
@@ -89,11 +86,10 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
 
             {outputFormat.description && <Text dangerouslySetInnerHTML={{ __html: outputFormat.description }} />}
 
+            <CopyTextarea value={value} readOnly />
             <CopyOverlay>
-                <CopyOverlayContent>
-                    <CopyOverlayLabel>Copy to clipboard</CopyOverlayLabel>
-                </CopyOverlayContent>
-                <CopyTextarea value={value} readOnly />
+                <Export iconColor={WHITE} height={48} width={48} />
+                <CopyOverlayLabel>Copy to clipboard</CopyOverlayLabel>
             </CopyOverlay>
 
             <ButtonGroup>
