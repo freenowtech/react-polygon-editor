@@ -4,8 +4,9 @@ declare module '@mapbox/geojsonhint' {
         options: {
             noDuplicateMembers?: boolean;
             precisionWarning?: boolean;
-        }): {
-            line: number,
-            message: string
-        }[];
-};
+        }
+    ): {
+        line: number;
+        message: string;
+    }[];
+}
