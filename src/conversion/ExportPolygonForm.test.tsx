@@ -17,15 +17,40 @@ describe('ExportPolygonForm', () => {
     const getFormatSelect = (wrapper: RenderResult) => wrapper.getByLabelText('Export format');
     const getTextarea = (wrapper: RenderResult) => wrapper.getByRole('textbox') as HTMLInputElement;
 
-    describe('GeoJSON', () => {
+    describe('JTS', () => {
         it('should be selected by default', () => {
             const wrapper = render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
 
-            expect(getFormatSelect(wrapper)).toHaveValue(FormatType.GEOJSON);
+            expect(getFormatSelect(wrapper)).toHaveValue(FormatType.JTS);
+            expect(getTextarea(wrapper).value).toMatchInlineSnapshot(`
+                "[
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    1,
+                    1
+                  ],
+                  [
+                    0,
+                    1
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]"
+            `);
         });
+    });
 
-        it('should generate valid GeoJSON', () => {
+    describe('GeoJSON', () => {
+        it('should change format to GeoJSON', () => {
             const wrapper = render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
+
+            const formatSelect = getFormatSelect(wrapper);
+            userEvent.selectOptions(formatSelect, FormatType.GEOJSON);
 
             expect(getTextarea(wrapper).value).toBeValidGeoJSON();
             expect(getTextarea(wrapper).value).toMatchInlineSnapshot(`
@@ -73,25 +98,25 @@ describe('ExportPolygonForm', () => {
             userEvent.selectOptions(formatSelect, FormatType.LATLNG);
 
             expect(getTextarea(wrapper).value).toMatchInlineSnapshot(`
-                "[
-                  [
-                    0,
-                    0
-                  ],
-                  [
-                    1,
-                    1
-                  ],
-                  [
-                    0,
-                    1
-                  ],
-                  [
-                    0,
-                    0
-                  ]
-                ]"
-            `);
+"[
+  {
+    \\"latitude\\": 0,
+    \\"longitude\\": 0
+  },
+  {
+    \\"latitude\\": 1,
+    \\"longitude\\": 1
+  },
+  {
+    \\"latitude\\": 1,
+    \\"longitude\\": 0
+  },
+  {
+    \\"latitude\\": 0,
+    \\"longitude\\": 0
+  }
+]"
+`);
         });
     });
 });
