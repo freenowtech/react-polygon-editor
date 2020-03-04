@@ -37,7 +37,6 @@
         "styled-components": ">=4"
     },
     "dependencies": {
-        "@mapbox/geojsonhint": "^3.0.0",
         "clipboard-polyfill": "^2.8.6",
         "leaflet-path-drag": "^1.1.0",
         "lodash.isequal": "^4.5.0"
@@ -45,6 +44,7 @@
     "devDependencies": {
         "@babel/core": "^7.6.4",
         "@dump247/storybook-state": "^1.6.1",
+        "@mapbox/geojsonhint": "^3.0.0",
         "@storybook/addon-actions": "^5.2.4",
         "@storybook/addon-storysource": "^5.2.4",
         "@storybook/addons": "^3.2.16",
