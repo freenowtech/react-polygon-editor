@@ -57,7 +57,7 @@ interface Props {
 export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
     const dismiss = useDismiss();
 
-    const [outputFormat, setOutputFormat] = useState(format.geojson);
+    const [outputFormat, setOutputFormat] = useState(format.jts);
 
     const value = useMemo(() => outputFormat.serialize(polygon), [polygon, outputFormat.serialize]);
 
@@ -80,8 +80,11 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
                 value={outputFormat.name}
                 onChange={handleOutputFormatChanged}
             >
-                <option value={format.geojson.name}>GeoJSON</option>
-                <option value={format.latlng.name}>LatLng</option>
+                {Object.values(format).map(f => (
+                    <option key={f.name} value={f.name}>
+                        {f.displayName}
+                    </option>
+                ))}
             </Select>
 
             {outputFormat.description && <Text dangerouslySetInnerHTML={{ __html: outputFormat.description }} />}
