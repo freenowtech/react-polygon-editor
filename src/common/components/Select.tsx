@@ -48,6 +48,7 @@ const Input = styled.select`
 `;
 
 const SelectIcon = styled(ChevronDownIcon)`
+    pointer-events: none;
     position: absolute;
     right: 8px;
     top: 50%;
