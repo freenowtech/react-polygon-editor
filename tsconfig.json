@@ -23,7 +23,7 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "declarations.d.ts", "setupTests.ts"],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "declarations.d.ts"],
     "exclude": ["./node_modules/*", "dist"],
     "awesomeTypescriptLoaderOptions": {
         "ignoreDiagnostics": [7005]
