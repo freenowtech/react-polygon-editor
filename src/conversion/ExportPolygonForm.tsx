@@ -78,7 +78,7 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
     const [copyOverlayClicked, setCopyOverlayClicked] = useState(false);
     const dismiss = useDismiss();
 
-    const [outputFormat, setOutputFormat] = useState(format.jts);
+    const [outputFormat, setOutputFormat] = useState(format.geojson);
 
     const value = useMemo(() => outputFormat.serialize(polygon), [polygon, outputFormat.serialize]);
 
