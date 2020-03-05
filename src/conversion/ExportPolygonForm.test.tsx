@@ -18,10 +18,13 @@ describe('ExportPolygonForm', () => {
     const getTextarea = (wrapper: RenderResult) => wrapper.getByRole('textbox') as HTMLInputElement;
 
     describe('JTS', () => {
-        it('should be selected by default', () => {
+        it('should switch to JTS', () => {
             const wrapper = render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
 
-            expect(getFormatSelect(wrapper)).toHaveValue(FormatType.JTS);
+            const formatSelect = getFormatSelect(wrapper);
+            userEvent.selectOptions(formatSelect, FormatType.JTS);
+
+            expect(formatSelect).toHaveValue(FormatType.JTS);
             expect(getTextarea(wrapper).value).toMatchInlineSnapshot(`
                 "[
                   [
@@ -46,7 +49,7 @@ describe('ExportPolygonForm', () => {
     });
 
     describe('GeoJSON', () => {
-        it('should change format to GeoJSON', () => {
+        it('should be selected by default', () => {
             const wrapper = render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
 
             const formatSelect = getFormatSelect(wrapper);
