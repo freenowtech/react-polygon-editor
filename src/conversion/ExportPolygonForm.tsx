@@ -1,5 +1,5 @@
 import React, { FormEventHandler, useState, useMemo, ChangeEventHandler } from 'react';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 import { Export } from '../ActionBar/Icons/Export';
 import { Button } from '../common/components/Button';
@@ -18,7 +18,19 @@ const Form = styled.form`
     flex-direction: column;
 `;
 
-const CopyOverlay = styled.div`
+const rippleAnimation = keyframes`
+    0% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 0.6;
+    }
+`;
+
+const CopyOverlay = styled.div<{ isActive: boolean }>`
     align-items: center;
     background-color: ${AUTHENTIC_BLUE_1100};
     border-radius: 4px;
@@ -32,6 +44,13 @@ const CopyOverlay = styled.div`
     opacity: 0;
     top: -200px;
     transition: opacity 0.1s linear;
+
+    ${({ isActive }) =>
+        isActive
+            ? css`
+                  animation: ${rippleAnimation} 0.3s ease-out;
+              `
+            : ''}
 
     &:hover {
         background-color: ${AUTHENTIC_BLUE_1100};
@@ -55,6 +74,8 @@ interface Props {
 }
 
 export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
+    const [copyButtonClicked, setCopyButtonClicked] = useState(false);
+    const [copyOverlayClicked, setCopyOverlayClicked] = useState(false);
     const dismiss = useDismiss();
 
     const [outputFormat, setOutputFormat] = useState(format.jts);
@@ -67,6 +88,12 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
 
     const handleOnSubmit: FormEventHandler = e => {
         e.preventDefault();
+
+        if (!copyButtonClicked) {
+            setCopyButtonClicked(true);
+            setTimeout(() => setCopyButtonClicked(false), 1000);
+        }
+
         onSubmit(value);
     };
 
@@ -90,14 +117,18 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
             {outputFormat.description && <Text dangerouslySetInnerHTML={{ __html: outputFormat.description }} />}
 
             <CopyTextarea value={value} readOnly />
-            <CopyOverlay>
+            <CopyOverlay
+                isActive={copyOverlayClicked}
+                onClick={() => setCopyOverlayClicked(true)}
+                onAnimationEnd={() => setCopyOverlayClicked(false)}
+            >
                 <Export iconColor={WHITE} height={48} width={48} />
                 <CopyOverlayLabel>Copy to clipboard</CopyOverlayLabel>
             </CopyOverlay>
 
             <ButtonGroup>
-                <Button type="submit">Copy code</Button>
-                <Button secondary onClick={dismiss}>
+                <Button>{copyButtonClicked ? 'Copied!' : 'Copy code'}</Button>
+                <Button type="button" secondary onClick={dismiss}>
                     Close
                 </Button>
             </ButtonGroup>
