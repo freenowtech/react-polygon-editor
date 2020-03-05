@@ -35,6 +35,27 @@ export const POLYGON: Coordinate[] = [
     }
 ];
 
+export const POLYGON_ONE = [
+    { longitude: 9.99927520751953, latitude: 53.61511726495334 },
+    { longitude: 9.959793090820312, latitude: 53.59046705636403 },
+    { longitude: 10.050430297851562, latitude: 53.58659505554131 },
+    { longitude: 9.99927520751953, latitude: 53.61511726495334 }
+];
+
+export const POLYGON_TWO = [
+    { longitude: 9.936790466308594, latitude: 53.575588484564 },
+    { longitude: 9.894561767578125, latitude: 53.54397962810946 },
+    { longitude: 10.000648498535156, latitude: 53.550507262191466 },
+    { longitude: 9.936790466308594, latitude: 53.575588484564 }
+];
+
+export const POLYGON_THREE = [
+    { longitude: 10.037727355957031, latitude: 53.58292651697834 },
+    { longitude: 9.976272583007812, latitude: 53.576811578422124 },
+    { longitude: 10.084762573242188, latitude: 53.53806309007896 },
+    { longitude: 10.037727355957031, latitude: 53.58292651697834 }
+];
+
 export const BOUNDARY: Coordinate[] = [
     {
         latitude: 53.443987343914415,

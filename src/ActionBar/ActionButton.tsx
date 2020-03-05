@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 import { AUTHENTIC_BLUE_900, AUTHENTIC_BLUE_200, ACTION_BLUE_900, WHITE } from '../common/colors';
@@ -37,7 +37,7 @@ const Container = styled('div')<ContainerProps>`
     transition: 0.2s;
 
     user-select: none;
-    cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer' };
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 
     &:hover {
         transform: scale(1.005);
@@ -76,12 +76,10 @@ export interface Props {
     activeIconColor?: string;
     className?: string;
 }
-export const ActionButton: React.FunctionComponent<Props> = ({ icon, children, inactive, activeIconColor, ...props }) => {
+export const ActionButton: FunctionComponent<Props> = ({ icon, children, inactive, activeIconColor, ...props }) => {
     return (
         <Container {...props}>
-            <div>
-                {renderIcon(icon, inactive, activeIconColor)}
-            </div>
+            <div>{renderIcon(icon, inactive, activeIconColor)}</div>
             {children}
         </Container>
     );

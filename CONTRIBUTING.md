@@ -13,7 +13,6 @@ For general questions you can look the [documentation]
 to learn more about the library and find some examples. If you have questions which are not
 covered by the documentation, please contact one of the maintainers:
 
-
 ## Submitting contributions
 
 We are glad to receive code contributions in the form of patches, improvements
@@ -36,11 +35,11 @@ git checkout -b contribution-name
 
 ### Step 2: Code
 
-- **Document your changes**: Add or update the relevant entries for your change
-  in the documentation to reflect your work and inform the users about it.
+-   **Document your changes**: Add or update the relevant entries for your change
+    in the documentation to reflect your work and inform the users about it.
 
-- **Add unit tests**: If you add or modify functionality, it must include unit
-  tests. Prefer snapshot-tests when no logic is included.
+-   **Add unit tests**: If you add or modify functionality, it must include unit
+    tests. Prefer snapshot-tests when no logic is included.
 
 ### Step 3: Commit
 
@@ -61,7 +60,7 @@ Follow these guidelines when writing one:
    characters or less.
 1. Do not end the description with a dot
 1. The description must be in lowercase
-1. Use the format `<type>(<scope>): <subject>`, where scope is optional and 
+1. Use the format `<type>(<scope>): <subject>`, where scope is optional and
    refers to the subsystem changed and type could be:
     - **chore**: Changes to the build process or auxiliary tools and libraries
       such as documentation generation
@@ -85,7 +84,7 @@ git fetch origin
 git rebase -i origin/develop
 ```
 
-In case a conflict occurs, please resolve it and then use the following 
+In case a conflict occurs, please resolve it and then use the following
 command to continue with the rebase.
 
 ```sh
@@ -122,6 +121,3 @@ Write about the changes and add any relevant information to the reviewer.
 
 When the changes have been approved, you can merge the changes to `develop`.
 The release will be performed by the maintainers.
-
-
-

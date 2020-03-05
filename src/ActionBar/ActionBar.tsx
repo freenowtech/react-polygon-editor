@@ -34,9 +34,17 @@ export interface Props {
     onExport: () => void;
 }
 
-export const ActionBar: FunctionComponent<Props> = ({ editable, deleteInactive, isVectorModeEnabled, onEnableVectorMode, onFocus, onDelete, onExport }) => (
+export const ActionBar: FunctionComponent<Props> = ({
+    editable,
+    deleteInactive,
+    isVectorModeEnabled,
+    onEnableVectorMode,
+    onFocus,
+    onDelete,
+    onExport
+}) => (
     <Container>
-        {editable &&
+        {editable && (
             <>
                 <ActionButton
                     onClick={onEnableVectorMode}
@@ -55,7 +63,7 @@ export const ActionBar: FunctionComponent<Props> = ({ editable, deleteInactive, 
                     {LABELS.DELETE}
                 </ActionButton>
             </>
-        }
+        )}
         <ActionButton onClick={onExport} icon={ActionButtonIcons.EXPORT}>
             {LABELS.EXPORT}
         </ActionButton>
@@ -64,4 +72,3 @@ export const ActionBar: FunctionComponent<Props> = ({ editable, deleteInactive, 
         </ActionButton>
     </Container>
 );
-

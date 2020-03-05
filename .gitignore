@@ -25,4 +25,8 @@ node_modules
 +.iml
 
 # VS Code
+<<<<<<< HEAD
 .vscode
+=======
+.vscode
+>>>>>>> release/1.1.0

@@ -7,7 +7,7 @@ export const Map = styled(LeafletMap)`
     width: 100%;
     z-index: 0;
 
-    cursor: ${({ drawCursor }: { drawCursor: boolean }) => drawCursor ? 'crosshair !important' : 'auto'};
+    cursor: ${({ drawCursor }: { drawCursor: boolean }) => (drawCursor ? 'crosshair !important' : 'auto')};
 `;
 
 export const Container = styled.div`

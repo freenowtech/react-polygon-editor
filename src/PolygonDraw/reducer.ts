@@ -16,22 +16,21 @@ import { Coordinate } from 'types';
 import { movePolygonCoordinates, removeSelectedPoints } from '../helpers';
 
 export interface PolygonEditState {
-    polygon: Coordinate[];
+    activeIndex: number;
+    polygons: Coordinate[][];
     selection: Set<number>;
 }
 
-export const initialState: PolygonEditState = {
-    polygon: [],
-    selection: new Set()
-};
-
-export const PolygonEditReducer = (state: PolygonEditState, action: Actions): PolygonEditState => {
+export const polygonEditReducer = (state: PolygonEditState, action: Actions): PolygonEditState => {
     switch (action.type) {
         ///////////////////////////////////////////////////////////////////////////////////
         ///                            CHANGE POLYGON CASES                             ///
         ///////////////////////////////////////////////////////////////////////////////////
         case CHANGE_POLYGON: {
-            return { ...state, polygon: action.payload };
+            return {
+                ...state,
+                polygons: [...action.payload]
+            };
         }
 
         ///////////////////////////////////////////////////////////////////////////////////
@@ -40,23 +39,29 @@ export const PolygonEditReducer = (state: PolygonEditState, action: Actions): Po
         case MOVE_SELECTED_POINTS: {
             return {
                 ...state,
-                polygon: movePolygonCoordinates(state.polygon, state.selection, action.payload)
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    movePolygonCoordinates(state.polygons[state.activeIndex], state.selection, action.payload),
+                    ...state.polygons.slice(state.activeIndex + 1)
+                ]
             };
         }
 
         ///////////////////////////////////////////////////////////////////////////////////
         ///                              SELECTION CASES                                ///
         ///////////////////////////////////////////////////////////////////////////////////
-        case SELECT_POINTS:
+        case SELECT_POINTS: {
             return {
                 ...state,
                 selection: new Set(action.payload)
             };
-        case ADD_POINT_TO_SELECTION:
+        }
+        case ADD_POINT_TO_SELECTION: {
             return {
                 ...state,
                 selection: new Set([...state.selection.values(), ...action.payload])
             };
+        }
         case REMOVE_POINT_FROM_SELECTION: {
             const selection = new Set(state.selection);
             selection.delete(action.payload);
@@ -65,53 +70,65 @@ export const PolygonEditReducer = (state: PolygonEditState, action: Actions): Po
                 selection
             };
         }
-        case SELECT_ALL_POINTS:
+        case SELECT_ALL_POINTS: {
             return {
                 ...state,
-                selection: new Set(state.polygon.keys())
+                selection: new Set(state.polygons[state.activeIndex].map((_, i) => i))
             };
-        case DESELECT_ALL_POINTS:
+        }
+        case DESELECT_ALL_POINTS: {
             return {
                 ...state,
                 selection: new Set()
             };
+        }
 
         ///////////////////////////////////////////////////////////////////////////////////
         ///                              DELETE POINTS CASE                             ///
         ///////////////////////////////////////////////////////////////////////////////////
-        case DELETE_POLYGON_POINTS:
-            const newPolygonCoordinates = removeSelectedPoints(state.polygon, state.selection);
-
+        case DELETE_POLYGON_POINTS: {
             return {
                 ...state,
-                polygon: newPolygonCoordinates,
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    removeSelectedPoints(state.polygons[state.activeIndex], state.selection),
+                    ...state.polygons.slice(state.activeIndex + 1)
+                ],
                 selection: new Set()
             };
+        }
 
         ///////////////////////////////////////////////////////////////////////////////////
         ///                              ADD POINT CASE                                 ///
         ///////////////////////////////////////////////////////////////////////////////////
-        case ADD_POINT:
+        case ADD_POINT: {
             return {
                 ...state,
-                polygon: [
-                    ...state.polygon,
-                    action.payload
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    [...state.polygons[state.activeIndex], action.payload],
+                    ...state.polygons.slice(state.activeIndex + 1)
                 ],
-                selection: new Set([state.polygon.length])
+                selection: new Set([state.polygons.length])
             };
-        case ADD_POINT_TO_EDGE:
-            const polygonCoordinates = [
-                ...state.polygon.slice(0, action.payload.index + 1),
-                action.payload.coordinate,
-                ...state.polygon.slice(action.payload.index + 1)
-            ];
+        }
+        case ADD_POINT_TO_EDGE: {
             return {
                 ...state,
-                polygon: polygonCoordinates,
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    [
+                        ...state.polygons[state.activeIndex].slice(0, action.payload.index + 1),
+                        action.payload.coordinate,
+                        ...state.polygons[state.activeIndex].slice(action.payload.index + 1)
+                    ],
+                    ...state.polygons.slice(state.activeIndex + 1)
+                ],
                 selection: new Set([action.payload.index])
             };
-        default:
+        }
+        default: {
             return state;
+        }
     }
 };
