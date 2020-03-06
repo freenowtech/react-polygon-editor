@@ -86,6 +86,11 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
         setOutputFormat(format[e.target.value]);
     };
 
+    const handleCopyOverlayClicked = () => {
+        setCopyOverlayClicked(true);
+        onSubmit(value);
+    };
+
     const handleOnSubmit: FormEventHandler = e => {
         e.preventDefault();
 
@@ -119,7 +124,7 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
             <CopyTextarea value={value} readOnly />
             <CopyOverlay
                 isActive={copyOverlayClicked}
-                onClick={() => setCopyOverlayClicked(true)}
+                onClick={handleCopyOverlayClicked}
                 onAnimationEnd={() => setCopyOverlayClicked(false)}
             >
                 <Export iconColor={WHITE} height={48} width={48} />
