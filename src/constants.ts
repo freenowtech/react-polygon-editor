@@ -1,11 +1,12 @@
-import { ACTION_BLUE_900, FREEDOM_RED_900, AUTHENTIC_BLUE_550, WHITE, AUTHENTIC_BLUE_350, } from './common/colors';
+import { ACTION_BLUE_900, FREEDOM_RED_900, AUTHENTIC_BLUE_550, WHITE, AUTHENTIC_BLUE_350 } from './common/colors';
 import { LatLngTuple } from 'leaflet';
 
 export const LABELS = {
     PEN: 'Pen',
     DELETE: 'Delete',
     FOCUS: 'Focus',
-    EXPORT: 'Export'
+    EXPORT: 'Export',
+    IMPORT: 'Import'
 };
 
 export const LEAFLET = {

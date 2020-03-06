@@ -7,12 +7,14 @@ import { Frame } from './Icons/Frame';
 import { Trashcan } from './Icons/Trashcan';
 import { VectorMode } from './Icons/VectorMode';
 import { Export } from './Icons/Export';
+import { Import } from './Icons/Import';
 
 export enum ActionButtonIcons {
     TRASHCAN = 'TRASHCAN',
     FRAME = 'FRAME',
     VECTOR_MODE = 'VECTOR_MODE',
-    EXPORT = 'EXPORT'
+    EXPORT = 'EXPORT',
+    IMPORT = 'IMPORT'
 }
 
 interface ContainerProps {
@@ -62,6 +64,8 @@ const renderIcon = (icon: ActionButtonIcons, inactive?: boolean, activeIconColor
             return <VectorMode {...props} />;
         case ActionButtonIcons.EXPORT:
             return <Export {...props} />;
+        case ActionButtonIcons.IMPORT:
+            return <Import {...props} />;
         default:
             return null;
     }
