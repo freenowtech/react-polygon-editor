@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import * as clipboard from 'clipboard-polyfill';
 import { LatLng, latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaflet';
 import { Map as LeafletMap, Pane, Polyline, Rectangle } from 'react-leaflet';
 import flatten from 'lodash.flatten';
@@ -15,6 +16,8 @@ import {
     isCoordinateInPolygon,
     isPolygonClosed
 } from '../helpers';
+import { Modal } from '../common/components/Modal';
+import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
 import { TileLayer } from '../leaflet/TileLayer';
 import { MAP } from '../constants';
 import { Map, Container } from '../leaflet/Map';
@@ -64,10 +67,11 @@ export interface State {
         startPosition: Coordinate;
         endPosition: Coordinate;
         startTime: number;
-    }|null;
+    } | null;
     previousMouseMovePosition?: Coordinate;
     isPenToolActive: boolean;
     newPointPosition: Coordinate | null;
+    showExportPolygonModal: boolean;
 }
 
 export class BaseMap extends React.Component<Props, State> {
@@ -80,7 +84,8 @@ export class BaseMap extends React.Component<Props, State> {
         rectangleSelection: null,
         previousMouseMovePosition: undefined,
         isPenToolActive: false,
-        newPointPosition: null
+        newPointPosition: null,
+        showExportPolygonModal: false
     };
 
     static getDerivedStateFromProps(props: Props, state: State): State {
@@ -173,6 +178,22 @@ export class BaseMap extends React.Component<Props, State> {
     };
 
     ///////////////////////////////////////////////////////////////////////////
+    //                          Export methods                               //
+    ///////////////////////////////////////////////////////////////////////////
+
+    handleExportPolygon = (serialized: string) => {
+        clipboard.writeText(serialized);
+    };
+
+    handleExportPolygonActionClicked = () => {
+        this.setState({ showExportPolygonModal: true });
+    };
+
+    handleExportPolygonModalClosed = () => {
+        this.setState({ showExportPolygonModal: false });
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
     //                          Map Events methods                           //
     ///////////////////////////////////////////////////////////////////////////
 
@@ -213,15 +234,14 @@ export class BaseMap extends React.Component<Props, State> {
 
     handleMouseMoveOnMap = (event: LeafletMouseEvent) => {
         const mouseCoordinate = createCoordinateFromLeafletLatLng(event.latlng);
-        if (
-            this.state.rectangleSelection &&
-            (new Date().getTime() - this.state.rectangleSelection?.startTime) >= 100
-        ) {
+        if (this.state.rectangleSelection && new Date().getTime() - this.state.rectangleSelection?.startTime >= 100) {
             const start = this.state.rectangleSelection.startPosition;
             if (start) {
                 const bounds: LatLngBounds = latLngBounds(createLeafletLatLngFromCoordinate(start), event.latlng);
 
-                const activePolygon: Coordinate[]|undefined = this.props.polygonCoordinates[this.props.activePolygonIndex];
+                const activePolygon: Coordinate[] | undefined = this.props.polygonCoordinates[
+                    this.props.activePolygonIndex
+                ];
                 if (activePolygon) {
                     const pointsInsideBounds: number[] = [];
                     activePolygon.forEach((point, index) => {
@@ -250,10 +270,11 @@ export class BaseMap extends React.Component<Props, State> {
         }
     };
 
-    handleMouseOutOfMap = () => this.setState({
-        newPointPosition: null,
-        rectangleSelection: null
-    });
+    handleMouseOutOfMap = () =>
+        this.setState({
+            newPointPosition: null,
+            rectangleSelection: null
+        });
 
     ///////////////////////////////////////////////////////////////////////////
     //                           Vertex methods                              //
@@ -471,7 +492,11 @@ export class BaseMap extends React.Component<Props, State> {
             );
 
             return (
-                <Rectangle color={MAP.RECTANGLE_SELECTION_COLOR} fillColor={MAP.RECTANGLE_SELECTION_COLOR} bounds={bounds} />
+                <Rectangle
+                    color={MAP.RECTANGLE_SELECTION_COLOR}
+                    fillColor={MAP.RECTANGLE_SELECTION_COLOR}
+                    bounds={bounds}
+                />
             );
         }
         return null;
@@ -526,7 +551,17 @@ export class BaseMap extends React.Component<Props, State> {
                     onFocus={this.handleOnFocusClicked}
                     onEnableVectorMode={this.toggleVectorMode}
                     deleteInactive={selection.size === 0}
+                    onExport={this.handleExportPolygonActionClicked}
                 />
+
+                {this.state.showExportPolygonModal && (
+                    <Modal onClose={this.handleExportPolygonModalClosed}>
+                        <ExportPolygonForm
+                            polygon={this.props.polygonCoordinates[this.props.activePolygonIndex]}
+                            onSubmit={this.handleExportPolygon}
+                        />
+                    </Modal>
+                )}
             </Container>
         );
     }

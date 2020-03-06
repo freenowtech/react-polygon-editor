@@ -10,6 +10,7 @@ describe('ActionBar', () => {
         onFocus: jest.fn(),
         onDelete: jest.fn(),
         onEnableVectorMode: jest.fn(),
+        onExport: jest.fn(),
         deleteInactive: true,
         editable: false,
         isVectorModeEnabled: false
