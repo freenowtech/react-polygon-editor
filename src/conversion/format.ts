@@ -21,19 +21,6 @@ export interface Format {
 }
 
 export const format: Record<FormatType, Format> = {
-    [FormatType.JTS]: {
-        name: FormatType.JTS,
-        displayName: 'JTS',
-        serialize: coordinates => {
-            return prettyPrint(coordinates.map(({ longitude, latitude }) => [longitude, latitude]));
-        },
-        deserialize: (raw: string) => {
-            throw new Error('not implemented');
-        },
-        validate: (value: string) => {
-            throw new Error('not implemented');
-        }
-    },
     [FormatType.GEOJSON]: {
         name: FormatType.GEOJSON,
         displayName: 'GeoJSON',
@@ -54,6 +41,19 @@ export const format: Record<FormatType, Format> = {
             };
 
             return prettyPrint(geoJSON);
+        },
+        deserialize: (raw: string) => {
+            throw new Error('not implemented');
+        },
+        validate: (value: string) => {
+            throw new Error('not implemented');
+        }
+    },
+    [FormatType.JTS]: {
+        name: FormatType.JTS,
+        displayName: 'JTS',
+        serialize: coordinates => {
+            return prettyPrint(coordinates.map(({ longitude, latitude }) => [longitude, latitude]));
         },
         deserialize: (raw: string) => {
             throw new Error('not implemented');
