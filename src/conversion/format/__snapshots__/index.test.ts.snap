@@ -31,6 +31,19 @@ Array [
 ]
 `;
 
+exports[`conversion format geojson deserialize: not enough-coordinates => invalid 1`] = `
+"Invalid GeoJSON detected:
+- a LinearRing of coordinates needs to have four or more positions
+,- Polygons and MultiPolygons should follow the right-hand rule
+"
+`;
+
+exports[`conversion format geojson deserialize: open polygon => invalid 1`] = `
+"Invalid GeoJSON detected:
+- the first and last positions in a LinearRing of coordinates must be the same
+"
+`;
+
 exports[`conversion format geojson deserialize: type feature => valid 1`] = `
 Array [
   Object {
