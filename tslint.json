@@ -22,7 +22,6 @@
         "jsx-use-translation-function": false,
         "label-position": true,
         "max-line-length": [true, { "limit": 160, "ignore-pattern": "^\\s*d=|^\\s*points=" }],
-        "member-ordering": [true, ["static-before-instance", "variables-before-functions"]],
         "member-access": [true, "no-public"],
         "no-any": true,
         "no-arg": true,
