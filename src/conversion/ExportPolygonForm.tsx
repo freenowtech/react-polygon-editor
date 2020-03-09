@@ -18,6 +18,10 @@ const Form = styled.form`
     flex-direction: column;
 `;
 
+const Description = styled(Text).attrs(() => ({ weak: true }))`
+    margin-bottom: 24px;
+`;
+
 const rippleAnimation = keyframes`
     0% {
         opacity: 0.6;
@@ -119,7 +123,7 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
                 ))}
             </Select>
 
-            {outputFormat.description && <Text dangerouslySetInnerHTML={{ __html: outputFormat.description }} />}
+            {outputFormat.description && <Description dangerouslySetInnerHTML={{ __html: outputFormat.description }} />}
 
             <CopyTextarea value={value} readOnly />
             <CopyOverlay

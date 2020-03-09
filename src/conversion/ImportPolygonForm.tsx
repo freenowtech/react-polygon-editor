@@ -8,6 +8,7 @@ import { ButtonGroup } from '../common/components/ButtonGroup';
 import { Headline } from '../common/components/Headline';
 import { Textarea } from '../common/components/Textarea';
 import { useDismiss } from '../common/components/Modal';
+import { ImportPolygonStatus, Status } from './ImportPolygonStatus';
 import { useDeserialize } from './useDeserialize';
 
 const Form = styled.form`
@@ -28,6 +29,15 @@ export const ImportPolygonForm: React.FC<Props> = ({ onSubmit }) => {
     const [text, setText] = useState('');
     const deserialized = useDeserialize(text);
 
+    let status: Status;
+    if (text === '') {
+        status = Status.EMPTY;
+    } else if (deserialized.valid) {
+        status = Status.VALID;
+    } else {
+        status = Status.INVALID;
+    }
+
     const handleOnSubmit: FormEventHandler = e => {
         e.preventDefault();
 
@@ -40,6 +50,7 @@ export const ImportPolygonForm: React.FC<Props> = ({ onSubmit }) => {
     return (
         <Form onSubmit={handleOnSubmit}>
             <Headline>Import Polygon</Headline>
+            <ImportPolygonStatus status={status} />
             <StyledTextarea placeholder="Insert code here" value={text} onChange={e => setText(e.target.value)} />
             <ButtonGroup>
                 <Button type="submit" disabled={!deserialized.valid}>

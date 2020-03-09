@@ -14,5 +14,6 @@ export const Textarea = styled.textarea`
     resize: none;
     transition: box-shadow 100ms, border 100ms;
     outline: none;
+    white-space: pre;
     width: 100%;
 `;
