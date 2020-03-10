@@ -9,7 +9,8 @@ import {
     DELETE_POLYGON_POINTS,
     ADD_POINT,
     ADD_POINT_TO_EDGE,
-    CHANGE_POLYGON
+    CHANGE_POLYGON,
+    SET_POLYGON
 } from './actions';
 import { Coordinate } from 'types';
 
@@ -30,6 +31,14 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
             return {
                 ...state,
                 polygons: [...action.payload]
+            };
+        }
+        case SET_POLYGON: {
+            const newPolygons = state.polygons.slice();
+            newPolygons[state.activeIndex] = action.payload;
+            return {
+                ...state,
+                polygons: newPolygons
             };
         }
 

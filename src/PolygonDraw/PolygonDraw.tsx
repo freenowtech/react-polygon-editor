@@ -39,6 +39,7 @@ export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
         selection,
         addPoint,
         addPointToEdge,
+        setPolygon,
         deselectAllPoints,
         removePointFromSelection,
         addPointsToSelection,
@@ -59,6 +60,7 @@ export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
             activePolygonIndex={activeIndex}
             highlightedPolygonIndex={highlightedIndex}
             polygonCoordinates={polygons}
+            setPolygon={setPolygon}
             addPoint={addPoint}
             addPointToEdge={addPointToEdge}
             deselectAllPoints={deselectAllPoints}

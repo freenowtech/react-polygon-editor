@@ -58,6 +58,7 @@ export interface Props {
     moveSelectedPoints: (newPosition: Coordinate) => void;
     deletePolygonPoints: () => void;
     selectAllPoints: () => void;
+    setPolygon: (polygon: Coordinate[]) => void;
 }
 
 export interface State {
@@ -197,8 +198,7 @@ export class BaseMap extends React.Component<Props, State> {
     };
 
     handleImportPolygon = (coordinates: Coordinate[]) => {
-        // TODO handle new polygon
-        alert('polygon added');
+        this.props.setPolygon(coordinates);
     };
 
     handleImportPolygonActionClicked = () => {
