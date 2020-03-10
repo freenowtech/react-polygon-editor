@@ -5,6 +5,7 @@ declare module '@mapbox/geojsonhint' {
     };
 
     export function hint(
+        // tslint:disable-next-line:no-any
         value: any,
         options: {
             noDuplicateMembers?: boolean;
