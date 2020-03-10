@@ -80,7 +80,7 @@ export const ImportPolygonStatus: React.FC<Props> = ({ status }) => {
         case Status.INVALID: {
             data = {
                 title: 'Invalid format',
-                description: 'For more information about the supported format please follow this link:',
+                description: 'Please make sure that the entered polygon is valid GeoJSON.',
                 icon: <CloseCircleSolidIcon color={NEGATIVE_ORANGE_900} />
             };
             break;
