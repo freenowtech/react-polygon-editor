@@ -32,6 +32,7 @@ export interface Props {
     deleteInactive: boolean;
 
     onExport: () => void;
+    onImport: () => void;
 }
 
 export const ActionBar: FunctionComponent<Props> = ({
@@ -41,7 +42,8 @@ export const ActionBar: FunctionComponent<Props> = ({
     onEnableVectorMode,
     onFocus,
     onDelete,
-    onExport
+    onExport,
+    onImport
 }) => (
     <Container>
         {editable && (
@@ -64,6 +66,9 @@ export const ActionBar: FunctionComponent<Props> = ({
                 </ActionButton>
             </>
         )}
+        <ActionButton onClick={onImport} icon={ActionButtonIcons.IMPORT}>
+            {LABELS.IMPORT}
+        </ActionButton>
         <ActionButton onClick={onExport} icon={ActionButtonIcons.EXPORT}>
             {LABELS.EXPORT}
         </ActionButton>

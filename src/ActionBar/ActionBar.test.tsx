@@ -11,6 +11,7 @@ describe('ActionBar', () => {
         onDelete: jest.fn(),
         onEnableVectorMode: jest.fn(),
         onExport: jest.fn(),
+        onImport: jest.fn(),
         deleteInactive: true,
         editable: false,
         isVectorModeEnabled: false

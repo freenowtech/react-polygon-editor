@@ -35,6 +35,10 @@ export const usePolygonEditor = (
 
     polygonEditReducer(state, actions.changePolygon(polygonList));
 
+    const setPolygon = (polygon: Coordinate[]) => {
+        dispatch(actions.setPolygon(polygon));
+    };
+
     const addPoint = (coordinate: Coordinate) => {
         dispatch(actions.addPoint(coordinate));
     };
@@ -83,6 +87,7 @@ export const usePolygonEditor = (
         selectPoints,
         moveSelectedPoints,
         deletePolygonPoints,
-        selectAllPoints
+        selectAllPoints,
+        setPolygon
     };
 };

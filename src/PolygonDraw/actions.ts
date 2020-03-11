@@ -20,6 +20,7 @@ export const ADD_POINT_TO_EDGE = 'POLYGON_DRAW/ADD_POINT_TO_EDGE';
 
 // Change polygon actions
 export const CHANGE_POLYGON = 'POLYGON_DRAW/CHANGE_POLYGON';
+export const SET_POLYGON = 'POLYGON_DRAW/SET_POLYGON';
 
 export const actions = {
     // Selections action creators
@@ -40,7 +41,8 @@ export const actions = {
     deletePolygonPoints: () => createAction(DELETE_POLYGON_POINTS),
 
     // Change Polygon
-    changePolygon: (polygon: Coordinate[][]) => createAction(CHANGE_POLYGON, polygon)
+    changePolygon: (polygon: Coordinate[][]) => createAction(CHANGE_POLYGON, polygon),
+    setPolygon: (polygon: Coordinate[]) => createAction(SET_POLYGON, polygon)
 };
 
 export type Actions = ActionsUnion<typeof actions>;

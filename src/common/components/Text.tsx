@@ -1,11 +1,14 @@
 import styled from 'styled-components';
 
-import { ACTION_BLUE_900, AUTHENTIC_BLUE_550 } from '../colors';
+import { ACTION_BLUE_900, AUTHENTIC_BLUE_550, AUTHENTIC_BLUE_1100 } from '../colors';
 
-export const Text = styled.p`
-    color: ${AUTHENTIC_BLUE_550};
+interface Props {
+    weak?: boolean;
+}
+
+export const Text = styled.p<Props>`
+    color: ${({ weak }) => (weak ? AUTHENTIC_BLUE_550 : AUTHENTIC_BLUE_1100)};
     font-size: 14px;
-    margin-bottom: 24px;
 
     a,
     a:visited {

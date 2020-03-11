@@ -3,9 +3,7 @@ module.exports = ({ config }) => {
     config.module.rules.push(
         {
             test: /\.story\.(ts|tsx)$/,
-            include: [
-                path.resolve(__dirname, '../stories')
-            ],
+            include: [path.resolve(__dirname, '../stories')],
             enforce: 'pre',
             use: [
                 {
@@ -14,8 +12,8 @@ module.exports = ({ config }) => {
                         parser: 'typescript',
                         prettierConfig: {
                             printWidth: 150,
-                            tabWidth: 5,
-                            singleQuote: true,
+                            tabWidth: 4,
+                            singleQuote: true
                         }
                     }
                 }
@@ -23,10 +21,7 @@ module.exports = ({ config }) => {
         },
         {
             test: /\.(ts|tsx)$/,
-            include: [
-                path.resolve(__dirname, '../src'),
-                path.resolve(__dirname, '../stories')
-            ],
+            include: [path.resolve(__dirname, '../src'), path.resolve(__dirname, '../stories')],
             enforce: 'pre',
             use: [
                 {
@@ -36,10 +31,7 @@ module.exports = ({ config }) => {
         },
         {
             test: /\.(ts|tsx)$/,
-            include: [
-                path.resolve(__dirname, '../src'),
-                path.resolve(__dirname, '../stories')
-            ],
+            include: [path.resolve(__dirname, '../src'), path.resolve(__dirname, '../stories')],
             use: [
                 {
                     loader: require.resolve('awesome-typescript-loader')
@@ -48,5 +40,9 @@ module.exports = ({ config }) => {
         }
     );
     config.resolve.extensions.push('.ts', '.tsx');
+    config.node = {
+        ...config.node,
+        fs: 'empty'
+    };
     return config;
 };

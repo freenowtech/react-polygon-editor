@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { Coordinate } from '../types';
 import { ExportPolygonForm } from './ExportPolygonForm';
-import { FormatType } from './format';
+import { FormatType } from './format/types';
 
 const polygon: Coordinate[] = [
     { latitude: 0, longitude: 0 },

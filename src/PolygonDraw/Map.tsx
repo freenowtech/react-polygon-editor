@@ -18,6 +18,7 @@ import {
 } from '../helpers';
 import { Modal } from '../common/components/Modal';
 import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
+import { ImportPolygonForm } from '../conversion/ImportPolygonForm';
 import { TileLayer } from '../leaflet/TileLayer';
 import { MAP } from '../constants';
 import { Map, Container } from '../leaflet/Map';
@@ -57,6 +58,7 @@ export interface Props {
     moveSelectedPoints: (newPosition: Coordinate) => void;
     deletePolygonPoints: () => void;
     selectAllPoints: () => void;
+    setPolygon: (polygon: Coordinate[]) => void;
 }
 
 export interface State {
@@ -72,6 +74,7 @@ export interface State {
     isPenToolActive: boolean;
     newPointPosition: Coordinate | null;
     showExportPolygonModal: boolean;
+    showImportPolygonModal: boolean;
 }
 
 export class BaseMap extends React.Component<Props, State> {
@@ -85,7 +88,8 @@ export class BaseMap extends React.Component<Props, State> {
         previousMouseMovePosition: undefined,
         isPenToolActive: false,
         newPointPosition: null,
-        showExportPolygonModal: false
+        showExportPolygonModal: false,
+        showImportPolygonModal: false
     };
 
     static getDerivedStateFromProps(props: Props, state: State): State {
@@ -178,7 +182,7 @@ export class BaseMap extends React.Component<Props, State> {
     };
 
     ///////////////////////////////////////////////////////////////////////////
-    //                          Export methods                               //
+    //                          Export / Import methods                      //
     ///////////////////////////////////////////////////////////////////////////
 
     handleExportPolygon = (serialized: string) => {
@@ -191,6 +195,18 @@ export class BaseMap extends React.Component<Props, State> {
 
     handleExportPolygonModalClosed = () => {
         this.setState({ showExportPolygonModal: false });
+    };
+
+    handleImportPolygon = (coordinates: Coordinate[]) => {
+        this.props.setPolygon(coordinates);
+    };
+
+    handleImportPolygonActionClicked = () => {
+        this.setState({ showImportPolygonModal: true });
+    };
+
+    handleImportPolygonModalClosed = () => {
+        this.setState({ showImportPolygonModal: false });
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -552,6 +568,7 @@ export class BaseMap extends React.Component<Props, State> {
                     onEnableVectorMode={this.toggleVectorMode}
                     deleteInactive={selection.size === 0}
                     onExport={this.handleExportPolygonActionClicked}
+                    onImport={this.handleImportPolygonActionClicked}
                 />
 
                 {this.state.showExportPolygonModal && (
@@ -560,6 +577,12 @@ export class BaseMap extends React.Component<Props, State> {
                             polygon={this.props.polygonCoordinates[this.props.activePolygonIndex]}
                             onSubmit={this.handleExportPolygon}
                         />
+                    </Modal>
+                )}
+
+                {this.state.showImportPolygonModal && (
+                    <Modal onClose={this.handleImportPolygonModalClosed}>
+                        <ImportPolygonForm onSubmit={this.handleImportPolygon} />
                     </Modal>
                 )}
             </Container>
