@@ -7,7 +7,11 @@ interface Props extends SVGProps<SVGSVGElement> {
 }
 
 export const Import: React.FC<Props> = ({ iconColor = AUTHENTIC_BLUE_900, ...props }) => (
-    <svg viewBox="0 0 12 12" {...props}>
-        <path fill={iconColor} d="M9.5 9.5v1h-7v-1h7zm-3-8v5.219L9 4.496v1.337L6 8.5 3 5.833V4.496l2.5 2.222V1.5h1z" />
+    <svg viewBox="0 0 24 24" {...props}>
+        <path
+            d="M19 19v2H5v-2h14zM12 3l6 5.333v2.675l-5-4.444V17h-2V6.564l-5 4.445V8.334L12 3z"
+            fill={iconColor}
+            fillRule="nonzero"
+        />
     </svg>
 );
