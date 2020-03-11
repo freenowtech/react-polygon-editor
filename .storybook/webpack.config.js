@@ -12,7 +12,7 @@ module.exports = ({ config }) => {
                         parser: 'typescript',
                         prettierConfig: {
                             printWidth: 150,
-                            tabWidth: 5,
+                            tabWidth: 4,
                             singleQuote: true
                         }
                     }
