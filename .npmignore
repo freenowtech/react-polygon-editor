@@ -29,3 +29,5 @@ node_modules
 .storybook/
 .github/
 stories/
+.vscode
+*.png
