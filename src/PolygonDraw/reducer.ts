@@ -34,11 +34,13 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
             };
         }
         case SET_POLYGON: {
-            const newPolygons = state.polygons.slice();
-            newPolygons[state.activeIndex] = action.payload;
             return {
                 ...state,
-                polygons: newPolygons,
+                polygons: [
+                    ...state.polygons.slice(0, state.activeIndex),
+                    action.payload,
+                    ...state.polygons.slice(state.activeIndex + 1)
+                ],
                 selection: new Set()
             };
         }
