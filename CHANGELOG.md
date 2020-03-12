@@ -1,19 +1,11 @@
 # Changelog
 
-## [1.1.0.rc3] - 12.03.2020
-
--   Fix: Clear selection after import
--   Fix: Focus on polygon after import
--   Fix: Prevent default behaviour for keyevents
-
-## [1.1.0.rc2] - 11.03.2020
-
--   Feat: Import polygons from GeoJSON
-
-## [1.1.0.rc1] - 06.03.2020
+## [1.1.0] - 12.03.2020
 
 -   Feat: Rectangle selection
 -   Feat: Export polygons as GeoJSON, JTS or LatLng
+-   Feat: Import polygons from GeoJSON
+-   Fix: Prevent default behaviour for keyevents
 
 ## [0.0.1] - 08.03.2019
 
