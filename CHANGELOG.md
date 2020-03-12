@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0.rc3] - 12.03.2020
+
+-   Fix: Clear selection after import
+-   Fix: Focus on polygon after import
+-   Fix: Prevent default behaviour for keyevents
+
 ## [1.1.0.rc2] - 11.03.2020
 
 -   Feat: Import polygons from GeoJSON
