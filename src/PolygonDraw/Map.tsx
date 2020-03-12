@@ -372,6 +372,7 @@ export class BaseMap extends React.Component<Props, State> {
     ///////////////////////////////////////////////////////////////////////////
 
     handleKeyDown = (e: KeyboardEvent) => {
+        e.preventDefault();
         switch (e.key) {
             case 'Escape':
                 this.props.deselectAllPoints();
