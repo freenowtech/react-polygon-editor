@@ -38,7 +38,8 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
             newPolygons[state.activeIndex] = action.payload;
             return {
                 ...state,
-                polygons: newPolygons
+                polygons: newPolygons,
+                selection: new Set()
             };
         }
 

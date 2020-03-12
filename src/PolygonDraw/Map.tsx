@@ -199,7 +199,6 @@ export class BaseMap extends React.Component<Props, State> {
 
     handleImportPolygon = (coordinates: Coordinate[]) => {
         this.props.setPolygon(coordinates);
-        this.props.deselectAllPoints();
     };
 
     handleImportPolygonActionClicked = () => {
