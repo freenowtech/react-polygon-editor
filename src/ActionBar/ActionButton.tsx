@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 import { AUTHENTIC_BLUE_900, AUTHENTIC_BLUE_200, ACTION_BLUE_900, WHITE } from '../common/colors';
@@ -6,11 +6,15 @@ import { AUTHENTIC_BLUE_900, AUTHENTIC_BLUE_200, ACTION_BLUE_900, WHITE } from '
 import { Frame } from './Icons/Frame';
 import { Trashcan } from './Icons/Trashcan';
 import { VectorMode } from './Icons/VectorMode';
+import { Export } from './Icons/Export';
+import { Import } from './Icons/Import';
 
 export enum ActionButtonIcons {
     TRASHCAN = 'TRASHCAN',
     FRAME = 'FRAME',
-    VECTOR_MODE = 'VECTOR_MODE'
+    VECTOR_MODE = 'VECTOR_MODE',
+    EXPORT = 'EXPORT',
+    IMPORT = 'IMPORT'
 }
 
 interface ContainerProps {
@@ -35,7 +39,7 @@ const Container = styled('div')<ContainerProps>`
     transition: 0.2s;
 
     user-select: none;
-    cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer' };
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 
     &:hover {
         transform: scale(1.005);
@@ -58,6 +62,10 @@ const renderIcon = (icon: ActionButtonIcons, inactive?: boolean, activeIconColor
             return <Frame {...props} />;
         case ActionButtonIcons.VECTOR_MODE:
             return <VectorMode {...props} />;
+        case ActionButtonIcons.EXPORT:
+            return <Export {...props} />;
+        case ActionButtonIcons.IMPORT:
+            return <Import {...props} />;
         default:
             return null;
     }
@@ -72,12 +80,10 @@ export interface Props {
     activeIconColor?: string;
     className?: string;
 }
-export const ActionButton: React.FunctionComponent<Props> = ({ icon, children, inactive, activeIconColor, ...props }) => {
+export const ActionButton: FunctionComponent<Props> = ({ icon, children, inactive, activeIconColor, ...props }) => {
     return (
         <Container {...props}>
-            <div>
-                {renderIcon(icon, inactive, activeIconColor)}
-            </div>
+            <div>{renderIcon(icon, inactive, activeIconColor)}</div>
             {children}
         </Container>
     );

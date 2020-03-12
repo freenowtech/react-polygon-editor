@@ -1,35 +1,54 @@
-import React, { FunctionComponent, useState } from 'react';
+import React from 'react';
 
 import { Coordinate } from 'types';
 import { createLeafletLatLngTupleFromCoordinate } from '../helpers';
 
-import { Actions } from './actions';
 import { MAP } from '../constants';
-import { initialState, PolygonEditReducer } from './reducer';
 import Map from './Map';
-import { isValidPolygon } from './validators';
+import { usePolygonEditor } from './usePolygonEditor';
 
-export interface Props {
-    polygon: Coordinate[];
+export type Props<T extends Coordinate[] | Coordinate[][]> = {
     boundary?: Coordinate[];
     initialCenter?: Coordinate;
     initialZoom?: number;
     editable?: boolean;
-    onChange?: (polygon: Coordinate[], isValid: boolean) => void;
-}
+    onChange?: (polygon: T, isValid: boolean) => void;
+    polygon: T;
+    activeIndex?: number;
+    highlightedIndex?: number;
+    onClick?: (index: number) => void;
+    onMouseEnter?: (index: number) => void;
+    onMouseLeave?: (index: number) => void;
+};
 
-export const PolygonDraw: FunctionComponent<Props> = ({ polygon, boundary, initialCenter, initialZoom, editable = true, onChange }) => {
-    const [selection, setSelection] = useState(initialState.selection);
-
-    const handleDispatch = (action: Actions) => {
-        const { polygon: updatedPolygon, selection: updatedSelection } = PolygonEditReducer({ selection, polygon }, action);
-        if (selection !== updatedSelection) {
-            setSelection(updatedSelection);
-        }
-        if (onChange && polygon !== updatedPolygon) {
-            onChange(updatedPolygon, isValidPolygon(updatedPolygon));
-        }
-    };
+export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
+    polygon,
+    activeIndex = 0,
+    highlightedIndex,
+    boundary,
+    initialCenter,
+    initialZoom,
+    editable = true,
+    onChange,
+    onClick,
+    onMouseEnter,
+    onMouseLeave
+}: Props<T>): React.ReactElement {
+    const {
+        polygons,
+        selection,
+        addPoint,
+        addPointToEdge,
+        setPolygon,
+        deselectAllPoints,
+        removePointFromSelection,
+        addPointsToSelection,
+        selectPoints,
+        moveSelectedPoints,
+        deletePolygonPoints,
+        selectAllPoints,
+        isPolygonClosed
+    } = usePolygonEditor(onChange, polygon, activeIndex);
 
     return (
         <Map
@@ -38,8 +57,23 @@ export const PolygonDraw: FunctionComponent<Props> = ({ polygon, boundary, initi
             initialCenter={initialCenter ? createLeafletLatLngTupleFromCoordinate(initialCenter) : MAP.DEFAULT_CENTER}
             initialZoom={initialZoom || MAP.DEFAULT_ZOOM}
             boundaryPolygonCoordinates={boundary || MAP.WORLD_COORDINATES}
-            polygonCoordinates={polygon}
-            dispatch={handleDispatch}
+            activePolygonIndex={activeIndex}
+            highlightedPolygonIndex={highlightedIndex}
+            polygonCoordinates={polygons}
+            setPolygon={setPolygon}
+            addPoint={addPoint}
+            addPointToEdge={addPointToEdge}
+            deselectAllPoints={deselectAllPoints}
+            removePointFromSelection={removePointFromSelection}
+            addPointsToSelection={addPointsToSelection}
+            selectPoints={selectPoints}
+            moveSelectedPoints={moveSelectedPoints}
+            deletePolygonPoints={deletePolygonPoints}
+            selectAllPoints={selectAllPoints}
+            isPolygonClosed={isPolygonClosed}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         />
     );
-};
+}

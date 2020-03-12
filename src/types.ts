@@ -1,8 +1,8 @@
 import { ActionCreatorsMapObject } from 'redux';
 
 export type Coordinate = {
-    latitude: number,
-    longitude: number
+    latitude: number;
+    longitude: number;
 };
 
 export interface Action<T extends string> {
@@ -14,4 +14,3 @@ export interface ActionWithPayload<T extends string, P> extends Action<T> {
 }
 
 export type ActionsUnion<A extends ActionCreatorsMapObject> = ReturnType<A[keyof A]>;
-
