@@ -38,6 +38,36 @@ describe('PolygonDraw reducer', () => {
         });
     });
 
+    describe('set polygon', () => {
+        it('should replace the active polygon', () => {
+            const state: PolygonEditState = {
+                activeIndex: 0,
+                polygons: [POLYGON_ONE],
+                selection: new Set()
+            };
+            const expectedState: PolygonEditState = {
+                activeIndex: 0,
+                polygons: [POLYGON_TWO],
+                selection: new Set()
+            };
+            expect(polygonEditReducer(state, actions.setPolygon(POLYGON_TWO))).toEqual(expectedState);
+        });
+
+        it('should remove any existing selection', () => {
+            const state: PolygonEditState = {
+                activeIndex: 0,
+                polygons: [POLYGON_ONE],
+                selection: new Set([0, 1, 2])
+            };
+            const expectedState: PolygonEditState = {
+                activeIndex: 0,
+                polygons: [POLYGON_TWO],
+                selection: new Set()
+            };
+            expect(polygonEditReducer(state, actions.setPolygon(POLYGON_TWO))).toEqual(expectedState);
+        });
+    });
+
     describe('Move points', () => {
         it('should move selected points', () => {
             const action = actions.moveSelectedPoints({ longitude: 0.1, latitude: 0.2 });
