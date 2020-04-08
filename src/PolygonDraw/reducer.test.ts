@@ -1,15 +1,17 @@
+import { ActionCreators, newHistory } from 'redux-undo';
 import { getCenterCoordinate, movePolygonCoordinates, removeSelectedPoints } from '../helpers';
-import { polygonEditReducer, PolygonEditState } from './reducer';
+import { EDIT_HISTORY_LIMIT, polygonEditReducer, PolygonEditState, undoablePolygonEditReducer } from './reducer';
 import { actions } from './actions';
 import { MOCK_POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from '../mockPolygon';
-
-const initialState: PolygonEditState = {
-    activeIndex: 0,
-    polygons: [[]],
-    selection: new Set()
-};
+import { Coordinate } from '../types';
 
 describe('PolygonDraw reducer', () => {
+    const initialState: PolygonEditState = {
+        activeIndex: 0,
+        polygons: [[]],
+        selection: new Set()
+    };
+
     describe('changePolygon', () => {
         it('should change single polygon', () => {
             const action = actions.changePolygon([MOCK_POLYGON]);
@@ -204,5 +206,104 @@ describe('PolygonDraw reducer', () => {
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
+    });
+});
+
+describe('Undoable PolygonDraw reducer', () => {
+    it('should aggregate to one undoable action', () => {
+        const initialState: PolygonEditState = {
+            activeIndex: 0,
+            polygons: [MOCK_POLYGON],
+            selection: new Set([0])
+        };
+        const initialStateWithHistory = newHistory([], initialState, []);
+
+        const coordinates: Coordinate[] = [{
+            latitude: 1,
+            longitude: 1
+        }, {
+            latitude: 2,
+            longitude: 2
+        }, {
+            latitude: 3,
+            longitude: 3
+        }];
+
+        const stateAfterMoving = coordinates.reduce((prev, next) => {
+            return undoablePolygonEditReducer(prev, actions.moveSelectedPoints(next));
+        }, initialStateWithHistory);
+
+        const stateAfterUndo = undoablePolygonEditReducer(stateAfterMoving, ActionCreators.undo());
+
+        expect(stateAfterUndo.present).toEqual(initialState);
+    });
+
+    it('should undo multiple actions', () => {
+        const initialState: PolygonEditState = {
+            activeIndex: 0,
+            polygons: [MOCK_POLYGON],
+            selection: new Set([0])
+        };
+        const initialStateWithHistory = newHistory([], initialState, []);
+
+        const coordinates: Coordinate[] = [{
+            latitude: 1,
+            longitude: 1
+        }, {
+            latitude: 2,
+            longitude: 2
+        }, {
+            latitude: 3,
+            longitude: 3
+        }];
+
+        const stateAfterMoving = coordinates.reduce((prev, next) => {
+            return undoablePolygonEditReducer(prev, actions.moveSelectedPoints(next));
+        }, initialStateWithHistory);
+
+        const stateAfterAddingNewPoint = undoablePolygonEditReducer(stateAfterMoving, actions.addPoint({ latitude: 4, longitude: 4 }));
+
+        const stateAfterUndo = undoablePolygonEditReducer(stateAfterAddingNewPoint, ActionCreators.undo());
+        expect(stateAfterUndo.present).toEqual(stateAfterMoving.present);
+
+        const stateAfterSecondUndo = undoablePolygonEditReducer(stateAfterUndo, ActionCreators.undo());
+        expect(stateAfterSecondUndo.present).toEqual(initialState);
+    });
+
+    it('shouldn\'t undo irrelevant actions', () => {
+        const initialState: PolygonEditState = {
+            activeIndex: 0,
+            polygons: [MOCK_POLYGON],
+            selection: new Set([0])
+        };
+        const initialStateWithHistory = newHistory([], initialState, []);
+
+        const stateAfterAddingNewPoint = undoablePolygonEditReducer(initialStateWithHistory, actions.addPoint({ latitude: 4, longitude: 4 }));
+        const stateAfterSelectingAllPoints = undoablePolygonEditReducer(stateAfterAddingNewPoint, actions.selectAllPoints());
+
+        const stateAfterUndo = undoablePolygonEditReducer(stateAfterSelectingAllPoints, ActionCreators.undo());
+        expect(stateAfterUndo.present).toEqual(initialState);
+    });
+
+    it(`should limit undoable actions to ${EDIT_HISTORY_LIMIT}`, () => {
+        const initialState: PolygonEditState = {
+            activeIndex: 0,
+            polygons: [MOCK_POLYGON],
+            selection: new Set([0])
+        };
+        const initialStateWithHistory = newHistory([], initialState, []);
+
+        const stateAfterFirstChange = undoablePolygonEditReducer(initialStateWithHistory, actions.addPoint({ latitude: 50, longitude: 50 }));
+
+        let inbetweenState = stateAfterFirstChange;
+        for (let i = 0; i < EDIT_HISTORY_LIMIT; i++) {
+            inbetweenState = undoablePolygonEditReducer(inbetweenState, actions.addPoint({ latitude: i, longitude: i }));
+        }
+
+        for (let i = 0; i < EDIT_HISTORY_LIMIT + 1; i++) {
+            inbetweenState = undoablePolygonEditReducer(inbetweenState, ActionCreators.undo());
+        }
+
+        expect(inbetweenState.present).toEqual(stateAfterFirstChange.present);
     });
 });

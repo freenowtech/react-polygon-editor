@@ -39,7 +39,9 @@ describe('Map component', () => {
             selectAllPoints: jest.fn(),
             moveSelectedPoints: jest.fn(),
             deletePolygonPoints: jest.fn(),
-            setPolygon: jest.fn()
+            setPolygon: jest.fn(),
+            onUndo: jest.fn(),
+            onRedo: jest.fn()
         };
     });
 

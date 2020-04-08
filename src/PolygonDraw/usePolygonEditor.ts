@@ -4,8 +4,9 @@ import isEqual from 'lodash.isequal';
 
 import { Actions, actions } from './actions';
 import { ensurePolygonList, isPolygonClosed, isPolygonList } from '../helpers';
-import { polygonEditReducer, PolygonEditState } from './reducer';
+import { PolygonEditState, undoablePolygonEditReducer } from './reducer';
 import { isValidPolygon } from './validators';
+import { ActionCreators, StateWithHistory } from 'redux-undo';
 
 export const usePolygonEditor = (
     onChange: (polygon: Coordinate[] | Coordinate[][], isValid: boolean) => void = () => {},
@@ -15,25 +16,31 @@ export const usePolygonEditor = (
     const polygonList = ensurePolygonList(polygons);
 
     const [selection, setSelection] = useState<Set<number>>(new Set());
+    const [editHistory, setEditHistory] = useState<Omit<StateWithHistory<PolygonEditState>, 'present'>>({
+        past: [],
+        future: []
+    });
 
-    const state: PolygonEditState = {
-        polygons: polygonList,
-        activeIndex: activeIndex,
-        selection: selection
+    const state: StateWithHistory<PolygonEditState> = {
+        present: {
+            polygons: polygonList,
+            activeIndex: activeIndex,
+            selection: selection
+        },
+        ...editHistory
     };
 
     const dispatch = (action: Actions) => {
-        const { polygons: newPolygons, selection: newSelection } = polygonEditReducer(state, action);
+        const { present: { polygons: newPolygons, selection: newSelection }, ...rest } = undoablePolygonEditReducer(state, action);
+        setEditHistory(rest);
         if (!isEqual(selection, newSelection)) {
             setSelection(newSelection);
         }
         onChange(isPolygonList(polygons) ? newPolygons : newPolygons[0], newPolygons.every(isValidPolygon));
     };
 
-    const activePolygon = useMemo(() => state.polygons[state.activeIndex], [state.polygons, state.activeIndex]);
+    const activePolygon = useMemo(() => state.present.polygons[state.present.activeIndex], [state.present.polygons, state.present.activeIndex]);
     const polygonIsClosed: boolean = useMemo(() => isPolygonClosed(activePolygon), [activePolygon]);
-
-    polygonEditReducer(state, actions.changePolygon(polygonList));
 
     const setPolygon = (polygon: Coordinate[]) => {
         dispatch(actions.setPolygon(polygon));
@@ -75,9 +82,17 @@ export const usePolygonEditor = (
         dispatch(actions.selectAllPoints());
     };
 
+    const undo = () => {
+        dispatch(ActionCreators.undo());
+    };
+
+    const redo = () => {
+        dispatch(ActionCreators.redo());
+    };
+
     return {
-        selection: state.selection,
-        polygons: state.polygons,
+        selection: state.present.selection,
+        polygons: state.present.polygons,
         isPolygonClosed: polygonIsClosed,
         addPoint,
         addPointToEdge,
@@ -88,6 +103,8 @@ export const usePolygonEditor = (
         moveSelectedPoints,
         deletePolygonPoints,
         selectAllPoints,
-        setPolygon
+        setPolygon,
+        undo,
+        redo
     };
 };
