@@ -218,16 +218,20 @@ describe('Undoable PolygonDraw reducer', () => {
         };
         const initialStateWithHistory = newHistory([], initialState, []);
 
-        const coordinates: Coordinate[] = [{
-            latitude: 1,
-            longitude: 1
-        }, {
-            latitude: 2,
-            longitude: 2
-        }, {
-            latitude: 3,
-            longitude: 3
-        }];
+        const coordinates: Coordinate[] = [
+            {
+                latitude: 1,
+                longitude: 1
+            },
+            {
+                latitude: 2,
+                longitude: 2
+            },
+            {
+                latitude: 3,
+                longitude: 3
+            }
+        ];
 
         const stateAfterMoving = coordinates.reduce((prev, next) => {
             return undoablePolygonEditReducer(prev, actions.moveSelectedPoints(next));
@@ -238,6 +242,37 @@ describe('Undoable PolygonDraw reducer', () => {
         expect(stateAfterUndo.present).toEqual(initialState);
     });
 
+    it('should not group moving different points after each other', () => {
+        const initialState: PolygonEditState = {
+            activeIndex: 0,
+            polygons: [
+                [
+                    { longitude: 0, latitude: 0 },
+                    { longitude: 1, latitude: 1 },
+                    { longitude: 1, latitude: 0 },
+                    { longitude: 0, latitude: 0 }
+                ]
+            ],
+            selection: new Set()
+        };
+        const initialStateWithHistory = newHistory([], initialState, []);
+
+        const stateAfterFirstMove = [
+            actions.selectPoints([0]),
+            actions.moveSelectedPoints({ latitude: 1, longitude: 1 }),
+            actions.moveSelectedPoints({ latitude: 2, longitude: 2 })
+        ].reduce(undoablePolygonEditReducer, initialStateWithHistory);
+
+        const stateAfterSecondMoveAndUndo = [
+            actions.selectPoints([1]),
+            actions.moveSelectedPoints({ latitude: 1, longitude: 1 }),
+            ActionCreators.undo()
+        ].reduce(undoablePolygonEditReducer, stateAfterFirstMove);
+
+        expect(stateAfterSecondMoveAndUndo?.present.polygons).toEqual(stateAfterFirstMove?.present.polygons);
+        expect(stateAfterSecondMoveAndUndo?.present.selection).toEqual(new Set([1]));
+    });
+
     it('should undo multiple actions', () => {
         const initialState: PolygonEditState = {
             activeIndex: 0,
@@ -246,22 +281,29 @@ describe('Undoable PolygonDraw reducer', () => {
         };
         const initialStateWithHistory = newHistory([], initialState, []);
 
-        const coordinates: Coordinate[] = [{
-            latitude: 1,
-            longitude: 1
-        }, {
-            latitude: 2,
-            longitude: 2
-        }, {
-            latitude: 3,
-            longitude: 3
-        }];
+        const coordinates: Coordinate[] = [
+            {
+                latitude: 1,
+                longitude: 1
+            },
+            {
+                latitude: 2,
+                longitude: 2
+            },
+            {
+                latitude: 3,
+                longitude: 3
+            }
+        ];
 
         const stateAfterMoving = coordinates.reduce((prev, next) => {
             return undoablePolygonEditReducer(prev, actions.moveSelectedPoints(next));
         }, initialStateWithHistory);
 
-        const stateAfterAddingNewPoint = undoablePolygonEditReducer(stateAfterMoving, actions.addPoint({ latitude: 4, longitude: 4 }));
+        const stateAfterAddingNewPoint = undoablePolygonEditReducer(
+            stateAfterMoving,
+            actions.addPoint({ latitude: 4, longitude: 4 })
+        );
 
         const stateAfterUndo = undoablePolygonEditReducer(stateAfterAddingNewPoint, ActionCreators.undo());
         expect(stateAfterUndo.present).toEqual(stateAfterMoving.present);
@@ -270,7 +312,7 @@ describe('Undoable PolygonDraw reducer', () => {
         expect(stateAfterSecondUndo.present).toEqual(initialState);
     });
 
-    it('shouldn\'t undo irrelevant actions', () => {
+    it(`shouldn't undo irrelevant actions`, () => {
         const initialState: PolygonEditState = {
             activeIndex: 0,
             polygons: [MOCK_POLYGON],
@@ -278,8 +320,14 @@ describe('Undoable PolygonDraw reducer', () => {
         };
         const initialStateWithHistory = newHistory([], initialState, []);
 
-        const stateAfterAddingNewPoint = undoablePolygonEditReducer(initialStateWithHistory, actions.addPoint({ latitude: 4, longitude: 4 }));
-        const stateAfterSelectingAllPoints = undoablePolygonEditReducer(stateAfterAddingNewPoint, actions.selectAllPoints());
+        const stateAfterAddingNewPoint = undoablePolygonEditReducer(
+            initialStateWithHistory,
+            actions.addPoint({ latitude: 4, longitude: 4 })
+        );
+        const stateAfterSelectingAllPoints = undoablePolygonEditReducer(
+            stateAfterAddingNewPoint,
+            actions.selectAllPoints()
+        );
 
         const stateAfterUndo = undoablePolygonEditReducer(stateAfterSelectingAllPoints, ActionCreators.undo());
         expect(stateAfterUndo.present).toEqual(initialState);
@@ -293,11 +341,17 @@ describe('Undoable PolygonDraw reducer', () => {
         };
         const initialStateWithHistory = newHistory([], initialState, []);
 
-        const stateAfterFirstChange = undoablePolygonEditReducer(initialStateWithHistory, actions.addPoint({ latitude: 50, longitude: 50 }));
+        const stateAfterFirstChange = undoablePolygonEditReducer(
+            initialStateWithHistory,
+            actions.addPoint({ latitude: 50, longitude: 50 })
+        );
 
         let inbetweenState = stateAfterFirstChange;
         for (let i = 0; i < EDIT_HISTORY_LIMIT; i++) {
-            inbetweenState = undoablePolygonEditReducer(inbetweenState, actions.addPoint({ latitude: i, longitude: i }));
+            inbetweenState = undoablePolygonEditReducer(
+                inbetweenState,
+                actions.addPoint({ latitude: i, longitude: i })
+            );
         }
 
         for (let i = 0; i < EDIT_HISTORY_LIMIT + 1; i++) {

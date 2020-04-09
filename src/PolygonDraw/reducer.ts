@@ -1,4 +1,4 @@
-import undoable, { groupByActionTypes, excludeAction } from 'redux-undo';
+import undoable, { excludeAction } from 'redux-undo';
 
 import {
     Actions,
@@ -150,7 +150,12 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
 export const EDIT_HISTORY_LIMIT = 20;
 
 export const undoablePolygonEditReducer = undoable(polygonEditReducer, {
-    groupBy: groupByActionTypes(MOVE_SELECTED_POINTS),
+    groupBy: (action, state, history) => {
+        if (action.type === MOVE_SELECTED_POINTS) {
+            return `${action.type}-${[...state.selection].sort().join('-')}`;
+        }
+        return null;
+    },
     filter: excludeAction([
         SELECT_POINTS,
         ADD_POINT_TO_SELECTION,
@@ -160,5 +165,7 @@ export const undoablePolygonEditReducer = undoable(polygonEditReducer, {
         CHANGE_POLYGON
     ]),
     // see https://github.com/omnidan/redux-undo/issues/6#issuecomment-142089793
-    limit: EDIT_HISTORY_LIMIT + 1
+    limit: EDIT_HISTORY_LIMIT + 1,
+    debug: false,
+    syncFilter: true
 });
