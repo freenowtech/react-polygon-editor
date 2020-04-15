@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.0] - 15.04.2020
+
+-   Feat: Undo and redo actions
+
 ## [1.1.0] - 12.03.2020
 
 -   Feat: Rectangle selection
