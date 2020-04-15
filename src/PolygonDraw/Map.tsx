@@ -59,6 +59,8 @@ export interface Props {
     deletePolygonPoints: () => void;
     selectAllPoints: () => void;
     setPolygon: (polygon: Coordinate[]) => void;
+    onUndo: () => void;
+    onRedo: () => void;
 }
 
 export interface State {
@@ -399,6 +401,13 @@ export class BaseMap extends React.Component<Props, State> {
                 break;
             case 'f':
                 this.reframe();
+                break;
+            case 'z':
+                if (e.metaKey && e.shiftKey) {
+                    this.props.onRedo();
+                } else if (e.metaKey) {
+                    this.props.onUndo();
+                }
                 break;
         }
     };

@@ -47,7 +47,9 @@ export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
         moveSelectedPoints,
         deletePolygonPoints,
         selectAllPoints,
-        isPolygonClosed
+        isPolygonClosed,
+        undo,
+        redo
     } = usePolygonEditor(onChange, polygon, activeIndex);
 
     return (
@@ -74,6 +76,8 @@ export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            onUndo={undo}
+            onRedo={redo}
         />
     );
 }

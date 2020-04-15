@@ -44,7 +44,8 @@
         "clipboard-polyfill": "^2.8.6",
         "leaflet-path-drag": "^1.1.0",
         "lodash.flatten": "^4.4.0",
-        "lodash.isequal": "^4.5.0"
+        "lodash.isequal": "^4.5.0",
+        "redux-undo": "^1.0.1"
     },
     "devDependencies": {
         "@babel/core": "^7.6.4",
