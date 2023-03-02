@@ -56,7 +56,7 @@ export class PolygonVertex extends React.Component<Props, State> {
     // tslint:disable-next-line
     setCircleMarkerRef = (ref: any) => {
         if (ref) {
-            this.circleMarkerElement = ref.leafletElement;
+            this.circleMarkerElement = ref;
         }
     };
 
@@ -96,9 +96,11 @@ export class PolygonVertex extends React.Component<Props, State> {
                 weight={selectedOrHovered ? 4 : 1}
                 radius={selectedOrHovered ? 6 : 4}
                 center={latLng}
-                onMouseOver={this.handleMouseOver}
-                onMouseOut={this.handleMouseOut}
-                onClick={this.handleClick}
+                eventHandlers={{
+                    click:this.handleClick,
+                    mouseover: this.handleMouseOver,
+                    mouseout: this.handleMouseOut
+                }}
                 bubblingMouseEvents={false}
                 draggable
             />

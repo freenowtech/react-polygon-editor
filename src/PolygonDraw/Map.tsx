@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import * as clipboard from 'clipboard-polyfill';
 import { LatLng, latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaflet';
-import { Map as LeafletMap, Pane, Polyline, Rectangle } from 'react-leaflet';
+import { useMap, Pane, Polyline, Rectangle } from 'react-leaflet';
 import flatten from 'lodash.flatten';
 
 import { Coordinate } from 'types';
@@ -27,6 +27,7 @@ import { EdgeVertex } from './EdgeVertex';
 import { PolygonVertex } from './PolygonVertex';
 import { BoundaryPolygon } from './BoundaryPolygon';
 import { Polygon } from './Polygon';
+import MapInner from './MapInner';
 
 interface MapSnapshot {
     reframe: boolean;
@@ -63,6 +64,8 @@ export interface Props {
     onRedo: () => void;
 }
 
+type MapType = ReturnType<typeof useMap>;
+
 export interface State {
     isMovedPointInBoundary: boolean;
     isShiftPressed: boolean;
@@ -80,7 +83,7 @@ export interface State {
 }
 
 export class BaseMap extends React.Component<Props, State> {
-    readonly mapRef = React.createRef<LeafletMap>();
+    private map: MapType | null = null;
 
     state: State = {
         isMovedPointInBoundary: true,
@@ -105,16 +108,20 @@ export class BaseMap extends React.Component<Props, State> {
         this.reframe();
         this.toggleVectorMode();
 
-        if (this.mapRef.current && this.mapRef.current.container) {
-            this.mapRef.current.container.addEventListener('keydown', this.handleKeyDown, false);
-            this.mapRef.current.container.addEventListener('keyup', this.handleKeyUp);
+        const container = this.map?.getContainer();
+
+        if (container) {
+            container.addEventListener('keydown', this.handleKeyDown, false);
+            container.addEventListener('keyup', this.handleKeyUp);
         }
     }
 
     componentWillUnmount() {
-        if (this.mapRef.current && this.mapRef.current.container) {
-            this.mapRef.current.container.removeEventListener('keydown', this.handleKeyDown, false);
-            this.mapRef.current.container.removeEventListener('keyup', this.handleKeyUp);
+        const container = this.map?.getContainer();
+        
+        if (container) {
+            container.removeEventListener('keydown', this.handleKeyDown, false);
+            container.removeEventListener('keyup', this.handleKeyUp);
         }
     }
 
@@ -125,7 +132,7 @@ export class BaseMap extends React.Component<Props, State> {
                 this.props.polygonCoordinates[this.props.activePolygonIndex].length > 1) ||
             // Reframe when the boundary polygon loads for the first time
             prevProps.boundaryPolygonCoordinates !== this.props.boundaryPolygonCoordinates;
-        const size = this.getSize(this.mapRef.current);
+            const size = this.getSize(this.map);
 
         return { reframe, size };
     }
@@ -135,10 +142,27 @@ export class BaseMap extends React.Component<Props, State> {
             this.reframe();
         }
 
-        if (this.mapRef.current && this.getSize(this.mapRef.current) !== size) {
-            this.mapRef.current.leafletElement.invalidateSize();
+        if (this.map && this.getSize(this.map) !== size) {
+            this.map.invalidateSize();
         }
     }
+
+    setMap = (map: MapType) => {
+        if (map) {
+            this.map = map;
+
+            
+            this.reframe();
+            this.toggleVectorMode();
+            
+            const container = map?.getContainer();
+            
+            if (container) {
+                container?.addEventListener('keydown', this.handleKeyDown, false);
+                container?.addEventListener('keyup', this.handleKeyUp);
+            }
+        }
+    };
 
     reframe = () => {
         const { polygonCoordinates, boundaryPolygonCoordinates, initialCenter, initialZoom } = this.props;
@@ -147,16 +171,16 @@ export class BaseMap extends React.Component<Props, State> {
             this.reframeOnPolygon(polygonCoordinates);
         } else if (boundaryPolygonCoordinates.length > 0 && boundaryPolygonCoordinates !== MAP.WORLD_COORDINATES) {
             this.reframeOnPolygon(boundaryPolygonCoordinates);
-        } else if (this.mapRef.current) {
-            this.mapRef.current.leafletElement.setView(initialCenter, initialZoom);
+        } else if (this.map) {
+            this.map.setView(initialCenter, initialZoom);
         }
     };
 
     reframeOnPolygon = (polygonCoordinates: Coordinate[] | Coordinate[][]) => {
-        if (this.mapRef.current && polygonCoordinates.length > 0) {
+        if (this.map && polygonCoordinates.length > 0) {
             const bounds = createLeafletLatLngBoundsFromCoordinates(flatten(polygonCoordinates));
 
-            this.mapRef.current.leafletElement.fitBounds(bounds);
+            this.map.fitBounds(bounds);
         }
     };
 
@@ -170,8 +194,9 @@ export class BaseMap extends React.Component<Props, State> {
         });
     };
 
-    getSize = (map: LeafletMap | null): string => {
-        return map && map.container ? `${map.container.clientHeight}x${map.container.clientWidth}` : '';
+    getSize = (map: MapType | null): string => {
+        const container = map?.getContainer();
+        return container ? `${container.clientHeight}x${container.clientWidth}` : '';
     };
 
     handleOnFocusClicked = () => {
@@ -536,20 +561,14 @@ export class BaseMap extends React.Component<Props, State> {
         return (
             <Container>
                 <Map
-                    animate
                     fadeAnimation
                     trackResize
                     zoomControl={false}
-                    ref={this.mapRef}
+                    ref={this.setMap}
                     center={initialCenter}
                     zoom={initialZoom}
                     zoomDelta={2}
                     zoomSnap={1.5}
-                    onclick={this.handleMapClick}
-                    onmousedown={this.handleMouseDownOnMap}
-                    onmouseup={this.handleMouseUpOnMap}
-                    onmousemove={this.handleMouseMoveOnMap}
-                    onmouseout={this.handleMouseOutOfMap}
                     boxZoom={false}
                     drawCursor={!!newPointPosition}
                 >
@@ -561,7 +580,7 @@ export class BaseMap extends React.Component<Props, State> {
                     {this.renderInactivePolygons()}
 
                     {editable && (
-                        <Pane>
+                        <Pane name="Polygon points">
                             {this.renderActivePolygonPoints()}
                             {this.props.isPolygonClosed && isPenToolActive && this.renderPolygonEdges()}}
                         </Pane>
@@ -570,6 +589,14 @@ export class BaseMap extends React.Component<Props, State> {
                     {this.state.rectangleSelection && this.renderSelectionRectangle()}
 
                     <TileLayer />
+                    <MapInner
+                        onClick={this.handleMapClick}
+                        onMouseOut={this.handleMouseOutOfMap}
+                        onMouseMove={this.handleMouseMoveOnMap}
+                        onMouseDown={this.handleMouseDownOnMap}
+                        onMouseUp={this.handleMouseUpOnMap}
+
+                    />
                 </Map>
                 <ActionBar
                     editable={editable}

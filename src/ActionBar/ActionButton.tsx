@@ -79,6 +79,7 @@ export interface Props {
     disabled?: boolean;
     activeIconColor?: string;
     className?: string;
+    children: React.ReactNode;
 }
 export const ActionButton: FunctionComponent<Props> = ({ icon, children, inactive, activeIconColor, ...props }) => {
     return (

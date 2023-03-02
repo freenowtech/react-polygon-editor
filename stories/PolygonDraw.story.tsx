@@ -7,6 +7,8 @@ import { Coordinate } from '../src/types';
 import { BOUNDARY, POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from './polygons';
 import { StateContainer } from './StateContainer';
 
+import 'leaflet/dist/leaflet.css';
+
 const SAMPLES: Coordinate[][] = [POLYGON_ONE, POLYGON_TWO, POLYGON_THREE];
 
 const polygonChangeAction = action('polygon changed');
