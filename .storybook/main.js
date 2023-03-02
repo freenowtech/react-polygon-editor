@@ -5,4 +5,8 @@ module.exports = {
     core: {
         builder: 'webpack5',
     },
+    webpackFinal: (config) => {
+        config.resolve.fallback = { path: false, fs: false }
+        return config;
+    },
 };
