@@ -582,7 +582,7 @@ export class BaseMap extends React.Component<Props, State> {
                     {editable && (
                         <Pane name="Polygon points">
                             {this.renderActivePolygonPoints()}
-                            {this.props.isPolygonClosed && isPenToolActive && this.renderPolygonEdges()}}
+                            {this.props.isPolygonClosed && isPenToolActive && this.renderPolygonEdges()}
                         </Pane>
                     )}
 

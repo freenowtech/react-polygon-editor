@@ -102,6 +102,7 @@ export class PolygonVertex extends React.Component<Props, State> {
                     mouseout: this.handleMouseOut
                 }}
                 bubblingMouseEvents={false}
+                // @ts-ignore
                 draggable
             />
         );
