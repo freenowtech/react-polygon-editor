@@ -118,7 +118,7 @@ export class BaseMap extends React.Component<Props, State> {
 
     componentWillUnmount() {
         const container = this.map?.getContainer();
-        
+
         if (container) {
             container.removeEventListener('keydown', this.handleKeyDown, false);
             container.removeEventListener('keyup', this.handleKeyUp);
@@ -132,7 +132,8 @@ export class BaseMap extends React.Component<Props, State> {
                 this.props.polygonCoordinates[this.props.activePolygonIndex].length > 1) ||
             // Reframe when the boundary polygon loads for the first time
             prevProps.boundaryPolygonCoordinates !== this.props.boundaryPolygonCoordinates;
-            const size = this.getSize(this.map);
+
+        const size = this.getSize(this.map);
 
         return { reframe, size };
     }
@@ -151,12 +152,11 @@ export class BaseMap extends React.Component<Props, State> {
         if (map) {
             this.map = map;
 
-            
             this.reframe();
             this.toggleVectorMode();
-            
+
             const container = map?.getContainer();
-            
+
             if (container) {
                 container?.addEventListener('keydown', this.handleKeyDown, false);
                 container?.addEventListener('keyup', this.handleKeyUp);

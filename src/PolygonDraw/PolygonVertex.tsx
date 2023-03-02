@@ -97,7 +97,7 @@ export class PolygonVertex extends React.Component<Props, State> {
                 radius={selectedOrHovered ? 6 : 4}
                 center={latLng}
                 eventHandlers={{
-                    click:this.handleClick,
+                    click: this.handleClick,
                     mouseover: this.handleMouseOver,
                     mouseout: this.handleMouseOut
                 }}
