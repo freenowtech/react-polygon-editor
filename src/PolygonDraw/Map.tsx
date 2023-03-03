@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-// import * as clipboard from 'clipboard-polyfill';
 import { LatLng, latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaflet';
 import { useMap, Pane, Polyline, Rectangle } from 'react-leaflet';
 import flatten from 'lodash.flatten';
@@ -213,7 +212,7 @@ export class BaseMap extends React.Component<Props, State> {
     ///////////////////////////////////////////////////////////////////////////
 
     handleExportPolygon = (serialized: string) => {
-        // clipboard.writeText(serialized);
+        navigator.clipboard.writeText(serialized);
     };
 
     handleExportPolygonActionClicked = () => {
