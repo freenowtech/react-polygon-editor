@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import * as clipboard from 'clipboard-polyfill';
+// import * as clipboard from 'clipboard-polyfill';
 import { LatLng, latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaflet';
 import { useMap, Pane, Polyline, Rectangle } from 'react-leaflet';
 import flatten from 'lodash.flatten';
@@ -14,7 +14,7 @@ import {
     subtractCoordinates,
     getPolygonEdges,
     isCoordinateInPolygon,
-    isPolygonClosed
+    isPolygonClosed,
 } from '../helpers';
 import { Modal } from '../common/components/Modal';
 import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
@@ -94,13 +94,13 @@ export class BaseMap extends React.Component<Props, State> {
         isPenToolActive: false,
         newPointPosition: null,
         showExportPolygonModal: false,
-        showImportPolygonModal: false
+        showImportPolygonModal: false,
     };
 
     static getDerivedStateFromProps(props: Props, state: State): State {
         return {
             ...state,
-            isPenToolActive: props.polygonCoordinates.length === 0 ? true : state.isPenToolActive
+            isPenToolActive: props.polygonCoordinates.length === 0 ? true : state.isPenToolActive,
         };
     }
 
@@ -190,7 +190,7 @@ export class BaseMap extends React.Component<Props, State> {
         }
         this.setState({
             isPenToolActive: !this.state.isPenToolActive,
-            newPointPosition: null
+            newPointPosition: null,
         });
     };
 
@@ -213,7 +213,7 @@ export class BaseMap extends React.Component<Props, State> {
     ///////////////////////////////////////////////////////////////////////////
 
     handleExportPolygon = (serialized: string) => {
-        clipboard.writeText(serialized);
+        // clipboard.writeText(serialized);
     };
 
     handleExportPolygonActionClicked = () => {
@@ -262,8 +262,8 @@ export class BaseMap extends React.Component<Props, State> {
                 rectangleSelection: {
                     startPosition: coordinate,
                     endPosition: coordinate,
-                    startTime: new Date().getTime()
-                }
+                    startTime: new Date().getTime(),
+                },
             });
         }
     };
@@ -271,7 +271,7 @@ export class BaseMap extends React.Component<Props, State> {
     handleMouseUpOnMap = () => {
         if (this.state.rectangleSelection) {
             this.setState({
-                rectangleSelection: null
+                rectangleSelection: null,
             });
         }
     };
@@ -283,9 +283,8 @@ export class BaseMap extends React.Component<Props, State> {
             if (start) {
                 const bounds: LatLngBounds = latLngBounds(createLeafletLatLngFromCoordinate(start), event.latlng);
 
-                const activePolygon: Coordinate[] | undefined = this.props.polygonCoordinates[
-                    this.props.activePolygonIndex
-                ];
+                const activePolygon: Coordinate[] | undefined =
+                    this.props.polygonCoordinates[this.props.activePolygonIndex];
                 if (activePolygon) {
                     const pointsInsideBounds: number[] = [];
                     activePolygon.forEach((point, index) => {
@@ -299,8 +298,8 @@ export class BaseMap extends React.Component<Props, State> {
             this.setState({
                 rectangleSelection: {
                     ...this.state.rectangleSelection,
-                    endPosition: mouseCoordinate
-                }
+                    endPosition: mouseCoordinate,
+                },
             });
         } else {
             const newPointPosition =
@@ -317,7 +316,7 @@ export class BaseMap extends React.Component<Props, State> {
     handleMouseOutOfMap = () =>
         this.setState({
             newPointPosition: null,
-            rectangleSelection: null
+            rectangleSelection: null,
         });
 
     ///////////////////////////////////////////////////////////////////////////
@@ -347,7 +346,7 @@ export class BaseMap extends React.Component<Props, State> {
         if (!this.state.isMoveActive) {
             this.setState({
                 isMoveActive: true,
-                previousMouseMovePosition: createCoordinateFromLeafletLatLng(latLng)
+                previousMouseMovePosition: createCoordinateFromLeafletLatLng(latLng),
             });
         }
     };
@@ -369,10 +368,10 @@ export class BaseMap extends React.Component<Props, State> {
             const moveVector = subtractCoordinates(coordinate, this.state.previousMouseMovePosition);
 
             const nextCoordinates = Array.from(this.props.selection)
-                .map(i => this.props.polygonCoordinates[this.props.activePolygonIndex][i])
-                .map(coord => addCoordinates(coord, moveVector));
+                .map((i) => this.props.polygonCoordinates[this.props.activePolygonIndex][i])
+                .map((coord) => addCoordinates(coord, moveVector));
 
-            const inBoundary = nextCoordinates.every(nextCoordinate =>
+            const inBoundary = nextCoordinates.every((nextCoordinate) =>
                 isCoordinateInPolygon(nextCoordinate, this.props.boundaryPolygonCoordinates)
             );
 
@@ -390,7 +389,7 @@ export class BaseMap extends React.Component<Props, State> {
             this.setState({
                 isMoveActive: false,
                 previousMouseMovePosition: undefined,
-                isMovedPointInBoundary: true
+                isMovedPointInBoundary: true,
             });
         }
     };
@@ -483,7 +482,7 @@ export class BaseMap extends React.Component<Props, State> {
             const eventHandler = {
                 onClick: () => this.props.onClick && this.props.onClick(index),
                 onMouseEnter: () => this.props.onMouseEnter && this.props.onMouseEnter(index),
-                onMouseLeave: () => this.props.onMouseLeave && this.props.onMouseLeave(index)
+                onMouseLeave: () => this.props.onMouseLeave && this.props.onMouseLeave(index),
             };
 
             return index === this.props.activePolygonIndex ? null : (
@@ -595,7 +594,6 @@ export class BaseMap extends React.Component<Props, State> {
                         onMouseMove={this.handleMouseMoveOnMap}
                         onMouseDown={this.handleMouseDownOnMap}
                         onMouseUp={this.handleMouseUpOnMap}
-
                     />
                 </Map>
                 <ActionBar

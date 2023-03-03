@@ -9,13 +9,13 @@ type Props = {
     onMouseOut: (event: LeafletMouseEvent) => void;
 };
 
-const MapInner = ({onClick, onMouseMove, onMouseOut}: Props) => {
+const MapInner = ({ onClick, onMouseMove, onMouseOut }: Props) => {
     useMapEvents({
         click: onClick,
         mousedown: onMouseOut,
         mouseup: onMouseOut,
         mousemove: onMouseMove,
-        mouseout: onMouseOut
+        mouseout: onMouseOut,
     });
 
     return null;

@@ -17,7 +17,7 @@ interface State {
 
 export class EdgeVertex extends React.Component<Props, State> {
     state = {
-        isHoverActive: false
+        isHoverActive: false,
     };
 
     handleMouseOver = () => this.setState({ isHoverActive: true });
@@ -40,7 +40,7 @@ export class EdgeVertex extends React.Component<Props, State> {
                 eventHandlers={{
                     click: this.handleClick,
                     mouseover: this.handleMouseOver,
-                    mouseout: this.handleMouseOut
+                    mouseout: this.handleMouseOut,
                 }}
             />
         );

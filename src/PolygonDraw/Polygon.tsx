@@ -25,7 +25,7 @@ export const Polygon: FunctionComponent<Props> = ({
     coordinates,
     onClick,
     onMouseEnter,
-    onMouseLeave
+    onMouseLeave,
 }) => (
     <LeafletPolygon
         positions={coordinates.map(createLeafletLatLngFromCoordinate)}
@@ -37,7 +37,7 @@ export const Polygon: FunctionComponent<Props> = ({
         eventHandlers={{
             click: onClick,
             mouseover: onMouseEnter,
-            mouseout: onMouseLeave
+            mouseout: onMouseLeave,
         }}
     />
 );

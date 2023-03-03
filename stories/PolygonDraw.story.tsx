@@ -41,9 +41,9 @@ storiesOf('PolygonDraw', module)
                 activeIndex={activeIndex}
                 highlightedIndex={highlightedIndex}
                 onClick={setActiveIndex}
-                onChange={newPolygons => setPolygons(newPolygons)}
-                onMouseEnter={index => setHighlightedIndex(index)}
-                onMouseLeave={index => setHighlightedIndex(oldIndex => (oldIndex === index ? undefined : oldIndex))}
+                onChange={(newPolygons) => setPolygons(newPolygons)}
+                onMouseEnter={(index) => setHighlightedIndex(index)}
+                onMouseLeave={(index) => setHighlightedIndex((oldIndex) => (oldIndex === index ? undefined : oldIndex))}
             />
         );
     })
@@ -52,7 +52,7 @@ storiesOf('PolygonDraw', module)
 
         useEffect(() => {
             const id = setInterval(() => {
-                setIndex(oldIndex => {
+                setIndex((oldIndex) => {
                     return (oldIndex + 1) % SAMPLES.length;
                 });
             }, 1000);
@@ -64,10 +64,10 @@ storiesOf('PolygonDraw', module)
                 polygon={SAMPLES[index]}
                 activeIndex={0}
                 editable={false}
-                onClick={i => polygonClickedAction(i)}
-                onChange={i => polygonChangeAction(i)}
-                onMouseEnter={i => polygonMouseEnterAction(i)}
-                onMouseLeave={i => polygonMouseLeaveAction(i)}
+                onClick={(i) => polygonClickedAction(i)}
+                onChange={(i) => polygonChangeAction(i)}
+                onMouseEnter={(i) => polygonMouseEnterAction(i)}
+                onMouseLeave={(i) => polygonMouseLeaveAction(i)}
             />
         );
     })

@@ -7,7 +7,7 @@ import {
     NEGATIVE_ORANGE_50,
     NEGATIVE_ORANGE_900,
     POSITIVE_GREEN_50,
-    POSITIVE_GREEN_900
+    POSITIVE_GREEN_900,
 } from '../common/colors';
 import { CheckCircleSolidIcon } from '../common/components/CheckCircleSolidIcon';
 import { CloseCircleSolidIcon } from '../common/components/CloseCircleSolidIcon';
@@ -17,7 +17,7 @@ import { Text } from '../common/components/Text';
 export const enum Status {
     EMPTY,
     VALID,
-    INVALID
+    INVALID,
 }
 
 const Container = styled.div<{ status: Status }>`
@@ -65,7 +65,7 @@ export const ImportPolygonStatus: React.FC<Props> = ({ status }) => {
             data = {
                 title: 'Enter polygon coordinates',
                 description: 'Only GeoJSON is supported at the moment.',
-                icon: <InfoCircleSolidIcon color={ACTION_BLUE_900} />
+                icon: <InfoCircleSolidIcon color={ACTION_BLUE_900} />,
             };
             break;
         }
@@ -73,7 +73,7 @@ export const ImportPolygonStatus: React.FC<Props> = ({ status }) => {
             data = {
                 title: 'Format detected',
                 description: 'GeoJSON. Valid data.',
-                icon: <CheckCircleSolidIcon color={POSITIVE_GREEN_900} />
+                icon: <CheckCircleSolidIcon color={POSITIVE_GREEN_900} />,
             };
             break;
         }
@@ -81,7 +81,7 @@ export const ImportPolygonStatus: React.FC<Props> = ({ status }) => {
             data = {
                 title: 'Invalid format',
                 description: 'Please make sure that the entered polygon is valid GeoJSON.',
-                icon: <CloseCircleSolidIcon color={NEGATIVE_ORANGE_900} />
+                icon: <CloseCircleSolidIcon color={NEGATIVE_ORANGE_900} />,
             };
             break;
         }

@@ -14,7 +14,7 @@ describe('ActionBar', () => {
         onImport: jest.fn(),
         deleteInactive: true,
         editable: false,
-        isVectorModeEnabled: false
+        isVectorModeEnabled: false,
     };
 
     afterEach(() => {

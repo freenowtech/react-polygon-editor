@@ -30,7 +30,7 @@ export class PolygonVertex extends React.Component<Props, State> {
     state = {
         isHovered: false,
         isDragged: false,
-        latLng: new LatLng(0, 0)
+        latLng: new LatLng(0, 0),
     };
 
     static getDerivedStateFromProps = (props: Props, state: State) => {
@@ -88,6 +88,7 @@ export class PolygonVertex extends React.Component<Props, State> {
 
         return (
             <ReactLeafletCircleMarker
+                aria-label="Polygon"
                 ref={this.setCircleMarkerRef}
                 fillColor={MAP.VERTEX_FILL_COLOR}
                 fillOpacity={1}
@@ -99,7 +100,7 @@ export class PolygonVertex extends React.Component<Props, State> {
                 eventHandlers={{
                     click: this.handleClick,
                     mouseover: this.handleMouseOver,
-                    mouseout: this.handleMouseOut
+                    mouseout: this.handleMouseOut,
                 }}
                 bubblingMouseEvents={false}
                 // @ts-ignore

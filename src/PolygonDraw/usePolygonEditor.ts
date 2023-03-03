@@ -18,20 +18,23 @@ export const usePolygonEditor = (
     const [selection, setSelection] = useState<Set<number>>(new Set());
     const [editHistory, setEditHistory] = useState<Omit<StateWithHistory<PolygonEditState>, 'present'>>({
         past: [],
-        future: []
+        future: [],
     });
 
     const state: StateWithHistory<PolygonEditState> = {
         present: {
             polygons: polygonList,
             activeIndex: activeIndex,
-            selection: selection
+            selection: selection,
         },
-        ...editHistory
+        ...editHistory,
     };
 
     const dispatch = (action: Actions) => {
-        const { present: { polygons: newPolygons, selection: newSelection }, ...rest } = undoablePolygonEditReducer(state, action);
+        const {
+            present: { polygons: newPolygons, selection: newSelection },
+            ...rest
+        } = undoablePolygonEditReducer(state, action);
         setEditHistory(rest);
         if (!isEqual(selection, newSelection)) {
             setSelection(newSelection);
@@ -39,7 +42,10 @@ export const usePolygonEditor = (
         onChange(isPolygonList(polygons) ? newPolygons : newPolygons[0], newPolygons.every(isValidPolygon));
     };
 
-    const activePolygon = useMemo(() => state.present.polygons[state.present.activeIndex], [state.present.polygons, state.present.activeIndex]);
+    const activePolygon = useMemo(
+        () => state.present.polygons[state.present.activeIndex],
+        [state.present.polygons, state.present.activeIndex]
+    );
     const polygonIsClosed: boolean = useMemo(() => isPolygonClosed(activePolygon), [activePolygon]);
 
     const setPolygon = (polygon: Coordinate[]) => {
@@ -105,6 +111,6 @@ export const usePolygonEditor = (
         selectAllPoints,
         setPolygon,
         undo,
-        redo
+        redo,
     };
 };

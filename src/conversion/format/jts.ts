@@ -4,13 +4,13 @@ import { Format, FormatType } from './types';
 export const jts: Format = {
     name: FormatType.JTS,
     displayName: 'JTS',
-    serialize: coordinates => {
+    serialize: (coordinates) => {
         return prettyPrint(coordinates.map(({ longitude, latitude }) => [longitude, latitude]));
     },
-    deserialize: raw => {
+    deserialize: (raw) => {
         throw new Error('not implemented');
     },
-    validate: raw => {
+    validate: (raw) => {
         throw new Error('not implemented');
-    }
+    },
 };

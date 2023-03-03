@@ -42,7 +42,7 @@ export const actions = {
 
     // Change Polygon
     changePolygon: (polygon: Coordinate[][]) => createAction(CHANGE_POLYGON, polygon),
-    setPolygon: (polygon: Coordinate[]) => createAction(SET_POLYGON, polygon)
+    setPolygon: (polygon: Coordinate[]) => createAction(SET_POLYGON, polygon),
 };
 
 export type Actions = ActionsUnion<typeof actions>;
