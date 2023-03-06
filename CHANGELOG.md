@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.0] - 06.03.2023
+
+-   Refactor: Upgraded dependencies including React to 18 and Leaflet to 4
+
 ## [1.2.0] - 15.04.2020
 
 -   Feat: Undo and redo actions
