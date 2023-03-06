@@ -5,7 +5,7 @@ import { Coordinate } from './types';
 
 export const createLeafletLatLngTupleFromCoordinate = (coordinate: Coordinate): LatLngTuple => [
     coordinate.latitude,
-    coordinate.longitude
+    coordinate.longitude,
 ];
 
 export const createLeafletLatLngBoundsFromCoordinates = (coordinates: Coordinate[]) =>
@@ -16,17 +16,17 @@ export const createLeafletLatLngFromCoordinate = (coordinate: Coordinate) =>
 
 export const createCoordinateFromLeafletLatLng = (latLng: LatLng): Coordinate => ({
     latitude: latLng.lat,
-    longitude: latLng.lng
+    longitude: latLng.lng,
 });
 
 export const addCoordinates = (coordA: Coordinate, coordB: Coordinate): Coordinate => ({
     latitude: coordA.latitude + coordB.latitude,
-    longitude: coordA.longitude + coordB.longitude
+    longitude: coordA.longitude + coordB.longitude,
 });
 
 export const subtractCoordinates = (coordA: Coordinate, coordB: Coordinate): Coordinate => ({
     latitude: coordA.latitude - coordB.latitude,
-    longitude: coordA.longitude - coordB.longitude
+    longitude: coordA.longitude - coordB.longitude,
 });
 
 export const isPolygonClosed = (coordinates: Coordinate[]): boolean =>
@@ -108,7 +108,7 @@ export const removeSelectedPoints = (polygonCoordinates: Coordinate[], selectedP
 
 export const getCenterCoordinate = (coordA: Coordinate, coordB: Coordinate): Coordinate => ({
     latitude: (coordA.latitude + coordB.latitude) / 2,
-    longitude: (coordA.longitude + coordB.longitude) / 2
+    longitude: (coordA.longitude + coordB.longitude) / 2,
 });
 
 // Returns the center coordinates of the polygon edges

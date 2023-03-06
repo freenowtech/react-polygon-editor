@@ -7,6 +7,8 @@ import { Coordinate } from '../src/types';
 import { BOUNDARY, POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from './polygons';
 import { StateContainer } from './StateContainer';
 
+import 'leaflet/dist/leaflet.css';
+
 const SAMPLES: Coordinate[][] = [POLYGON_ONE, POLYGON_TWO, POLYGON_THREE];
 
 const polygonChangeAction = action('polygon changed');
@@ -39,9 +41,9 @@ storiesOf('PolygonDraw', module)
                 activeIndex={activeIndex}
                 highlightedIndex={highlightedIndex}
                 onClick={setActiveIndex}
-                onChange={newPolygons => setPolygons(newPolygons)}
-                onMouseEnter={index => setHighlightedIndex(index)}
-                onMouseLeave={index => setHighlightedIndex(oldIndex => (oldIndex === index ? undefined : oldIndex))}
+                onChange={(newPolygons) => setPolygons(newPolygons)}
+                onMouseEnter={(index) => setHighlightedIndex(index)}
+                onMouseLeave={(index) => setHighlightedIndex((oldIndex) => (oldIndex === index ? undefined : oldIndex))}
             />
         );
     })
@@ -50,7 +52,7 @@ storiesOf('PolygonDraw', module)
 
         useEffect(() => {
             const id = setInterval(() => {
-                setIndex(oldIndex => {
+                setIndex((oldIndex) => {
                     return (oldIndex + 1) % SAMPLES.length;
                 });
             }, 1000);
@@ -62,10 +64,10 @@ storiesOf('PolygonDraw', module)
                 polygon={SAMPLES[index]}
                 activeIndex={0}
                 editable={false}
-                onClick={i => polygonClickedAction(i)}
-                onChange={i => polygonChangeAction(i)}
-                onMouseEnter={i => polygonMouseEnterAction(i)}
-                onMouseLeave={i => polygonMouseLeaveAction(i)}
+                onClick={(i) => polygonClickedAction(i)}
+                onChange={(i) => polygonChangeAction(i)}
+                onMouseEnter={(i) => polygonMouseEnterAction(i)}
+                onMouseLeave={(i) => polygonMouseLeaveAction(i)}
             />
         );
     })

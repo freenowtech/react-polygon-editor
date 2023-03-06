@@ -6,7 +6,7 @@ interface Props {
     onClick: () => void;
 }
 
-export const CloseIcon: React.FC<Props> = props => {
+export const CloseIcon: React.FC<Props> = (props) => {
     return (
         <svg color={AUTHENTIC_BLUE_900} width={24} height={24} viewBox="0 0 24 24" {...props}>
             <path

@@ -1,6 +1,5 @@
 import React from 'react';
-import { render, RenderResult } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import { Coordinate } from '../types';
 import { ExportPolygonForm } from './ExportPolygonForm';
@@ -10,22 +9,22 @@ const polygon: Coordinate[] = [
     { latitude: 0, longitude: 0 },
     { latitude: 1, longitude: 1 },
     { latitude: 1, longitude: 0 },
-    { latitude: 0, longitude: 0 }
+    { latitude: 0, longitude: 0 },
 ];
 
 describe('ExportPolygonForm', () => {
-    const getFormatSelect = (wrapper: RenderResult) => wrapper.getByLabelText('Export format');
-    const getTextarea = (wrapper: RenderResult) => wrapper.getByRole('textbox') as HTMLInputElement;
+    const getTextarea = () => screen.getByRole('textbox') as HTMLInputElement;
 
     describe('JTS', () => {
         it('should switch to JTS', () => {
-            const wrapper = render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
+            render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
 
-            const formatSelect = getFormatSelect(wrapper);
-            userEvent.selectOptions(formatSelect, FormatType.JTS);
+            const formatSelect = screen.getByLabelText('Export format');
+
+            fireEvent.change(formatSelect, { target: { value: FormatType.JTS } });
 
             expect(formatSelect).toHaveValue(FormatType.JTS);
-            expect(getTextarea(wrapper).value).toMatchInlineSnapshot(`
+            expect(getTextarea().value).toMatchInlineSnapshot(`
                 "[
                   [
                     0,
@@ -50,22 +49,23 @@ describe('ExportPolygonForm', () => {
 
     describe('GeoJSON', () => {
         it('should be selected by default', () => {
-            const wrapper = render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
+            render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
 
-            const formatSelect = getFormatSelect(wrapper);
-            userEvent.selectOptions(formatSelect, FormatType.GEOJSON);
+            const formatSelect = screen.getByLabelText('Export format');
 
-            expect(getTextarea(wrapper).value).toBeValidGeoJSON();
-            expect(getTextarea(wrapper).value).toMatchInlineSnapshot(`
+            fireEvent.change(formatSelect, { target: { value: FormatType.GEOJSON } });
+
+            expect(getTextarea().value).toBeValidGeoJSON();
+            expect(getTextarea().value).toMatchInlineSnapshot(`
                 "{
-                  \\"type\\": \\"FeatureCollection\\",
-                  \\"features\\": [
+                  "type": "FeatureCollection",
+                  "features": [
                     {
-                      \\"type\\": \\"Feature\\",
-                      \\"properties\\": {},
-                      \\"geometry\\": {
-                        \\"type\\": \\"Polygon\\",
-                        \\"coordinates\\": [
+                      "type": "Feature",
+                      "properties": {},
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
                           [
                             [
                               0,
@@ -95,31 +95,31 @@ describe('ExportPolygonForm', () => {
 
     describe('LatLng', () => {
         it('should change format to LatLng', () => {
-            const wrapper = render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
+            render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
 
-            const formatSelect = getFormatSelect(wrapper);
-            userEvent.selectOptions(formatSelect, FormatType.LATLNG);
+            const formatSelect = screen.getByLabelText('Export format');
+            fireEvent.change(formatSelect, { target: { value: FormatType.LATLNG } });
 
-            expect(getTextarea(wrapper).value).toMatchInlineSnapshot(`
-"[
-  {
-    \\"latitude\\": 0,
-    \\"longitude\\": 0
-  },
-  {
-    \\"latitude\\": 1,
-    \\"longitude\\": 1
-  },
-  {
-    \\"latitude\\": 1,
-    \\"longitude\\": 0
-  },
-  {
-    \\"latitude\\": 0,
-    \\"longitude\\": 0
-  }
-]"
-`);
+            expect(getTextarea().value).toMatchInlineSnapshot(`
+                "[
+                  {
+                    "latitude": 0,
+                    "longitude": 0
+                  },
+                  {
+                    "latitude": 1,
+                    "longitude": 1
+                  },
+                  {
+                    "latitude": 1,
+                    "longitude": 0
+                  },
+                  {
+                    "latitude": 0,
+                    "longitude": 0
+                  }
+                ]"
+            `);
         });
     });
 });

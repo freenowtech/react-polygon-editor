@@ -9,7 +9,7 @@ describe('PolygonDraw reducer', () => {
     const initialState: PolygonEditState = {
         activeIndex: 0,
         polygons: [[]],
-        selection: new Set()
+        selection: new Set(),
     };
 
     describe('changePolygon', () => {
@@ -18,7 +18,7 @@ describe('PolygonDraw reducer', () => {
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
-                selection: new Set()
+                selection: new Set(),
             };
             expect(polygonEditReducer(initialState, action)).toEqual(expectedState);
         });
@@ -27,12 +27,12 @@ describe('PolygonDraw reducer', () => {
             const state: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
-                selection: new Set()
+                selection: new Set(),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [POLYGON_ONE, POLYGON_TWO, POLYGON_THREE],
-                selection: new Set()
+                selection: new Set(),
             };
             expect(polygonEditReducer(state, actions.changePolygon([POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]))).toEqual(
                 expectedState
@@ -45,12 +45,12 @@ describe('PolygonDraw reducer', () => {
             const state: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [POLYGON_ONE],
-                selection: new Set()
+                selection: new Set(),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [POLYGON_TWO],
-                selection: new Set()
+                selection: new Set(),
             };
             expect(polygonEditReducer(state, actions.setPolygon(POLYGON_TWO))).toEqual(expectedState);
         });
@@ -59,12 +59,12 @@ describe('PolygonDraw reducer', () => {
             const state: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [POLYGON_ONE],
-                selection: new Set([0, 1, 2])
+                selection: new Set([0, 1, 2]),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [POLYGON_TWO],
-                selection: new Set()
+                selection: new Set(),
             };
             expect(polygonEditReducer(state, actions.setPolygon(POLYGON_TWO))).toEqual(expectedState);
         });
@@ -76,12 +76,12 @@ describe('PolygonDraw reducer', () => {
             const state: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
-                selection: new Set([0, 1])
+                selection: new Set([0, 1]),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [movePolygonCoordinates(MOCK_POLYGON, state.selection, action.payload)],
-                selection: state.selection
+                selection: state.selection,
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
@@ -93,7 +93,7 @@ describe('PolygonDraw reducer', () => {
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [[]],
-                selection: new Set([0, 1, 2])
+                selection: new Set([0, 1, 2]),
             };
             expect(polygonEditReducer(initialState, action)).toEqual(expectedState);
         });
@@ -102,12 +102,12 @@ describe('PolygonDraw reducer', () => {
             const action = actions.addPointsToSelection([3]);
             const state = {
                 ...initialState,
-                selection: new Set([0, 1, 2])
+                selection: new Set([0, 1, 2]),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [[]],
-                selection: new Set([0, 1, 2, 3])
+                selection: new Set([0, 1, 2, 3]),
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
@@ -116,11 +116,11 @@ describe('PolygonDraw reducer', () => {
             const action = actions.removePointFromSelection(0);
             const state = {
                 ...initialState,
-                selection: new Set([0, 1, 2])
+                selection: new Set([0, 1, 2]),
             };
             const expectedState: PolygonEditState = {
                 ...initialState,
-                selection: new Set([1, 2])
+                selection: new Set([1, 2]),
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
@@ -129,12 +129,12 @@ describe('PolygonDraw reducer', () => {
             const state: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
-                selection: new Set([0, 1, 2])
+                selection: new Set([0, 1, 2]),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
-                selection: new Set(Array.from({ length: MOCK_POLYGON.length }, (_, index) => index))
+                selection: new Set(Array.from({ length: MOCK_POLYGON.length }, (_, index) => index)),
             };
             expect(polygonEditReducer(state, actions.selectAllPoints())).toEqual(expectedState);
         });
@@ -144,12 +144,12 @@ describe('PolygonDraw reducer', () => {
             const state: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
-                selection: new Set([0, 1, 2])
+                selection: new Set([0, 1, 2]),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
-                selection: new Set()
+                selection: new Set(),
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
@@ -162,12 +162,12 @@ describe('PolygonDraw reducer', () => {
             const state: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
-                selection: new Set([0])
+                selection: new Set([0]),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [removeSelectedPoints(state.polygons[0], state.selection)],
-                selection: new Set()
+                selection: new Set(),
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
@@ -180,12 +180,12 @@ describe('PolygonDraw reducer', () => {
             const state: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [[MOCK_POLYGON[0]]],
-                selection: new Set([0])
+                selection: new Set([0]),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [[MOCK_POLYGON[0], MOCK_POLYGON[1]]],
-                selection: new Set([1])
+                selection: new Set([1]),
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
@@ -197,12 +197,12 @@ describe('PolygonDraw reducer', () => {
             const state: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [[MOCK_POLYGON[0], MOCK_POLYGON[1]]],
-                selection: new Set([1])
+                selection: new Set([1]),
             };
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [[MOCK_POLYGON[0], newPoint, MOCK_POLYGON[1]]],
-                selection: new Set([0])
+                selection: new Set([0]),
             };
             expect(polygonEditReducer(state, action)).toEqual(expectedState);
         });
@@ -214,23 +214,23 @@ describe('Undoable PolygonDraw reducer', () => {
         const initialState: PolygonEditState = {
             activeIndex: 0,
             polygons: [MOCK_POLYGON],
-            selection: new Set([0])
+            selection: new Set([0]),
         };
         const initialStateWithHistory = newHistory([], initialState, []);
 
         const coordinates: Coordinate[] = [
             {
                 latitude: 1,
-                longitude: 1
+                longitude: 1,
             },
             {
                 latitude: 2,
-                longitude: 2
+                longitude: 2,
             },
             {
                 latitude: 3,
-                longitude: 3
-            }
+                longitude: 3,
+            },
         ];
 
         const stateAfterMoving = coordinates.reduce((prev, next) => {
@@ -250,23 +250,23 @@ describe('Undoable PolygonDraw reducer', () => {
                     { longitude: 0, latitude: 0 },
                     { longitude: 1, latitude: 1 },
                     { longitude: 1, latitude: 0 },
-                    { longitude: 0, latitude: 0 }
-                ]
+                    { longitude: 0, latitude: 0 },
+                ],
             ],
-            selection: new Set()
+            selection: new Set(),
         };
         const initialStateWithHistory = newHistory([], initialState, []);
 
         const stateAfterFirstMove = [
             actions.selectPoints([0]),
             actions.moveSelectedPoints({ latitude: 1, longitude: 1 }),
-            actions.moveSelectedPoints({ latitude: 2, longitude: 2 })
+            actions.moveSelectedPoints({ latitude: 2, longitude: 2 }),
         ].reduce(undoablePolygonEditReducer, initialStateWithHistory);
 
         const stateAfterSecondMoveAndUndo = [
             actions.selectPoints([1]),
             actions.moveSelectedPoints({ latitude: 1, longitude: 1 }),
-            ActionCreators.undo()
+            ActionCreators.undo(),
         ].reduce(undoablePolygonEditReducer, stateAfterFirstMove);
 
         expect(stateAfterSecondMoveAndUndo?.present.polygons).toEqual(stateAfterFirstMove?.present.polygons);
@@ -277,23 +277,23 @@ describe('Undoable PolygonDraw reducer', () => {
         const initialState: PolygonEditState = {
             activeIndex: 0,
             polygons: [MOCK_POLYGON],
-            selection: new Set([0])
+            selection: new Set([0]),
         };
         const initialStateWithHistory = newHistory([], initialState, []);
 
         const coordinates: Coordinate[] = [
             {
                 latitude: 1,
-                longitude: 1
+                longitude: 1,
             },
             {
                 latitude: 2,
-                longitude: 2
+                longitude: 2,
             },
             {
                 latitude: 3,
-                longitude: 3
-            }
+                longitude: 3,
+            },
         ];
 
         const stateAfterMoving = coordinates.reduce((prev, next) => {
@@ -316,7 +316,7 @@ describe('Undoable PolygonDraw reducer', () => {
         const initialState: PolygonEditState = {
             activeIndex: 0,
             polygons: [MOCK_POLYGON],
-            selection: new Set([0])
+            selection: new Set([0]),
         };
         const initialStateWithHistory = newHistory([], initialState, []);
 
@@ -337,7 +337,7 @@ describe('Undoable PolygonDraw reducer', () => {
         const initialState: PolygonEditState = {
             activeIndex: 0,
             polygons: [MOCK_POLYGON],
-            selection: new Set([0])
+            selection: new Set([0]),
         };
         const initialStateWithHistory = newHistory([], initialState, []);
 

@@ -43,7 +43,7 @@ export const ActionBar: FunctionComponent<Props> = ({
     onFocus,
     onDelete,
     onExport,
-    onImport
+    onImport,
 }) => (
     <Container>
         {editable && (
@@ -52,6 +52,7 @@ export const ActionBar: FunctionComponent<Props> = ({
                     onClick={onEnableVectorMode}
                     icon={ActionButtonIcons.VECTOR_MODE}
                     inactive={!isVectorModeEnabled}
+                    aria-label={`${isVectorModeEnabled ? 'Disable Editing' : 'Enable Editing'}`}
                 >
                     {LABELS.PEN}
                 </ActionButton>
@@ -61,6 +62,7 @@ export const ActionBar: FunctionComponent<Props> = ({
                     activeIconColor={FREEDOM_RED_900}
                     disabled={deleteInactive}
                     inactive={deleteInactive}
+                    aria-label="Delete"
                 >
                     {LABELS.DELETE}
                 </ActionButton>

@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useState } from 'react';
+import React, { FormEventHandler, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Coordinate } from 'types';
@@ -27,18 +27,24 @@ interface Props {
 export const ImportPolygonForm: React.FC<Props> = ({ onSubmit = () => {} }) => {
     const dismiss = useDismiss();
     const [text, setText] = useState('');
+    const [status, setStatus] = useState(Status.EMPTY);
     const deserialized = useDeserialize(text);
 
-    let status: Status;
-    if (text === '') {
-        status = Status.EMPTY;
-    } else if (deserialized.valid) {
-        status = Status.VALID;
-    } else {
-        status = Status.INVALID;
-    }
+    useEffect(() => {
+        if (text === '') {
+            setStatus(Status.EMPTY);
+            return;
+        }
 
-    const handleOnSubmit: FormEventHandler = e => {
+        if (deserialized.valid) {
+            setStatus(Status.VALID);
+            return;
+        }
+
+        setStatus(Status.INVALID);
+    }, [text]);
+
+    const handleOnSubmit: FormEventHandler = (e) => {
         e.preventDefault();
 
         if (deserialized.valid) {
@@ -48,10 +54,10 @@ export const ImportPolygonForm: React.FC<Props> = ({ onSubmit = () => {} }) => {
     };
 
     return (
-        <Form onSubmit={handleOnSubmit}>
+        <Form onSubmit={handleOnSubmit} name="Import Polygon">
             <Headline>Import Polygon</Headline>
             <ImportPolygonStatus status={status} />
-            <StyledTextarea placeholder="Insert code here" value={text} onChange={e => setText(e.target.value)} />
+            <StyledTextarea placeholder="Insert code here" value={text} onChange={(e) => setText(e.target.value)} />
             <ButtonGroup>
                 <Button type="submit" disabled={!deserialized.valid}>
                     Import

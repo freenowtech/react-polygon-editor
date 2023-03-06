@@ -32,7 +32,7 @@ export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
     onChange,
     onClick,
     onMouseEnter,
-    onMouseLeave
+    onMouseLeave,
 }: Props<T>): React.ReactElement {
     const {
         polygons,
@@ -49,7 +49,7 @@ export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
         selectAllPoints,
         isPolygonClosed,
         undo,
-        redo
+        redo,
     } = usePolygonEditor(onChange, polygon, activeIndex);
 
     return (

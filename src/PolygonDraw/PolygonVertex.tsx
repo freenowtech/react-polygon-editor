@@ -30,7 +30,7 @@ export class PolygonVertex extends React.Component<Props, State> {
     state = {
         isHovered: false,
         isDragged: false,
-        latLng: new LatLng(0, 0)
+        latLng: new LatLng(0, 0),
     };
 
     static getDerivedStateFromProps = (props: Props, state: State) => {
@@ -56,7 +56,7 @@ export class PolygonVertex extends React.Component<Props, State> {
     // tslint:disable-next-line
     setCircleMarkerRef = (ref: any) => {
         if (ref) {
-            this.circleMarkerElement = ref.leafletElement;
+            this.circleMarkerElement = ref;
         }
     };
 
@@ -88,6 +88,7 @@ export class PolygonVertex extends React.Component<Props, State> {
 
         return (
             <ReactLeafletCircleMarker
+                aria-label="Polygon"
                 ref={this.setCircleMarkerRef}
                 fillColor={MAP.VERTEX_FILL_COLOR}
                 fillOpacity={1}
@@ -96,10 +97,13 @@ export class PolygonVertex extends React.Component<Props, State> {
                 weight={selectedOrHovered ? 4 : 1}
                 radius={selectedOrHovered ? 6 : 4}
                 center={latLng}
-                onMouseOver={this.handleMouseOver}
-                onMouseOut={this.handleMouseOut}
-                onClick={this.handleClick}
+                eventHandlers={{
+                    click: this.handleClick,
+                    mouseover: this.handleMouseOver,
+                    mouseout: this.handleMouseOut,
+                }}
                 bubblingMouseEvents={false}
+                // @ts-ignore
                 draggable
             />
         );

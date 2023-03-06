@@ -14,7 +14,7 @@ export enum ActionButtonIcons {
     FRAME = 'FRAME',
     VECTOR_MODE = 'VECTOR_MODE',
     EXPORT = 'EXPORT',
-    IMPORT = 'IMPORT'
+    IMPORT = 'IMPORT',
 }
 
 interface ContainerProps {
@@ -52,7 +52,7 @@ const renderIcon = (icon: ActionButtonIcons, inactive?: boolean, activeIconColor
     const props = {
         iconColor: inactive ? AUTHENTIC_BLUE_200 : activeIconColor,
         width: 16,
-        height: 16
+        height: 16,
     };
 
     switch (icon) {
@@ -79,6 +79,7 @@ export interface Props {
     disabled?: boolean;
     activeIconColor?: string;
     className?: string;
+    children: React.ReactNode;
 }
 export const ActionButton: FunctionComponent<Props> = ({ icon, children, inactive, activeIconColor, ...props }) => {
     return (

@@ -24,7 +24,7 @@ describe('conversion format', () => {
             throw new Error(`test file ${fileName}: must begin with 'valid_' or 'invalid_'`);
         }
 
-        if (formats.every(f => f !== formatType)) {
+        if (formats.every((f) => f !== formatType)) {
             throw new Error(`test file ${fileName}: format must be in ${formats}, but was ${formatType}`);
         }
 
@@ -39,7 +39,7 @@ describe('conversion format', () => {
         return fs
             .readdirSync(testdataDir)
             .map(getTestCaseFromFile)
-            .filter(testCase => testCase[3] === f);
+            .filter((testCase) => testCase[3] === f);
     };
 
     describe.each(formats)('%s', (f: FormatType) => {

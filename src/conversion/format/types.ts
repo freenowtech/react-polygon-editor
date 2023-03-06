@@ -3,7 +3,7 @@ import { Coordinate } from 'types';
 export enum FormatType {
     GEOJSON = 'geojson',
     LATLNG = 'latlng',
-    JTS = 'jts'
+    JTS = 'jts',
 }
 
 export interface Format {

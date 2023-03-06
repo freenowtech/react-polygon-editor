@@ -87,7 +87,7 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
 
     const value = useMemo(() => outputFormat.serialize(polygon), [polygon, outputFormat.serialize]);
 
-    const handleOutputFormatChanged: ChangeEventHandler<HTMLSelectElement> = e => {
+    const handleOutputFormatChanged: ChangeEventHandler<HTMLSelectElement> = (e) => {
         setOutputFormat(format[e.target.value]);
     };
 
@@ -100,7 +100,7 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
         }
     };
 
-    const handleOnSubmit: FormEventHandler = e => {
+    const handleOnSubmit: FormEventHandler = (e) => {
         e.preventDefault();
 
         if (!copyButtonClicked) {
@@ -121,7 +121,7 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
                 value={outputFormat.name}
                 onChange={handleOutputFormatChanged}
             >
-                {Object.values(format).map(f => (
+                {Object.values(format).map((f) => (
                     <option key={f.name} value={f.name}>
                         {f.displayName}
                     </option>

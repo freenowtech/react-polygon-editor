@@ -17,7 +17,7 @@ interface State {
 
 export class EdgeVertex extends React.Component<Props, State> {
     state = {
-        isHoverActive: false
+        isHoverActive: false,
     };
 
     handleMouseOver = () => this.setState({ isHoverActive: true });
@@ -37,9 +37,11 @@ export class EdgeVertex extends React.Component<Props, State> {
                 weight={isHoverActive ? 2 : 0.5}
                 radius={isHoverActive ? 6 : 3}
                 center={createLeafletLatLngFromCoordinate(coordinate)}
-                onMouseOver={this.handleMouseOver}
-                onMouseOut={this.handleMouseOut}
-                onClick={this.handleClick}
+                eventHandlers={{
+                    click: this.handleClick,
+                    mouseover: this.handleMouseOver,
+                    mouseout: this.handleMouseOut,
+                }}
             />
         );
     }

@@ -12,7 +12,7 @@ import {
     ADD_POINT,
     ADD_POINT_TO_EDGE,
     CHANGE_POLYGON,
-    SET_POLYGON
+    SET_POLYGON,
 } from './actions';
 import { Coordinate } from 'types';
 
@@ -32,7 +32,7 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         case CHANGE_POLYGON: {
             return {
                 ...state,
-                polygons: [...action.payload]
+                polygons: [...action.payload],
             };
         }
         case SET_POLYGON: {
@@ -41,9 +41,9 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                 polygons: [
                     ...state.polygons.slice(0, state.activeIndex),
                     action.payload,
-                    ...state.polygons.slice(state.activeIndex + 1)
+                    ...state.polygons.slice(state.activeIndex + 1),
                 ],
-                selection: new Set()
+                selection: new Set(),
             };
         }
 
@@ -56,8 +56,8 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                 polygons: [
                     ...state.polygons.slice(0, state.activeIndex),
                     movePolygonCoordinates(state.polygons[state.activeIndex], state.selection, action.payload),
-                    ...state.polygons.slice(state.activeIndex + 1)
-                ]
+                    ...state.polygons.slice(state.activeIndex + 1),
+                ],
             };
         }
 
@@ -67,13 +67,13 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         case SELECT_POINTS: {
             return {
                 ...state,
-                selection: new Set(action.payload)
+                selection: new Set(action.payload),
             };
         }
         case ADD_POINT_TO_SELECTION: {
             return {
                 ...state,
-                selection: new Set([...state.selection.values(), ...action.payload])
+                selection: new Set([...state.selection.values(), ...action.payload]),
             };
         }
         case REMOVE_POINT_FROM_SELECTION: {
@@ -81,19 +81,19 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
             selection.delete(action.payload);
             return {
                 ...state,
-                selection
+                selection,
             };
         }
         case SELECT_ALL_POINTS: {
             return {
                 ...state,
-                selection: new Set(state.polygons[state.activeIndex].map((_, i) => i))
+                selection: new Set(state.polygons[state.activeIndex].map((_, i) => i)),
             };
         }
         case DESELECT_ALL_POINTS: {
             return {
                 ...state,
-                selection: new Set()
+                selection: new Set(),
             };
         }
 
@@ -106,9 +106,9 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                 polygons: [
                     ...state.polygons.slice(0, state.activeIndex),
                     removeSelectedPoints(state.polygons[state.activeIndex], state.selection),
-                    ...state.polygons.slice(state.activeIndex + 1)
+                    ...state.polygons.slice(state.activeIndex + 1),
                 ],
-                selection: new Set()
+                selection: new Set(),
             };
         }
 
@@ -121,9 +121,9 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                 polygons: [
                     ...state.polygons.slice(0, state.activeIndex),
                     [...state.polygons[state.activeIndex], action.payload],
-                    ...state.polygons.slice(state.activeIndex + 1)
+                    ...state.polygons.slice(state.activeIndex + 1),
                 ],
-                selection: new Set([state.polygons.length])
+                selection: new Set([state.polygons.length]),
             };
         }
         case ADD_POINT_TO_EDGE: {
@@ -134,11 +134,11 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                     [
                         ...state.polygons[state.activeIndex].slice(0, action.payload.index + 1),
                         action.payload.coordinate,
-                        ...state.polygons[state.activeIndex].slice(action.payload.index + 1)
+                        ...state.polygons[state.activeIndex].slice(action.payload.index + 1),
                     ],
-                    ...state.polygons.slice(state.activeIndex + 1)
+                    ...state.polygons.slice(state.activeIndex + 1),
                 ],
-                selection: new Set([action.payload.index])
+                selection: new Set([action.payload.index]),
             };
         }
         default: {
@@ -162,10 +162,10 @@ export const undoablePolygonEditReducer = undoable(polygonEditReducer, {
         REMOVE_POINT_FROM_SELECTION,
         SELECT_ALL_POINTS,
         DESELECT_ALL_POINTS,
-        CHANGE_POLYGON
+        CHANGE_POLYGON,
     ]),
     // see https://github.com/omnidan/redux-undo/issues/6#issuecomment-142089793
     limit: EDIT_HISTORY_LIMIT + 1,
     debug: false,
-    syncFilter: true
+    syncFilter: true,
 });

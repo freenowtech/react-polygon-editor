@@ -7,7 +7,7 @@ import {
     isPolygonClosed,
     movePolygonCoordinates,
     removeSelectedPoints,
-    ensurePolygonList
+    ensurePolygonList,
 } from './helpers';
 import { MOCK_POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from './mockPolygon';
 import { Coordinate } from './types';
@@ -68,7 +68,7 @@ describe('helpers', () => {
     describe('movePolygonCoordinates', () => {
         const MOVE_VECTOR: Coordinate = {
             longitude: 0.1,
-            latitude: 0.1
+            latitude: 0.1,
         };
 
         it('should move selected points', () => {
@@ -93,30 +93,26 @@ describe('helpers', () => {
     describe('removeSelectedPoints', () => {
         const SMALL_POYLGON = [MOCK_POLYGON[0], MOCK_POLYGON[1], MOCK_POLYGON[2], MOCK_POLYGON[3], MOCK_POLYGON[0]];
         it('should remove selected points ', () => {
-            expect(
-                removeSelectedPoints(
-                    SMALL_POYLGON,
-                    new Set<number>([1])
-                )
-            ).toEqual([SMALL_POYLGON[0], SMALL_POYLGON[2], SMALL_POYLGON[3], SMALL_POYLGON[0]]);
+            expect(removeSelectedPoints(SMALL_POYLGON, new Set<number>([1]))).toEqual([
+                SMALL_POYLGON[0],
+                SMALL_POYLGON[2],
+                SMALL_POYLGON[3],
+                SMALL_POYLGON[0],
+            ]);
         });
 
         it('should open the polygon if less than 4 points are left', () => {
-            expect(
-                removeSelectedPoints(
-                    SMALL_POYLGON,
-                    new Set<number>([1, 2])
-                )
-            ).toEqual([SMALL_POYLGON[3], SMALL_POYLGON[0]]);
+            expect(removeSelectedPoints(SMALL_POYLGON, new Set<number>([1, 2]))).toEqual([
+                SMALL_POYLGON[3],
+                SMALL_POYLGON[0],
+            ]);
         });
 
         it('should remove both edge points if one was selected', () => {
-            expect(
-                removeSelectedPoints(
-                    SMALL_POYLGON,
-                    new Set<number>([0, 1])
-                )
-            ).toEqual([SMALL_POYLGON[2], SMALL_POYLGON[3]]);
+            expect(removeSelectedPoints(SMALL_POYLGON, new Set<number>([0, 1]))).toEqual([
+                SMALL_POYLGON[2],
+                SMALL_POYLGON[3],
+            ]);
         });
     });
 

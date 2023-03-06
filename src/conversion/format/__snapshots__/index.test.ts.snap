@@ -2,29 +2,29 @@
 
 exports[`conversion format geojson deserialize: empty file => invalid 1`] = `"Unexpected end of JSON input"`;
 
-exports[`conversion format geojson deserialize: missing coordinates => invalid 1`] = `"Cannot read property '0' of undefined"`;
+exports[`conversion format geojson deserialize: missing coordinates => invalid 1`] = `"Cannot read properties of undefined (reading 'length')"`;
 
 exports[`conversion format geojson deserialize: missing type => invalid 1`] = `
 "Invalid GeoJSON detected:
-- \\"type\\" member required
+- "type" member required
 "
 `;
 
 exports[`conversion format geojson deserialize: no right-hand-rule-should-still-pass => valid 1`] = `
-Array [
-  Object {
+[
+  {
     "latitude": 0,
     "longitude": 0,
   },
-  Object {
+  {
     "latitude": 1,
     "longitude": 1,
   },
-  Object {
+  {
     "latitude": 1,
     "longitude": 0,
   },
-  Object {
+  {
     "latitude": 0,
     "longitude": 0,
   },
@@ -45,36 +45,36 @@ exports[`conversion format geojson deserialize: open polygon => invalid 1`] = `
 `;
 
 exports[`conversion format geojson deserialize: type feature => valid 1`] = `
-Array [
-  Object {
+[
+  {
     "latitude": 53.56545917520555,
     "longitude": 10.0412155687809,
   },
-  Object {
+  {
     "latitude": 53.56586697476003,
     "longitude": 10.018899589776995,
   },
-  Object {
+  {
     "latitude": 53.58380626282291,
     "longitude": 10.005166679620745,
   },
-  Object {
+  {
     "latitude": 53.56668256207333,
     "longitude": 9.993150383234026,
   },
-  Object {
+  {
     "latitude": 53.56647866671947,
     "longitude": 9.961908012628557,
   },
-  Object {
+  {
     "latitude": 53.555466857846014,
     "longitude": 9.979417473077776,
   },
-  Object {
+  {
     "latitude": 53.55505895802228,
     "longitude": 10.02576604485512,
   },
-  Object {
+  {
     "latitude": 53.56545917520555,
     "longitude": 10.0412155687809,
   },
@@ -82,36 +82,36 @@ Array [
 `;
 
 exports[`conversion format geojson deserialize: type feature-collection => valid 1`] = `
-Array [
-  Object {
+[
+  {
     "latitude": 53.56545917520555,
     "longitude": 10.0412155687809,
   },
-  Object {
+  {
     "latitude": 53.56586697476003,
     "longitude": 10.018899589776995,
   },
-  Object {
+  {
     "latitude": 53.58380626282291,
     "longitude": 10.005166679620745,
   },
-  Object {
+  {
     "latitude": 53.56668256207333,
     "longitude": 9.993150383234026,
   },
-  Object {
+  {
     "latitude": 53.56647866671947,
     "longitude": 9.961908012628557,
   },
-  Object {
+  {
     "latitude": 53.555466857846014,
     "longitude": 9.979417473077776,
   },
-  Object {
+  {
     "latitude": 53.55505895802228,
     "longitude": 10.02576604485512,
   },
-  Object {
+  {
     "latitude": 53.56545917520555,
     "longitude": 10.0412155687809,
   },
@@ -119,36 +119,36 @@ Array [
 `;
 
 exports[`conversion format geojson deserialize: type polygon => valid 1`] = `
-Array [
-  Object {
+[
+  {
     "latitude": 53.56545917520555,
     "longitude": 10.0412155687809,
   },
-  Object {
+  {
     "latitude": 53.56586697476003,
     "longitude": 10.018899589776995,
   },
-  Object {
+  {
     "latitude": 53.58380626282291,
     "longitude": 10.005166679620745,
   },
-  Object {
+  {
     "latitude": 53.56668256207333,
     "longitude": 9.993150383234026,
   },
-  Object {
+  {
     "latitude": 53.56647866671947,
     "longitude": 9.961908012628557,
   },
-  Object {
+  {
     "latitude": 53.555466857846014,
     "longitude": 9.979417473077776,
   },
-  Object {
+  {
     "latitude": 53.55505895802228,
     "longitude": 10.02576604485512,
   },
-  Object {
+  {
     "latitude": 53.56545917520555,
     "longitude": 10.0412155687809,
   },

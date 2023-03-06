@@ -25,7 +25,7 @@ export const Polygon: FunctionComponent<Props> = ({
     coordinates,
     onClick,
     onMouseEnter,
-    onMouseLeave
+    onMouseLeave,
 }) => (
     <LeafletPolygon
         positions={coordinates.map(createLeafletLatLngFromCoordinate)}
@@ -34,8 +34,10 @@ export const Polygon: FunctionComponent<Props> = ({
         weight={MAP.BORDER_WIDTH}
         color={isActive ? MAP.POLYGON_ACTIVE_COLOR : MAP.POLYGON_INACTIVE_COLOR}
         data-testid="polygon"
-        onclick={onClick}
-        onmouseover={onMouseEnter}
-        onmouseout={onMouseLeave}
+        eventHandlers={{
+            click: onClick,
+            mouseover: onMouseEnter,
+            mouseout: onMouseLeave,
+        }}
     />
 );

@@ -1,26 +1,23 @@
 import React from 'react';
-import { render, RenderResult } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import { ImportPolygonForm } from './ImportPolygonForm';
 
 describe('ImportPolygonForm', () => {
-    const getTextarea = (wrapper: RenderResult) => wrapper.getByRole('textbox') as HTMLInputElement;
-    const getSubmitButton = (wrapper: RenderResult) => wrapper.getByText('Import');
+    it('should initially display the empty state', () => {
+        render(<ImportPolygonForm />);
 
-    it('should initially display the empty state', async () => {
-        const wrapper = render(<ImportPolygonForm />);
-        await wrapper.findByText('Enter polygon coordinates');
+        expect(screen.queryByText('Enter polygon coordinates')).toBeInTheDocument();
     });
 
-    it('should display the valid status when the entered polygon is valid GeoJSON', async () => {
-        const wrapper = render(<ImportPolygonForm />);
+    it('should display the valid status when the entered polygon is valid GeoJSON', () => {
+        render(<ImportPolygonForm />);
 
-        userEvent.type(
-            getTextarea(wrapper),
-            `{
-               "type": "Polygon",
-               "coordinates": [
+        fireEvent.change(screen.getByRole('textbox'), {
+            target: {
+                value: `{
+                "type": "Polygon",
+                "coordinates": [
                     [
                         [0, 0],
                         [1, 1],
@@ -29,33 +26,31 @@ describe('ImportPolygonForm', () => {
                     ]
                 ]
             }`,
-            {
-                allAtOnce: true
-            }
-        );
-
-        await wrapper.findByText('GeoJSON. Valid data.');
-    });
-
-    it('should display the valid status when the entered polygon is valid GeoJSON', async () => {
-        const wrapper = render(<ImportPolygonForm />);
-
-        userEvent.type(getTextarea(wrapper), 'invalid GeoJSON', {
-            allAtOnce: true
+            },
         });
 
-        await wrapper.findByText('Invalid format');
+        expect(screen.queryByText('GeoJSON. Valid data.')).toBeInTheDocument();
+    });
+
+    it('should display the valid status when the entered polygon is invalid GeoJSON', () => {
+        render(<ImportPolygonForm />);
+
+        fireEvent.change(screen.getByRole('textbox'), {
+            target: { value: 'invalid GeoJSON' },
+        });
+
+        expect(screen.queryByText('Invalid format')).toBeInTheDocument();
     });
 
     it('should import the polygon when valid GeoJSON was pasted into the input', () => {
         const onSubmitMock = jest.fn();
-        const wrapper = render(<ImportPolygonForm onSubmit={onSubmitMock} />);
+        render(<ImportPolygonForm onSubmit={onSubmitMock} />);
 
-        userEvent.type(
-            getTextarea(wrapper),
-            `{
-               "type": "Polygon",
-               "coordinates": [
+        fireEvent.change(screen.getByRole('textbox'), {
+            target: {
+                value: `{
+                "type": "Polygon",
+                "coordinates": [
                     [
                         [0, 0],
                         [1, 1],
@@ -64,31 +59,29 @@ describe('ImportPolygonForm', () => {
                     ]
                 ]
             }`,
-            {
-                allAtOnce: true
-            }
-        );
+            },
+        });
 
-        userEvent.click(getSubmitButton(wrapper));
+        fireEvent.submit(screen.getByRole('form'));
 
         expect(onSubmitMock).toHaveBeenCalledWith([
             { latitude: 0, longitude: 0 },
             { latitude: 1, longitude: 1 },
             { latitude: 1, longitude: 0 },
-            { latitude: 0, longitude: 0 }
+            { latitude: 0, longitude: 0 },
         ]);
     });
 
     it('should not import polygon when the GeoJSON is invalid', () => {
         const onSubmitMock = jest.fn();
-        const wrapper = render(<ImportPolygonForm onSubmit={onSubmitMock} />);
+        render(<ImportPolygonForm onSubmit={onSubmitMock} />);
 
-        userEvent.type(getTextarea(wrapper), 'invalid GeoJSON', {
-            allAtOnce: true
+        fireEvent.change(screen.getByRole('textbox'), {
+            target: { value: 'invalid GeoJSON' },
         });
 
-        const submitBtn = getSubmitButton(wrapper);
-        userEvent.click(submitBtn);
+        const submitBtn = screen.getByText('Import');
+        fireEvent.click(submitBtn);
 
         expect(submitBtn).toBeDisabled();
         expect(onSubmitMock).not.toHaveBeenCalled();

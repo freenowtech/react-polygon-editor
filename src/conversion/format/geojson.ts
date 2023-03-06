@@ -16,10 +16,10 @@ const serialize = (coordinates: Coordinate[]): string => {
                 properties: {},
                 geometry: {
                     type: 'Polygon',
-                    coordinates: [coordinates.map(({ longitude, latitude }) => [longitude, latitude])]
-                }
-            }
-        ]
+                    coordinates: [coordinates.map(({ longitude, latitude }) => [longitude, latitude])],
+                },
+            },
+        ],
     };
 
     return prettyPrint(geoJSON);
@@ -30,7 +30,7 @@ const ALLOWED_GEOJSON_TYPES = ['FeatureCollection', 'Feature', ...ALLOWED_GEOJSO
 
 const getErrors = (value: unknown): Hint[] => {
     return geojsonhint.hint(value, {
-        precisionWarning: false
+        precisionWarning: false,
     });
 };
 
@@ -46,23 +46,25 @@ const deserialize = (raw: string): Coordinate[] => {
     const parsed = JSON.parse(raw);
 
     if (!acceptGeoJSON(parsed)) {
-        throw new Error(
-            `Invalid GeoJSON detected:\n${getErrors(parsed).map(error => `- ${error.message}\n`)}`
-        );
+        throw new Error(`Invalid GeoJSON detected:\n${getErrors(parsed).map((error) => `- ${error.message}\n`)}`);
     }
 
     switch (parsed.type) {
         case 'Feature': {
             const geometry = parsed.geometry;
             if (geometry.type !== 'Polygon') {
-                throw new Error(`Geometry type ${geometry.type} is not supported, must be one of ${ALLOWED_GEOJSON_GEOMETRY_TYPES}`);
+                throw new Error(
+                    `Geometry type ${geometry.type} is not supported, must be one of ${ALLOWED_GEOJSON_GEOMETRY_TYPES}`
+                );
             }
             return getCoordinatesFromPolygon(geometry);
         }
         case 'FeatureCollection': {
             const geometry = parsed.features[0].geometry;
             if (geometry.type !== 'Polygon') {
-                throw new Error(`Geometry type ${geometry.type} is not supported, must be one of ${ALLOWED_GEOJSON_GEOMETRY_TYPES}`);
+                throw new Error(
+                    `Geometry type ${geometry.type} is not supported, must be one of ${ALLOWED_GEOJSON_GEOMETRY_TYPES}`
+                );
             }
             return getCoordinatesFromPolygon(geometry);
         }
@@ -91,5 +93,5 @@ export const geojson: Format = {
     description: `GeoJSON is a format for encoding a variety of geographic data structures. <a href="https://geojson.org/" target="_blank">More info</a>`,
     serialize,
     deserialize,
-    validate
+    validate,
 };

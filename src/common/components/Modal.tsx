@@ -48,6 +48,7 @@ export const useDismiss = () => useContext(DismissContext);
 
 interface Props {
     onClose: () => void;
+    children: React.ReactNode;
 }
 
 export const Modal: React.FC<Props> = ({ children, onClose }) => {

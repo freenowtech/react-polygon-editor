@@ -6,11 +6,11 @@ export const LABELS = {
     DELETE: 'Delete',
     FOCUS: 'Focus',
     EXPORT: 'Export',
-    IMPORT: 'Import'
+    IMPORT: 'Import',
 };
 
 export const LEAFLET = {
-    TILE_SERVER_URL: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+    TILE_SERVER_URL: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
 };
 
 export const MAP = {
@@ -35,7 +35,7 @@ export const MAP = {
         { lat: 85.1054596961173, lng: -180 },
         { lat: 85.1054596961173, lng: 180 },
         { lat: -85.1054596961173, lng: 180 },
-        { lat: -85.1054596961173, lng: 0 }
+        { lat: -85.1054596961173, lng: 0 },
     ],
 
     WORLD_COORDINATES: [
@@ -43,6 +43,6 @@ export const MAP = {
         { latitude: 85.1054596961173, longitude: -180 },
         { latitude: 85.1054596961173, longitude: 180 },
         { latitude: -85.1054596961173, longitude: 180 },
-        { latitude: -85.1054596961173, longitude: 0 }
-    ]
+        { latitude: -85.1054596961173, longitude: 0 },
+    ],
 };
