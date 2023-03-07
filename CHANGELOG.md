@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.1] - 07.03.2023
+
+-   Fix: Fixed peer dependency of react-leaflet
+
 ## [2.0.0] - 06.03.2023
 
 -   Refactor: Upgraded dependencies including React to 18 and Leaflet to 4
