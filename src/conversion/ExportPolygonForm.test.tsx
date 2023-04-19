@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { Coordinate } from '../types';
 import { ExportPolygonForm } from './ExportPolygonForm';
@@ -16,12 +17,12 @@ describe('ExportPolygonForm', () => {
     const getTextarea = () => screen.getByRole('textbox') as HTMLInputElement;
 
     describe('JTS', () => {
-        it('should switch to JTS', () => {
+        it('should switch to JTS', async () => {
             render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
 
             const formatSelect = screen.getByLabelText('Export format');
 
-            fireEvent.change(formatSelect, { target: { value: FormatType.JTS } });
+            await userEvent.selectOptions(formatSelect, FormatType.JTS);
 
             expect(formatSelect).toHaveValue(FormatType.JTS);
             expect(getTextarea().value).toMatchInlineSnapshot(`
@@ -48,12 +49,12 @@ describe('ExportPolygonForm', () => {
     });
 
     describe('GeoJSON', () => {
-        it('should be selected by default', () => {
+        it('should be selected by default', async () => {
             render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
 
             const formatSelect = screen.getByLabelText('Export format');
 
-            fireEvent.change(formatSelect, { target: { value: FormatType.GEOJSON } });
+            await userEvent.selectOptions(formatSelect, FormatType.GEOJSON);
 
             expect(getTextarea().value).toBeValidGeoJSON();
             expect(getTextarea().value).toMatchInlineSnapshot(`
@@ -94,11 +95,11 @@ describe('ExportPolygonForm', () => {
     });
 
     describe('LatLng', () => {
-        it('should change format to LatLng', () => {
+        it('should change format to LatLng', async () => {
             render(<ExportPolygonForm polygon={polygon} onSubmit={jest.fn()} />);
 
             const formatSelect = screen.getByLabelText('Export format');
-            fireEvent.change(formatSelect, { target: { value: FormatType.LATLNG } });
+            await userEvent.selectOptions(formatSelect, FormatType.LATLNG);
 
             expect(getTextarea().value).toMatchInlineSnapshot(`
                 "[
