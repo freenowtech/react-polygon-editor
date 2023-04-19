@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, cleanup } from '@testing-library/react';
+import { render, fireEvent, cleanup, screen } from '@testing-library/react';
 
 import { LABELS } from '../constants';
 import { ActionBar, Props } from './ActionBar';
@@ -22,46 +22,46 @@ describe('ActionBar', () => {
     });
 
     describe('WHEN editable is falsy', () => {
+        beforeEach(() => render(<ActionBar {...props} />));
+
         it('should only render the action buttons', () => {
-            const wrapper = render(<ActionBar {...props} />);
-            expect(wrapper.getByText(LABELS.FOCUS)).toBeTruthy();
-            expect(wrapper.queryByText(LABELS.DELETE)).toBeNull();
-            expect(wrapper.queryByText(LABELS.PEN)).toBeNull();
+            expect(screen.getByText(LABELS.FOCUS)).toBeTruthy();
+            expect(screen.queryByText(LABELS.EXPORT)).toBeTruthy();
+            expect(screen.queryByText(LABELS.IMPORT)).toBeTruthy();
+            expect(screen.queryByText(LABELS.DELETE)).toBeNull();
+            expect(screen.queryByText(LABELS.PEN)).toBeNull();
         });
 
         it('should trigger the onFocus callback when user click the focus button', () => {
-            const wrapper = render(<ActionBar {...props} />);
-            fireEvent.click(wrapper.getByText(LABELS.FOCUS));
+            fireEvent.click(screen.getByText(LABELS.FOCUS));
 
             expect(props.onFocus).toHaveBeenCalled();
         });
     });
 
     describe('WHEN editable is truthy', () => {
+        beforeEach(() => render(<ActionBar {...props} editable />));
+
         it('should render the actions', () => {
-            const wrapper = render(<ActionBar {...props} editable />);
-            expect(wrapper.getByText(LABELS.FOCUS)).toBeTruthy();
-            expect(wrapper.getByText(LABELS.DELETE)).toBeTruthy();
-            expect(wrapper.getByText(LABELS.PEN)).toBeTruthy();
+            expect(screen.getByText(LABELS.FOCUS)).toBeTruthy();
+            expect(screen.getByText(LABELS.DELETE)).toBeTruthy();
+            expect(screen.getByText(LABELS.PEN)).toBeTruthy();
         });
 
         it('should trigger the onFocus callback when user click the focus button', () => {
-            const wrapper = render(<ActionBar {...props} editable />);
-            fireEvent.click(wrapper.getByText(LABELS.FOCUS));
+            fireEvent.click(screen.getByText(LABELS.FOCUS));
 
             expect(props.onFocus).toHaveBeenCalled();
         });
 
         it('should trigger the onDelete callback when user click the focus button', () => {
-            const wrapper = render(<ActionBar {...props} editable />);
-            fireEvent.click(wrapper.getByText(LABELS.DELETE));
+            fireEvent.click(screen.getByText(LABELS.DELETE));
 
             expect(props.onDelete).toHaveBeenCalled();
         });
 
         it('should trigger the onEnableVectorMode callback when user click the focus button', () => {
-            const wrapper = render(<ActionBar {...props} editable />);
-            fireEvent.click(wrapper.getByText(LABELS.PEN));
+            fireEvent.click(screen.getByText(LABELS.PEN));
 
             expect(props.onEnableVectorMode).toHaveBeenCalled();
         });
