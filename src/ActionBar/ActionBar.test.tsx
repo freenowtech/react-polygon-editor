@@ -1,8 +1,10 @@
 import React from 'react';
-import { render, fireEvent, cleanup } from '@testing-library/react';
+import { render, cleanup, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { LABELS } from '../constants';
 import { ActionBar, Props } from './ActionBar';
+import { ACTION_BLUE_900, AUTHENTIC_BLUE_200, FREEDOM_RED_900 } from '../common/colors';
 
 afterAll(cleanup);
 describe('ActionBar', () => {
@@ -22,48 +24,119 @@ describe('ActionBar', () => {
     });
 
     describe('WHEN editable is falsy', () => {
+        beforeEach(() => render(<ActionBar {...props} />));
+
         it('should only render the action buttons', () => {
-            const wrapper = render(<ActionBar {...props} />);
-            expect(wrapper.getByText(LABELS.FOCUS)).toBeTruthy();
-            expect(wrapper.queryByText(LABELS.DELETE)).toBeNull();
-            expect(wrapper.queryByText(LABELS.PEN)).toBeNull();
+            expect(screen.getByText(LABELS.FOCUS)).toBeTruthy();
+            expect(screen.getByText(LABELS.EXPORT)).toBeTruthy();
+            expect(screen.getByText(LABELS.IMPORT)).toBeTruthy();
+            expect(screen.queryByText(LABELS.DELETE)).toBeNull();
+            expect(screen.queryByText(LABELS.PEN)).toBeNull();
         });
 
-        it('should trigger the onFocus callback when user click the focus button', () => {
-            const wrapper = render(<ActionBar {...props} />);
-            fireEvent.click(wrapper.getByText(LABELS.FOCUS));
+        it('should trigger the onFocus callback when user click the focus button', async () => {
+            await userEvent.click(screen.getByText(LABELS.FOCUS));
 
             expect(props.onFocus).toHaveBeenCalled();
+        });
+
+        it('should trigger the onExport callback when the user clicks the export button', async () => {
+            await userEvent.click(screen.getByText(LABELS.EXPORT));
+
+            expect(props.onExport).toHaveBeenCalled();
+        });
+
+        it('should trigger the onImport callback when the user clicks the import button', async () => {
+            await userEvent.click(screen.getByText(LABELS.IMPORT));
+
+            expect(props.onImport).toHaveBeenCalled();
         });
     });
 
     describe('WHEN editable is truthy', () => {
+        beforeEach(() => render(<ActionBar {...props} editable />));
+
         it('should render the actions', () => {
-            const wrapper = render(<ActionBar {...props} editable />);
-            expect(wrapper.getByText(LABELS.FOCUS)).toBeTruthy();
-            expect(wrapper.getByText(LABELS.DELETE)).toBeTruthy();
-            expect(wrapper.getByText(LABELS.PEN)).toBeTruthy();
+            expect(screen.getByText(LABELS.FOCUS)).toBeTruthy();
+            expect(screen.getByText(LABELS.DELETE)).toBeTruthy();
+            expect(screen.getByText(LABELS.PEN)).toBeTruthy();
         });
 
-        it('should trigger the onFocus callback when user click the focus button', () => {
-            const wrapper = render(<ActionBar {...props} editable />);
-            fireEvent.click(wrapper.getByText(LABELS.FOCUS));
+        it('should trigger the onFocus callback when user click the focus button', async () => {
+            await userEvent.click(screen.getByText(LABELS.FOCUS));
 
             expect(props.onFocus).toHaveBeenCalled();
         });
 
-        it('should trigger the onDelete callback when user click the focus button', () => {
-            const wrapper = render(<ActionBar {...props} editable />);
-            fireEvent.click(wrapper.getByText(LABELS.DELETE));
+        it('should trigger the onDelete callback when user click the focus button', async () => {
+            await userEvent.click(screen.getByText(LABELS.DELETE));
 
             expect(props.onDelete).toHaveBeenCalled();
         });
 
-        it('should trigger the onEnableVectorMode callback when user click the focus button', () => {
-            const wrapper = render(<ActionBar {...props} editable />);
-            fireEvent.click(wrapper.getByText(LABELS.PEN));
+        it('should trigger the onEnableVectorMode callback when user click the focus button', async () => {
+            await userEvent.click(screen.getByText(LABELS.PEN));
 
             expect(props.onEnableVectorMode).toHaveBeenCalled();
+        });
+
+        it('should trigger the onExport callback when the user clicks the export button', async () => {
+            await userEvent.click(screen.getByText(LABELS.EXPORT));
+
+            expect(props.onExport).toHaveBeenCalled();
+        });
+
+        it('should trigger the onImport callback when the user clicks the import button', async () => {
+            await userEvent.click(screen.getByText(LABELS.IMPORT));
+
+            expect(props.onImport).toHaveBeenCalled();
+        });
+    });
+
+    describe('WHEN isVectorModeEnabled has different states', () => {
+        it('should render the Pen action button activ WHEN isVectorModeEnabled is truthy', () => {
+            render(<ActionBar {...props} editable isVectorModeEnabled />);
+
+            expect(screen.getByLabelText('Disable Editing')).toBeInTheDocument();
+            expect(screen.queryByLabelText('Enable Editing')).not.toBeInTheDocument();
+
+            const penButtonSvgPath = screen.getByText('Pen').children[0].children[0].children[0] as HTMLElement;
+
+            expect(penButtonSvgPath.getAttribute('fill')).toBe(ACTION_BLUE_900);
+        });
+
+        it('should render the Pen action button activ WHEN isVectorModeEnabled is falsy', () => {
+            render(<ActionBar {...props} editable isVectorModeEnabled={false} />);
+
+            const penButtonSvgPath = screen.getByText('Pen').children[0].children[0].children[0] as HTMLElement;
+
+            expect(penButtonSvgPath.getAttribute('fill')).toBe(AUTHENTIC_BLUE_200);
+
+            expect(screen.getByLabelText('Enable Editing')).toBeInTheDocument();
+            expect(screen.queryByLabelText('Disable Editing')).not.toBeInTheDocument();
+        });
+    });
+
+    describe('WHEN deleteInactive is truthy', () => {
+        it('should render the Delete action button with inactive icon color', () => {
+            render(<ActionBar {...props} editable deleteInactive />);
+
+            const deleteButtonSvgPath = screen.getByText('Delete').children[0].children[0].children[0] as HTMLElement;
+
+            expect(screen.getByText('Delete')).toHaveAttribute('disabled');
+
+            expect(deleteButtonSvgPath.getAttribute('fill')).toBe(AUTHENTIC_BLUE_200);
+        });
+    });
+
+    describe('WHEN deleteInactive is falsy', () => {
+        it('should render the Delete action button with red icon', () => {
+            render(<ActionBar {...props} editable deleteInactive={false} />);
+
+            const deleteButtonSvgPath = screen.getByText('Delete').children[0].children[0].children[0] as HTMLElement;
+            expect(screen.queryByText('Delete')).not.toHaveAttribute('disabled');
+
+            expect(deleteButtonSvgPath.getAttribute('fill')).toBe(FREEDOM_RED_900);
         });
     });
 });
