@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { LABELS } from '../constants';
 import { ActionBar, Props } from './ActionBar';
+import { ACTION_BLUE_900, AUTHENTIC_BLUE_200, FREEDOM_RED_900 } from '../common/colors';
 
 afterAll(cleanup);
 describe('ActionBar', () => {
@@ -101,8 +102,7 @@ describe('ActionBar', () => {
 
             const penButtonSvgPath = screen.getByText('Pen').children[0].children[0].children[0] as HTMLElement;
 
-            // activ color = ACTION_BLUE_900
-            expect(penButtonSvgPath.getAttribute('fill')).toBe('#096bdb');
+            expect(penButtonSvgPath.getAttribute('fill')).toBe(ACTION_BLUE_900);
         });
 
         it('should render the Pen action button activ WHEN isVectorModeEnabled is falsy', () => {
@@ -110,8 +110,7 @@ describe('ActionBar', () => {
 
             const penButtonSvgPath = screen.getByText('Pen').children[0].children[0].children[0] as HTMLElement;
 
-            // inactive color = AUTHENTIC_BLUE_200
-            expect(penButtonSvgPath.getAttribute('fill')).toBe('#c6cdd4');
+            expect(penButtonSvgPath.getAttribute('fill')).toBe(AUTHENTIC_BLUE_200);
 
             expect(screen.getByLabelText('Enable Editing')).toBeInTheDocument();
             expect(screen.queryByLabelText('Disable Editing')).not.toBeInTheDocument();
@@ -126,8 +125,7 @@ describe('ActionBar', () => {
 
             expect(screen.getByText('Delete')).toHaveAttribute('disabled');
 
-            // inactive color = AUTHENTIC_BLUE_200
-            expect(deleteButtonSvgPath.getAttribute('fill')).toBe('#c6cdd4');
+            expect(deleteButtonSvgPath.getAttribute('fill')).toBe(AUTHENTIC_BLUE_200);
         });
     });
 
@@ -138,8 +136,7 @@ describe('ActionBar', () => {
             const deleteButtonSvgPath = screen.getByText('Delete').children[0].children[0].children[0] as HTMLElement;
             expect(screen.queryByText('Delete')).not.toHaveAttribute('disabled');
 
-            // active color = FREEDOM_RED_900
-            expect(deleteButtonSvgPath.getAttribute('fill')).toBe('#ff0a2b');
+            expect(deleteButtonSvgPath.getAttribute('fill')).toBe(FREEDOM_RED_900);
         });
     });
 });
