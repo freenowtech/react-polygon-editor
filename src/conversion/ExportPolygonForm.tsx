@@ -89,8 +89,8 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
     const value = useMemo(() => outputFormat.serialize(polygon), [polygon, outputFormat.serialize]);
 
     const handleOutputFormatChanged: ChangeEventHandler<HTMLSelectElement> = (e) => {
-        const outputFormat = e.target.value as FormatType;
-        setOutputFormat(format[outputFormat]);
+        const selectedValue = e.target.value as FormatType;
+        setOutputFormat(format[selectedValue]);
     };
 
     const handleCopyOverlayClicked = () => {
