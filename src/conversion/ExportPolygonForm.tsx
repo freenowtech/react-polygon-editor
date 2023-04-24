@@ -12,6 +12,7 @@ import { Text } from '../common/components/Text';
 import { AUTHENTIC_BLUE_1100, WHITE } from '../common/colors';
 import { Coordinate } from '../types';
 import { format } from './format';
+import { FormatType } from './format/types';
 
 const Form = styled.form`
     display: flex;
@@ -88,7 +89,8 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
     const value = useMemo(() => outputFormat.serialize(polygon), [polygon, outputFormat.serialize]);
 
     const handleOutputFormatChanged: ChangeEventHandler<HTMLSelectElement> = (e) => {
-        setOutputFormat(format[e.target.value]);
+        const outputFormat = e.target.value as FormatType;
+        setOutputFormat(format[outputFormat]);
     };
 
     const handleCopyOverlayClicked = () => {
