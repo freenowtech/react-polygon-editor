@@ -1,12 +1,25 @@
-module.exports = {
-    addons: ["@storybook/addon-essentials"],
-    framework: '@storybook/react',
-    stories: ['../stories/**/*.story.@(tsx)'],
-    core: {
-        builder: 'webpack5',
+const config = {
+    stories: ['../stories/**/*.(story|stories).@(tsx)'],
+    addons: ['@storybook/addon-essentials', '@storybook/addon-mdx-gfm'],
+    framework: {
+        name: '@storybook/react-webpack5',
+        options: {},
     },
-    webpackFinal: (config) => {
-        config.resolve.fallback = { path: false, fs: false }
+    docs: {
+        autodocs: true,
+    },
+    // Storybook config
+    webpackFinal: async (config, { configType }) => {
+        config.resolve = {
+            ...config.resolve,
+            fallback: {
+                ...(config.resolve || {}).fallback,
+                fs: false,
+                path: false,
+            },
+        };
         return config;
     },
 };
+
+export default config;
