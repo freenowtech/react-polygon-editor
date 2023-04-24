@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { action } from '@storybook/addon-actions';
+import { Meta } from '@storybook/react';
 
 import { PolygonDraw } from '../src/PolygonDraw/PolygonDraw';
 import { Coordinate } from '../src/types';
@@ -15,9 +16,12 @@ const polygonClickedAction = action('polygon clicked');
 const polygonMouseEnterAction = action('polygon mouseenter');
 const polygonMouseLeaveAction = action('polygon mouseleave');
 
-export default {
+const meta: Meta = {
     title: 'PolygonDraw',
+    decorators: [(Story) => <div style={{ height: '100vh', background: 'red' }}><Story /></div>],
 };
+
+export default meta;
 
 export const Default = () => (
     <StateContainer initialState={{ polygon: POLYGON }}>
