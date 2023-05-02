@@ -25,11 +25,11 @@ import { ActionBar } from '../ActionBar/ActionBar';
 import { EdgeVertex } from './EdgeVertex';
 import { PolygonVertex } from './PolygonVertex';
 import { BoundaryPolygon } from './BoundaryPolygon';
-import { Polygon } from './Polygon';
 import MapInner from './MapInner';
 import { SelectionRectangle } from './map/SelectionRectangle';
 import { Polyline } from './map/Polyline';
 import { ActivePolygon } from './map/ActivePolygon';
+import { InactivePolygon } from './map/InactivePolygon';
 
 interface MapSnapshot {
     reframe: boolean;
@@ -476,20 +476,14 @@ export class BaseMap extends React.Component<Props, State> {
     renderInactivePolygons = () => {
         const activePolygonIsClosed = isPolygonClosed(this.props.polygonCoordinates[this.props.activePolygonIndex]);
 
-        return this.props.polygonCoordinates.map((coordinates, index) => {
-            const eventHandler = {
-                onClick: () => this.props.onClick && this.props.onClick(index),
-                onMouseEnter: () => this.props.onMouseEnter && this.props.onMouseEnter(index),
-                onMouseLeave: () => this.props.onMouseLeave && this.props.onMouseLeave(index),
-            };
-
-            return index === this.props.activePolygonIndex ? null : (
-                <Polygon
-                    key={`${index}-${coordinates.reduce((acc, cur) => acc + cur.latitude + cur.longitude, 0)}`}
-                    coordinates={coordinates}
-                    isActive={false}
+        return this.props.polygonCoordinates.map((positions, index) => {
+            if (index === this.props.activePolygonIndex) return null;
+            return (
+                <InactivePolygon
+                    activePolygonIsClosed={activePolygonIsClosed}
+                    positions={positions}
                     isHighlighted={index === this.props.highlightedPolygonIndex}
-                    {...(activePolygonIsClosed ? eventHandler : {})}
+                    index={index}
                 />
             );
         });
