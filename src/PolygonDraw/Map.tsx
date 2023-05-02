@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
 import { LatLng, latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaflet';
-import { useMap, Pane, Polyline, Rectangle } from 'react-leaflet';
+import { useMap, Pane, Polyline } from 'react-leaflet';
 import flatten from 'lodash.flatten';
 
-import { Coordinate } from 'types';
+import { Coordinate, RectangleSelection } from 'types';
 
 import {
     createCoordinateFromLeafletLatLng,
@@ -27,6 +27,7 @@ import { PolygonVertex } from './PolygonVertex';
 import { BoundaryPolygon } from './BoundaryPolygon';
 import { Polygon } from './Polygon';
 import MapInner from './MapInner';
+import { SelectionRectangle } from './map/SelectionRectangle';
 
 interface MapSnapshot {
     reframe: boolean;
@@ -69,11 +70,7 @@ export interface State {
     isMovedPointInBoundary: boolean;
     isShiftPressed: boolean;
     isMoveActive: boolean;
-    rectangleSelection: {
-        startPosition: Coordinate;
-        endPosition: Coordinate;
-        startTime: number;
-    } | null;
+    rectangleSelection: RectangleSelection | null;
     previousMouseMovePosition?: Coordinate;
     isPenToolActive: boolean;
     newPointPosition: Coordinate | null;
@@ -534,24 +531,6 @@ export class BaseMap extends React.Component<Props, State> {
         );
     };
 
-    renderSelectionRectangle = () => {
-        if (this.state.rectangleSelection) {
-            const bounds: LatLngBounds = latLngBounds(
-                createLeafletLatLngFromCoordinate(this.state.rectangleSelection.startPosition),
-                createLeafletLatLngFromCoordinate(this.state.rectangleSelection.endPosition)
-            );
-
-            return (
-                <Rectangle
-                    color={MAP.RECTANGLE_SELECTION_COLOR}
-                    fillColor={MAP.RECTANGLE_SELECTION_COLOR}
-                    bounds={bounds}
-                />
-            );
-        }
-        return null;
-    };
-
     render() {
         const { editable, selection, initialZoom, initialCenter } = this.props;
         const { newPointPosition, isPenToolActive } = this.state;
@@ -584,7 +563,7 @@ export class BaseMap extends React.Component<Props, State> {
                         </Pane>
                     )}
 
-                    {this.state.rectangleSelection && this.renderSelectionRectangle()}
+                    {this.state.rectangleSelection && <SelectionRectangle rectangleSelection={this.state.rectangleSelection}/>}
 
                     <TileLayer />
                     <MapInner
