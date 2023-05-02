@@ -1,4 +1,6 @@
-const config = {
+import { StorybookConfig } from '@storybook/react-webpack5';
+
+const config: StorybookConfig = {
     stories: ['../stories/**/*.(story|stories).@(tsx)'],
     addons: ['@storybook/addon-essentials', '@storybook/addon-mdx-gfm'],
     framework: {
