@@ -1,4 +1,4 @@
-import React, { FunctionComponent, SVGProps } from 'react';
+import { FunctionComponent, SVGProps } from 'react';
 
 import { AUTHENTIC_BLUE_900 } from '../../common/colors';
 

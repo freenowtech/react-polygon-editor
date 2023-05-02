@@ -1,4 +1,3 @@
-import React from 'react';
 import { TileLayer as LeafletTileLayer } from 'react-leaflet';
 
 import { LEAFLET } from '../constants';

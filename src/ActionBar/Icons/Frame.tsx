@@ -1,4 +1,4 @@
-import React, { FunctionComponent, SVGProps } from 'react';
+import { FunctionComponent, SVGProps } from 'react';
 
 interface Props extends SVGProps<SVGSVGElement> {
     iconColor?: string;
