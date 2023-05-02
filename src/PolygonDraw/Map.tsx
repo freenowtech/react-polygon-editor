@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { LatLng, latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaflet';
-import { useMap, Pane, Polyline } from 'react-leaflet';
+import { useMap, Pane } from 'react-leaflet';
 import flatten from 'lodash.flatten';
 
 import { Coordinate, RectangleSelection } from 'types';
@@ -28,6 +28,7 @@ import { BoundaryPolygon } from './BoundaryPolygon';
 import { Polygon } from './Polygon';
 import MapInner from './MapInner';
 import { SelectionRectangle } from './map/SelectionRectangle';
+import { Polyline } from './map/Polyline';
 
 interface MapSnapshot {
     reframe: boolean;
@@ -508,29 +509,6 @@ export class BaseMap extends React.Component<Props, State> {
         );
     };
 
-    renderPolyline = () => {
-        const { newPointPosition } = this.state;
-        const polygon = this.props.polygonCoordinates[this.props.activePolygonIndex].map(
-            createLeafletLatLngFromCoordinate
-        );
-
-        if (polygon.length === 0) {
-            return null;
-        }
-
-        const newPath = [polygon[polygon.length - 1]];
-        if (newPointPosition) {
-            newPath.push(createLeafletLatLngFromCoordinate(newPointPosition));
-        }
-
-        return (
-            <>
-                <Polyline positions={polygon} color={MAP.POLYGON_ACTIVE_COLOR} interactive={false} />
-                <Polyline positions={newPath} color={MAP.POLYGON_ACTIVE_COLOR} dashArray="2 12" interactive={false} />
-            </>
-        );
-    };
-
     render() {
         const { editable, selection, initialZoom, initialCenter } = this.props;
         const { newPointPosition, isPenToolActive } = this.state;
@@ -553,7 +531,15 @@ export class BaseMap extends React.Component<Props, State> {
                         coordinates={this.props.boundaryPolygonCoordinates}
                         hasError={!this.state.isMovedPointInBoundary}
                     />
-                    {this.props.isPolygonClosed ? this.renderActivePolygon() : this.renderPolyline()}
+                    {this.props.isPolygonClosed ? (
+                        this.renderActivePolygon()
+                    ) : (
+                        <Polyline
+                            activePolygonIndex={this.props.activePolygonIndex}
+                            polygonCoordinates={this.props.polygonCoordinates}
+                            newPointPosition={newPointPosition}
+                        />
+                    )}
                     {this.renderInactivePolygons()}
 
                     {editable && (
@@ -563,7 +549,9 @@ export class BaseMap extends React.Component<Props, State> {
                         </Pane>
                     )}
 
-                    {this.state.rectangleSelection && <SelectionRectangle rectangleSelection={this.state.rectangleSelection}/>}
+                    {this.state.rectangleSelection && (
+                        <SelectionRectangle rectangleSelection={this.state.rectangleSelection} />
+                    )}
 
                     <TileLayer />
                     <MapInner
