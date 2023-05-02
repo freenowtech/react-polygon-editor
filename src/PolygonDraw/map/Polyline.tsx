@@ -1,4 +1,3 @@
-import React from 'react';
 import { Polyline as LeafletPolyline } from 'react-leaflet';
 
 import { Coordinate } from '../../types';

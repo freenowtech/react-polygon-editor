@@ -10,7 +10,7 @@
         "outDir": "dist",
         "baseUrl": "src",
         "moduleResolution": "node",
-        "jsx": "react",
+        "jsx": "react-jsx",
         "forceConsistentCasingInFileNames": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,

@@ -29,6 +29,7 @@ import { Polygon } from './Polygon';
 import MapInner from './MapInner';
 import { SelectionRectangle } from './map/SelectionRectangle';
 import { Polyline } from './map/Polyline';
+import { ActivePolygon } from './map/ActivePolygon';
 
 interface MapSnapshot {
     reframe: boolean;
@@ -494,21 +495,6 @@ export class BaseMap extends React.Component<Props, State> {
         });
     };
 
-    renderActivePolygon = () => {
-        const coordinates = this.props.polygonCoordinates[this.props.activePolygonIndex];
-        const index = this.props.activePolygonIndex;
-        return (
-            <Polygon
-                coordinates={coordinates}
-                isActive
-                isHighlighted={false}
-                onClick={() => this.props.onClick && this.props.onClick(index)}
-                onMouseEnter={() => this.props.onMouseEnter && this.props.onMouseEnter(index)}
-                onMouseLeave={() => this.props.onMouseLeave && this.props.onMouseLeave(index)}
-            />
-        );
-    };
-
     render() {
         const { editable, selection, initialZoom, initialCenter } = this.props;
         const { newPointPosition, isPenToolActive } = this.state;
@@ -532,7 +518,13 @@ export class BaseMap extends React.Component<Props, State> {
                         hasError={!this.state.isMovedPointInBoundary}
                     />
                     {this.props.isPolygonClosed ? (
-                        this.renderActivePolygon()
+                        <ActivePolygon
+                            index={this.props.activePolygonIndex}
+                            coordinates={this.props.polygonCoordinates}
+                            onClick={this.props.onClick}
+                            onMouseEnter={this.props.onMouseEnter}
+                            onMouseLeave={this.props.onMouseLeave}
+                        />
                     ) : (
                         <Polyline
                             activePolygonIndex={this.props.activePolygonIndex}
