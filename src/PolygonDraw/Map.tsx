@@ -473,23 +473,8 @@ export class BaseMap extends React.Component<Props, State> {
         return getPolygonEdges(this.props.polygonCoordinates[this.props.activePolygonIndex]).map(this.renderVertexEdge);
     };
 
-    renderInactivePolygons = () => {
-        const activePolygonIsClosed = isPolygonClosed(this.props.polygonCoordinates[this.props.activePolygonIndex]);
-
-        return this.props.polygonCoordinates.map((positions, index) => {
-            if (index === this.props.activePolygonIndex) return null;
-            return (
-                <InactivePolygon
-                    activePolygonIsClosed={activePolygonIsClosed}
-                    positions={positions}
-                    isHighlighted={index === this.props.highlightedPolygonIndex}
-                    index={index}
-                />
-            );
-        });
-    };
-
     render() {
+        const activePolygonIsClosed = isPolygonClosed(this.props.polygonCoordinates[this.props.activePolygonIndex]);
         const { editable, selection, initialZoom, initialCenter } = this.props;
         const { newPointPosition, isPenToolActive } = this.state;
 
@@ -511,6 +496,7 @@ export class BaseMap extends React.Component<Props, State> {
                         coordinates={this.props.boundaryPolygonCoordinates}
                         hasError={!this.state.isMovedPointInBoundary}
                     />
+                    
                     {this.props.isPolygonClosed ? (
                         <ActivePolygon
                             index={this.props.activePolygonIndex}
@@ -526,7 +512,20 @@ export class BaseMap extends React.Component<Props, State> {
                             newPointPosition={newPointPosition}
                         />
                     )}
-                    {this.renderInactivePolygons()}
+
+                    {this.props.polygonCoordinates.map((positions, index) => {
+                        return index !== this.props.activePolygonIndex ? (
+                            <InactivePolygon
+                                activePolygonIsClosed={activePolygonIsClosed}
+                                positions={positions}
+                                isHighlighted={index === this.props.highlightedPolygonIndex}
+                                index={index}
+                                onClick={this.props.onClick}
+                                onMouseEnter={this.props.onMouseEnter}
+                                onMouseLeave={this.props.onMouseLeave}
+                            />
+                        ) : null;
+                    })}
 
                     {editable && (
                         <Pane name="Polygon points">
