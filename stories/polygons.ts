@@ -29,6 +29,10 @@ export const POLYGON: Coordinate[] = [
         latitude: 53.55505895802228,
         longitude: 10.02576604485512,
     },
+    {
+        latitude: 53.56545917520555,
+        longitude: 10.0412155687809,
+    },
 ];
 
 export const POLYGON_ONE = [
