@@ -55,7 +55,8 @@ describe('Map component', () => {
     describe('WHEN polygon is disabled', () => {
         it('should enable pen tool', () => {
             render(<BaseMap {...initialProps} />);
-            const editButton = screen.getByText('Pen');
+            const editButton = screen.getByText('Pen');1
+            screen.debug();
             expect(editButton).toBeInTheDocument();
         });
     });
