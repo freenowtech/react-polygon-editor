@@ -12,8 +12,7 @@
         "build": "tsc",
         "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
         "prepublishOnly": "rm -rf ./dist && npm test && npm run lint && npm run build",
-        "build-storybook": "storybook build",
-        "chromatic": "npx chromatic --project-token=f300c7d5b2ae"
+        "build-storybook": "storybook build"
     },
     "publishConfig": {
         "access": "public"
