@@ -1,100 +1,100 @@
 {
-  "name": "@freenow/react-polygon-editor",
-  "version": "2.0.1",
-  "description": "A react component for displaying and drawing geo polygons",
-  "main": "dist/index.js",
-  "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "start": "storybook dev -p 9001 -c .storybook",
-    "lint": "tslint ./src/**/*.{ts,tsx}",
-    "clean": "rm -rf ./dist ./node_modules",
-    "build": "tsc",
-    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
-    "prepublishOnly": "rm -rf ./dist && npm test && npm run lint && npm run build",
-    "build-storybook": "storybook build",
-    "chromatic": "npx chromatic --project-token=f300c7d5b2ae"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/freenowtech/react-polygon-editor.git"
-  },
-  "keywords": [
-    "leaflet",
-    "react"
-  ],
-  "author": {
-    "name": "m.gharsallah"
-  },
-  "license": "Apache-2.0",
-  "prettier": {
-    "printWidth": 120,
-    "singleQuote": true,
-    "tabWidth": 4
-  },
-  "peerDependencies": {
-    "leaflet": "1.x",
-    "react": ">=18",
-    "react-dom": ">=18",
-    "react-leaflet": ">=4",
-    "styled-components": ">=5"
-  },
-  "dependencies": {
-    "@mapbox/geojson-rewind": "^0.5.2",
-    "@mapbox/geojsonhint": "^3.1.0",
-    "leaflet-path-drag": "^1.8.0-beta.3",
-    "lodash.flatten": "^4.4.0",
-    "lodash.isequal": "^4.5.0",
-    "redux-undo": "^1.0.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.21.0",
-    "@babel/preset-env": "^7.21.4",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.21.4",
-    "@dump247/storybook-state": "^1.6.1",
-    "@storybook/addon-actions": "^7.0.6",
-    "@storybook/addon-essentials": "^7.0.6",
-    "@storybook/addon-mdx-gfm": "^7.0.6",
-    "@storybook/addon-storysource": "^7.0.6",
-    "@storybook/react": "^7.0.6",
-    "@storybook/react-webpack5": "^7.0.6",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.4.3",
-    "@types/jest": "^29.4.0",
-    "@types/leaflet": "^1.9.1",
-    "@types/lodash.flatten": "^4.4.7",
-    "@types/lodash.isequal": "^4.5.6",
-    "@types/node": "^18.14.2",
-    "@types/react": "^18.0.28",
-    "@types/react-leaflet": "^3.0.0",
-    "@types/redux": "^3.6.0",
-    "@types/storybook__react": "^5.2.1",
-    "@types/styled-components": "^5.1.26",
-    "chromatic": "^6.17.3",
-    "jest": "^29.4.3",
-    "jest-environment-jsdom": "^29.4.3",
-    "jest-styled-components": "^7.1.1",
-    "leaflet": "^1.9.3",
-    "prettier": "^2.8.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-leaflet": "^4.2.0",
-    "storybook": "^7.0.6",
-    "styled-components": "^5.3.6",
-    "ts-jest": "^29.0.5",
-    "tslint": "^6.1.3",
-    "tslint-react": "^5.0.0",
-    "typescript": "^5.0.4"
-  },
-  "bugs": {
-    "url": "https://github.com/freenowtech/react-polygon-editor/issues"
-  },
-  "readme": "ERROR: No README data found!",
-  "homepage": "https://github.com/freenowtech/react-polygon-editor#readme",
-  "_id": "@freenow/react-polygon-editor@2.0.1"
+    "name": "@freenow/react-polygon-editor",
+    "version": "2.0.1",
+    "description": "A react component for displaying and drawing geo polygons",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "start": "storybook dev -p 9001 -c .storybook",
+        "lint": "tslint ./src/**/*.{ts,tsx}",
+        "clean": "rm -rf ./dist ./node_modules",
+        "build": "tsc",
+        "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+        "prepublishOnly": "rm -rf ./dist && npm test && npm run lint && npm run build",
+        "build-storybook": "storybook build",
+        "chromatic": "npx chromatic --exit-zero-on-changes"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/freenowtech/react-polygon-editor.git"
+    },
+    "keywords": [
+        "leaflet",
+        "react"
+    ],
+    "author": {
+        "name": "m.gharsallah"
+    },
+    "license": "Apache-2.0",
+    "prettier": {
+        "printWidth": 120,
+        "singleQuote": true,
+        "tabWidth": 4
+    },
+    "peerDependencies": {
+        "leaflet": "1.x",
+        "react": ">=18",
+        "react-dom": ">=18",
+        "react-leaflet": ">=4",
+        "styled-components": ">=5"
+    },
+    "dependencies": {
+        "@mapbox/geojson-rewind": "^0.5.2",
+        "@mapbox/geojsonhint": "^3.1.0",
+        "leaflet-path-drag": "^1.8.0-beta.3",
+        "lodash.flatten": "^4.4.0",
+        "lodash.isequal": "^4.5.0",
+        "redux-undo": "^1.0.1"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.21.0",
+        "@babel/preset-env": "^7.21.4",
+        "@babel/preset-react": "^7.18.6",
+        "@babel/preset-typescript": "^7.21.4",
+        "@dump247/storybook-state": "^1.6.1",
+        "@storybook/addon-actions": "^7.0.6",
+        "@storybook/addon-essentials": "^7.0.6",
+        "@storybook/addon-mdx-gfm": "^7.0.6",
+        "@storybook/addon-storysource": "^7.0.6",
+        "@storybook/react": "^7.0.6",
+        "@storybook/react-webpack5": "^7.0.6",
+        "@testing-library/jest-dom": "^5.16.5",
+        "@testing-library/react": "^14.0.0",
+        "@testing-library/user-event": "^14.4.3",
+        "@types/jest": "^29.4.0",
+        "@types/leaflet": "^1.9.1",
+        "@types/lodash.flatten": "^4.4.7",
+        "@types/lodash.isequal": "^4.5.6",
+        "@types/node": "^18.14.2",
+        "@types/react": "^18.0.28",
+        "@types/react-leaflet": "^3.0.0",
+        "@types/redux": "^3.6.0",
+        "@types/storybook__react": "^5.2.1",
+        "@types/styled-components": "^5.1.26",
+        "chromatic": "^6.17.3",
+        "jest": "^29.4.3",
+        "jest-environment-jsdom": "^29.4.3",
+        "jest-styled-components": "^7.1.1",
+        "leaflet": "^1.9.3",
+        "prettier": "^2.8.4",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-leaflet": "^4.2.0",
+        "storybook": "^7.0.6",
+        "styled-components": "^5.3.6",
+        "ts-jest": "^29.0.5",
+        "tslint": "^6.1.3",
+        "tslint-react": "^5.0.0",
+        "typescript": "^5.0.4"
+    },
+    "bugs": {
+        "url": "https://github.com/freenowtech/react-polygon-editor/issues"
+    },
+    "readme": "ERROR: No README data found!",
+    "homepage": "https://github.com/freenowtech/react-polygon-editor#readme",
+    "_id": "@freenow/react-polygon-editor@2.0.1"
 }
