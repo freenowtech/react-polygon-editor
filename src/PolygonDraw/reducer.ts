@@ -1,5 +1,3 @@
-import undoable, { excludeAction } from 'redux-undo';
-
 import {
     Actions,
     SELECT_POINTS,
@@ -36,12 +34,13 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
             };
         }
         case SET_POLYGON: {
+            const polygonList = ensurePolygonList(state.polygons);
             return {
                 ...state,
                 polygons: [
-                    ...state.polygons.slice(0, state.activeIndex),
+                    ...polygonList.slice(0, state.activeIndex),
                     action.payload,
-                    ...state.polygons.slice(state.activeIndex + 1),
+                    ...polygonList.slice(state.activeIndex + 1),
                 ],
                 selection: new Set(),
             };
@@ -51,18 +50,19 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         ///                            MOVE COORDINATES CASES                           ///
         ///////////////////////////////////////////////////////////////////////////////////
         case MOVE_SELECTED_POINTS: {
+            const polygonList = ensurePolygonList(state.polygons);
             return {
                 ...state,
                 polygons: [
-                    ...state.polygons.slice(0, state.activeIndex),
-                    movePolygonCoordinates(state.polygons[state.activeIndex], state.selection, action.payload),
-                    ...state.polygons.slice(state.activeIndex + 1),
+                    ...polygonList.slice(0, state.activeIndex),
+                    movePolygonCoordinates(polygonList[state.activeIndex], state.selection, action.payload),
+                    ...polygonList.slice(state.activeIndex + 1),
                 ],
             };
         }
 
         ///////////////////////////////////////////////////////////////////////////////////
-        ///                              SELECTION POINTS CASES                                ///
+        ///                              SELECTION POINTS CASES                         ///
         ///////////////////////////////////////////////////////////////////////////////////
         case SELECT_POINTS: {
             return {
@@ -116,7 +116,6 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         ///                              ADD POINT CASE                                 ///
         ///////////////////////////////////////////////////////////////////////////////////
         case ADD_POINT: {
-            console.log({ state })
             const polygonList = ensurePolygonList(state.polygons);
             return {
                 ...state,
@@ -129,16 +128,17 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
             };
         }
         case ADD_POINT_TO_EDGE: {
+            const polygonList = ensurePolygonList(state.polygons);
             return {
                 ...state,
                 polygons: [
-                    ...state.polygons.slice(0, state.activeIndex),
+                    ...polygonList.slice(0, state.activeIndex),
                     [
-                        ...state.polygons[state.activeIndex].slice(0, action.payload.index + 1),
+                        ...polygonList[state.activeIndex].slice(0, action.payload.index + 1),
                         action.payload.coordinate,
-                        ...state.polygons[state.activeIndex].slice(action.payload.index + 1),
+                        ...polygonList[state.activeIndex].slice(action.payload.index + 1),
                     ],
-                    ...state.polygons.slice(state.activeIndex + 1),
+                    ...polygonList.slice(state.activeIndex + 1),
                 ],
                 selection: new Set([action.payload.index]),
             };
@@ -148,26 +148,3 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         }
     }
 };
-
-export const EDIT_HISTORY_LIMIT = 20;
-
-export const undoablePolygonEditReducer = undoable(polygonEditReducer, {
-    groupBy: (action, state, history) => {
-        if (action.type === MOVE_SELECTED_POINTS) {
-            return `${action.type}-${[...state.selection].sort().join('-')}`;
-        }
-        return null;
-    },
-    filter: excludeAction([
-        SELECT_POINTS,
-        ADD_POINT_TO_SELECTION,
-        REMOVE_POINT_FROM_SELECTION,
-        SELECT_ALL_POINTS,
-        DESELECT_ALL_POINTS,
-        CHANGE_POLYGON,
-    ]),
-    // see https://github.com/omnidan/redux-undo/issues/6#issuecomment-142089793
-    limit: EDIT_HISTORY_LIMIT + 1,
-    debug: false,
-    syncFilter: true,
-});
