@@ -1,67 +1,53 @@
 import { createUndoRedo } from 'react-undo-redo';
-import { useMemo, useState } from 'react';
-import { Coordinate } from 'types';
-import isEqual from 'lodash.isequal';
+import { useEffect, useMemo } from 'react';
 
-import { Actions, actions } from './actions';
-import { ensurePolygonList, isPolygonClosed, isPolygonList } from '../helpers';
-import { PolygonEditState, polygonEditReducer, undoablePolygonEditReducer } from './reducer';
-// import { isValidPolygon } from './validators';
-// import { ActionCreators, StateWithHistory } from 'redux-undo';
+import { Coordinate } from '../types';
+import { actions } from './actions';
+import { isPolygonClosed, isPolygonList } from '../helpers';
+import { polygonEditReducer } from './reducer';
+import { isValidPolygon } from './validators';
+
+type PolygonEditor = {
+    selection: Set<number>;
+    polygons: Coordinate[] | Coordinate[][];
+    isPolygonClosed: boolean;
+    addPoint: (coord: Coordinate) => void;
+    addPointToEdge: (coordinate: Coordinate, index: number) => void;
+    deselectAllPoints: () => void;
+    removePointFromSelection: (index: number) => void;
+    addPointsToSelection: (indices: number[]) => void;
+    selectPoints: (indices: number[]) => void;
+    moveSelectedPoints: (newPosition: Coordinate, index: number) => void;
+    deletePolygonPoints: () => void;
+    selectAllPoints: () => void;
+    setPolygon: (polygon: Coordinate[]) => void;
+    undo: ReturnType<typeof useUndoRedo>[0];
+    redo: ReturnType<typeof useUndoRedo>[1];
+};
 
 const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer);
 
 export default UndoRedoProvider;
 
-// TODO: add output type
 export const usePolygonEditor = (
     onChange: (polygon: Coordinate[] | Coordinate[][], isValid: boolean) => void = () => {},
     polygons: Coordinate[] | Coordinate[][],
     activeIndex: number
-) => {
-    // const polygonList = ensurePolygonList(polygons);
-    const [present, dispatchPresent] = usePresent();
-    const [undo,redo] = useUndoRedo();
+): PolygonEditor => {
+    const [present, dispatch] = usePresent();
+    const [undo, redo] = useUndoRedo();
 
-    console.log({ present })
+    useEffect(() => {
+        present.activeIndex = activeIndex;
+    }, [activeIndex, present.activeIndex]);
 
-    const [selection, setSelection] = useState<Set<number>>(new Set());
-    // const [editHistory, setEditHistory] = useState<Omit<StateWithHistory<PolygonEditState>, 'present'>>({
-    //     past: [],
-    //     future: [],
-    // });
+    useEffect(() => {
+        const newPolygons = present.polygons;
+        onChange(isPolygonList(polygons) ? polygons : newPolygons[0], newPolygons.every(isValidPolygon));
+    }, [present.polygons]);
 
-    /**
-     * polygons: polygonList,
-            activeIndex: activeIndex,
-            selection: selection,
-     */
+    const activePolygon = useMemo(() => present.polygons[present.activeIndex], [present.polygons, present.activeIndex]);
 
-    // const state: StateWithHistory<PolygonEditState> = {
-    //     present: {
-    //         polygons: polygonList,
-    //         activeIndex: activeIndex,
-    //         selection: selection,
-    //     },
-    //     ...editHistory,
-    // };
-
-    const dispatch = (action: Actions) => {
-        dispatchPresent(action);
-
-        // TODO: check if still needed and move to reducer as one source of truth
-        if (!isEqual(selection, present.selection)) {
-            setSelection(present.selection);
-        }
-
-        // TODO: test if this onChange can be handled in a useEffect
-        // onChange(isPolygonList(polygons) ? present.polygons : newPolygons[0], newPolygons.every(isValidPolygon));
-    };
-
-    const activePolygon = useMemo(
-        () => present.polygons[present.activeIndex],
-        [present.polygons, present.activeIndex]
-    );
     const polygonIsClosed: boolean = useMemo(() => isPolygonClosed(activePolygon), [activePolygon]);
 
     const setPolygon = (polygon: Coordinate[]) => {
@@ -103,14 +89,6 @@ export const usePolygonEditor = (
     const selectAllPoints = () => {
         dispatch(actions.selectAllPoints());
     };
-
-    // const undo = () => {
-    //     dispatch(ActionCreators.undo());
-    // };
-
-    // const redo = () => {
-    //     dispatch(ActionCreators.redo());
-    // };
 
     return {
         selection: present.selection,
