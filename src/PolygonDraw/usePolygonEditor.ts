@@ -1,50 +1,66 @@
+import { createUndoRedo } from 'react-undo-redo';
 import { useMemo, useState } from 'react';
 import { Coordinate } from 'types';
 import isEqual from 'lodash.isequal';
 
 import { Actions, actions } from './actions';
 import { ensurePolygonList, isPolygonClosed, isPolygonList } from '../helpers';
-import { PolygonEditState, undoablePolygonEditReducer } from './reducer';
-import { isValidPolygon } from './validators';
-import { ActionCreators, StateWithHistory } from 'redux-undo';
+import { PolygonEditState, polygonEditReducer, undoablePolygonEditReducer } from './reducer';
+// import { isValidPolygon } from './validators';
+// import { ActionCreators, StateWithHistory } from 'redux-undo';
 
+const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer);
+
+export default UndoRedoProvider;
+
+// TODO: add output type
 export const usePolygonEditor = (
     onChange: (polygon: Coordinate[] | Coordinate[][], isValid: boolean) => void = () => {},
     polygons: Coordinate[] | Coordinate[][],
     activeIndex: number
 ) => {
-    const polygonList = ensurePolygonList(polygons);
+    // const polygonList = ensurePolygonList(polygons);
+    const [present, dispatchPresent] = usePresent();
+    const [undo,redo] = useUndoRedo();
+
+    console.log({ present })
 
     const [selection, setSelection] = useState<Set<number>>(new Set());
-    const [editHistory, setEditHistory] = useState<Omit<StateWithHistory<PolygonEditState>, 'present'>>({
-        past: [],
-        future: [],
-    });
+    // const [editHistory, setEditHistory] = useState<Omit<StateWithHistory<PolygonEditState>, 'present'>>({
+    //     past: [],
+    //     future: [],
+    // });
 
-    const state: StateWithHistory<PolygonEditState> = {
-        present: {
-            polygons: polygonList,
+    /**
+     * polygons: polygonList,
             activeIndex: activeIndex,
             selection: selection,
-        },
-        ...editHistory,
-    };
+     */
+
+    // const state: StateWithHistory<PolygonEditState> = {
+    //     present: {
+    //         polygons: polygonList,
+    //         activeIndex: activeIndex,
+    //         selection: selection,
+    //     },
+    //     ...editHistory,
+    // };
 
     const dispatch = (action: Actions) => {
-        const {
-            present: { polygons: newPolygons, selection: newSelection },
-            ...rest
-        } = undoablePolygonEditReducer(state, action);
-        setEditHistory(rest);
-        if (!isEqual(selection, newSelection)) {
-            setSelection(newSelection);
+        dispatchPresent(action);
+
+        // TODO: check if still needed and move to reducer as one source of truth
+        if (!isEqual(selection, present.selection)) {
+            setSelection(present.selection);
         }
-        onChange(isPolygonList(polygons) ? newPolygons : newPolygons[0], newPolygons.every(isValidPolygon));
+
+        // TODO: test if this onChange can be handled in a useEffect
+        // onChange(isPolygonList(polygons) ? present.polygons : newPolygons[0], newPolygons.every(isValidPolygon));
     };
 
     const activePolygon = useMemo(
-        () => state.present.polygons[state.present.activeIndex],
-        [state.present.polygons, state.present.activeIndex]
+        () => present.polygons[present.activeIndex],
+        [present.polygons, present.activeIndex]
     );
     const polygonIsClosed: boolean = useMemo(() => isPolygonClosed(activePolygon), [activePolygon]);
 
@@ -88,17 +104,17 @@ export const usePolygonEditor = (
         dispatch(actions.selectAllPoints());
     };
 
-    const undo = () => {
-        dispatch(ActionCreators.undo());
-    };
+    // const undo = () => {
+    //     dispatch(ActionCreators.undo());
+    // };
 
-    const redo = () => {
-        dispatch(ActionCreators.redo());
-    };
+    // const redo = () => {
+    //     dispatch(ActionCreators.redo());
+    // };
 
     return {
-        selection: state.present.selection,
-        polygons: state.present.polygons,
+        selection: present.selection,
+        polygons: present.polygons,
         isPolygonClosed: polygonIsClosed,
         addPoint,
         addPointToEdge,

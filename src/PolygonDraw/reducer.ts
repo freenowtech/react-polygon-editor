@@ -16,7 +16,7 @@ import {
 } from './actions';
 import { Coordinate } from 'types';
 
-import { movePolygonCoordinates, removeSelectedPoints } from '../helpers';
+import { ensurePolygonList, movePolygonCoordinates, removeSelectedPoints } from '../helpers';
 
 export interface PolygonEditState {
     activeIndex: number;
@@ -62,7 +62,7 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         }
 
         ///////////////////////////////////////////////////////////////////////////////////
-        ///                              SELECTION CASES                                ///
+        ///                              SELECTION POINTS CASES                                ///
         ///////////////////////////////////////////////////////////////////////////////////
         case SELECT_POINTS: {
             return {
@@ -116,12 +116,14 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         ///                              ADD POINT CASE                                 ///
         ///////////////////////////////////////////////////////////////////////////////////
         case ADD_POINT: {
+            console.log({ state })
+            const polygonList = ensurePolygonList(state.polygons);
             return {
                 ...state,
                 polygons: [
-                    ...state.polygons.slice(0, state.activeIndex),
-                    [...state.polygons[state.activeIndex], action.payload],
-                    ...state.polygons.slice(state.activeIndex + 1),
+                    ...polygonList.slice(0, state.activeIndex),
+                    [...polygonList[state.activeIndex], action.payload],
+                    ...polygonList.slice(state.activeIndex + 1),
                 ],
                 selection: new Set([state.polygons.length]),
             };

@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { Coordinate } from 'types';
-import { createLeafletLatLngTupleFromCoordinate } from '../helpers';
+import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers';
 
 import { MAP } from '../constants';
 import Map from './Map';
-import { usePolygonEditor } from './usePolygonEditor';
+import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor';
 
 export type Props<T extends Coordinate[] | Coordinate[][]> = {
     boundary?: Coordinate[];
@@ -21,7 +21,7 @@ export type Props<T extends Coordinate[] | Coordinate[][]> = {
     onMouseLeave?: (index: number) => void;
 };
 
-export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
+function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     polygon,
     activeIndex = 0,
     highlightedIndex,
@@ -79,5 +79,15 @@ export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>({
             onUndo={undo}
             onRedo={redo}
         />
+    );
+}
+
+export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>(props: Props<T>): React.ReactElement {
+    return (
+        <UndoRedoProvider
+            initialState={{ polygons: ensurePolygonList(props.polygon), selection: new Set(), activeIndex: props.activeIndex || 0 }}
+        >
+            <PolygonEditor {...props} />
+        </UndoRedoProvider>
     );
 }
