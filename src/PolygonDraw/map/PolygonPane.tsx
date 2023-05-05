@@ -47,6 +47,7 @@ export const PolygonPane: React.FC<Props> = ({
 }) => {
     const [isMoveActive, setIsMoveActive] = useState(false);
     const [previousMouseMovePosition, setPreviousMouseMovePosition] = useState<Coordinate | undefined>(undefined);
+
     const onPolygonVertexClick = (index: number) => {
         if (index === 0 && activePolygon.length > 2 && !isPolygonClosed) {
             // Close polygon when user clicks the first point

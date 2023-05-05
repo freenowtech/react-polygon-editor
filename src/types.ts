@@ -5,6 +5,15 @@ export type Coordinate = {
     longitude: number;
 };
 
+export type Undo = {
+    (): void;
+    isPossible: boolean;
+};
+
+export type Redo = {
+    (): void;
+    isPossible: boolean;
+};
 export interface Action<T extends string> {
     type: T;
 }
