@@ -14,3 +14,9 @@ export interface ActionWithPayload<T extends string, P> extends Action<T> {
 }
 
 export type ActionsUnion<A extends ActionCreatorsMapObject> = ReturnType<A[keyof A]>;
+
+export interface RectangleSelection {
+    startPosition: Coordinate;
+    endPosition: Coordinate;
+    startTime: number;
+}

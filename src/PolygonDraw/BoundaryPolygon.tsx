@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { Polygon as LeafletPolygon } from 'react-leaflet';
 
 import { Coordinate } from 'types';
