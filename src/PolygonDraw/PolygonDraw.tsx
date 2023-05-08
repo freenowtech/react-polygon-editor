@@ -50,6 +50,8 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
         isPolygonClosed,
         undo,
         redo,
+        isRedoPossible,
+        isUndoPossible
     } = usePolygonEditor(onChange, polygon, activeIndex);
 
     return (
@@ -78,6 +80,8 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
             onMouseLeave={onMouseLeave}
             onUndo={undo}
             onRedo={redo}
+            isRedoPossible={isRedoPossible}
+            isUndoPossible={isUndoPossible}
         />
     );
 }
