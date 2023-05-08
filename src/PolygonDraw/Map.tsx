@@ -3,7 +3,7 @@ import { latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaf
 import { useMap } from 'react-leaflet';
 import flatten from 'lodash.flatten';
 
-import { Coordinate, RectangleSelection, Redo, Undo } from '../types';
+import { Coordinate, RectangleSelection } from '../types';
 
 import {
     createCoordinateFromLeafletLatLng,
@@ -58,8 +58,10 @@ export interface Props {
     deletePolygonPoints: () => void;
     selectAllPoints: () => void;
     setPolygon: (polygon: Coordinate[]) => void;
-    onUndo: Undo;
-    onRedo: Redo;
+    onUndo: () => void;
+    onRedo: () => void;
+    isRedoPossible: boolean;
+    isUndoPossible: boolean;
 }
 
 type MapType = ReturnType<typeof useMap>;
@@ -346,12 +348,12 @@ export class BaseMap extends React.Component<Props, State> {
                 this.reframe();
                 break;
             case 'y':
-                if (this.props.onRedo.isPossible) {
+                if (this.props.isRedoPossible) {
                     this.props.onRedo();
                 }
                 break;
             case 'z':
-                if (this.props.onUndo.isPossible) {
+                if (this.props.isUndoPossible) {
                     this.props.onUndo();
                 }
                 break;

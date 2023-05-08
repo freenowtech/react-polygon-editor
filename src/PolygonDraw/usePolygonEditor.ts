@@ -9,7 +9,7 @@ import { isValidPolygon } from './validators';
 
 type PolygonEditor = {
     selection: Set<number>;
-    polygons: Coordinate[] | Coordinate[][];
+    polygons: Coordinate[][];
     isPolygonClosed: boolean;
     addPoint: (coord: Coordinate) => void;
     addPointToEdge: (coordinate: Coordinate, index: number) => void;
@@ -17,12 +17,14 @@ type PolygonEditor = {
     removePointFromSelection: (index: number) => void;
     addPointsToSelection: (indices: number[]) => void;
     selectPoints: (indices: number[]) => void;
-    moveSelectedPoints: (newPosition: Coordinate, index: number) => void;
+    moveSelectedPoints: (newPosition: Coordinate) => void;
     deletePolygonPoints: () => void;
     selectAllPoints: () => void;
     setPolygon: (polygon: Coordinate[]) => void;
-    undo: ReturnType<typeof useUndoRedo>[0];
-    redo: ReturnType<typeof useUndoRedo>[1];
+    redo: () => void;
+    undo: () => void;
+    isUndoPossible: boolean;
+    isRedoPossible: boolean;
 };
 
 const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer);
@@ -36,6 +38,9 @@ export const usePolygonEditor = (
 ): PolygonEditor => {
     const [present, dispatch] = usePresent();
     const [undo, redo] = useUndoRedo();
+
+    const isUndoPossible = undo.isPossible;
+    const isRedoPossible = redo.isPossible;
 
     useEffect(() => {
         present.activeIndex = activeIndex;
@@ -104,7 +109,9 @@ export const usePolygonEditor = (
         deletePolygonPoints,
         selectAllPoints,
         setPolygon,
-        undo,
         redo,
+        undo,
+        isRedoPossible,
+        isUndoPossible
     };
 };

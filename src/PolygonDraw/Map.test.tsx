@@ -37,6 +37,8 @@ describe('Map component', () => {
             setPolygon: jest.fn(),
             onUndo: jest.fn(),
             onRedo: jest.fn(),
+            isRedoPossible: false,
+            isUndoPossible: false
         };
     });
 
