@@ -1,9 +1,10 @@
 import { createUndoRedo } from 'react-undo-redo';
 import { useEffect, useMemo } from 'react';
+import isEqual from 'lodash.isequal';
 
 import { Coordinate } from '../types';
 import { actions } from './actions';
-import { isPolygonClosed, isPolygonList } from '../helpers';
+import { ensurePolygonList, isPolygonClosed, isPolygonList } from '../helpers';
 import { polygonEditReducer } from './reducer';
 import { isValidPolygon } from './validators';
 
@@ -43,12 +44,24 @@ export const usePolygonEditor = (
     const isRedoPossible = redo.isPossible;
 
     useEffect(() => {
-        present.activeIndex = activeIndex;
-    }, [activeIndex, present.activeIndex]);
+        if (activeIndex !== present.activeIndex) {
+            dispatch(actions.setActiveIndex(activeIndex));
+        }
+    }, [activeIndex]);
 
     useEffect(() => {
-        const newPolygons = present.polygons;
-        onChange(isPolygonList(polygons) ? polygons : newPolygons[0], newPolygons.every(isValidPolygon));
+        if (!isEqual(polygons, present.polygons)) {
+            dispatch(actions.changePolygons(ensurePolygonList(polygons)));
+        }
+    }, [polygons]);
+
+    useEffect(() => {
+        if (!isEqual(polygons, present.polygons)) {
+            onChange(
+                isPolygonList(polygons) ? present.polygons : present.polygons[0],
+                present.polygons.every(isValidPolygon)
+            );
+        }
     }, [present.polygons]);
 
     const activePolygon = useMemo(() => present.polygons[present.activeIndex], [present.polygons, present.activeIndex]);
@@ -112,6 +125,6 @@ export const usePolygonEditor = (
         redo,
         undo,
         isRedoPossible,
-        isUndoPossible
+        isUndoPossible,
     };
 };
