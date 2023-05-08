@@ -11,7 +11,7 @@ import {
     ADD_POINT_TO_EDGE,
     CHANGE_POLYGONS,
     SET_POLYGON,
-    SET_ACTIVE_INDEX
+    SET_ACTIVE_INDEX,
 } from './actions';
 import { Coordinate } from 'types';
 
@@ -65,8 +65,8 @@ export const polygonEditReducer = (state: PolygonEditState, action: Action): Pol
         case SET_ACTIVE_INDEX: {
             return {
                 ...state,
-                activeIndex: action.payload
-            }
+                activeIndex: action.payload,
+            };
         }
 
         ///////////////////////////////////////////////////////////////////////////////////
