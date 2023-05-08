@@ -1,5 +1,5 @@
 import {
-    Actions,
+    Action,
     SELECT_POINTS,
     ADD_POINT_TO_SELECTION,
     REMOVE_POINT_FROM_SELECTION,
@@ -9,8 +9,9 @@ import {
     DELETE_POLYGON_POINTS,
     ADD_POINT,
     ADD_POINT_TO_EDGE,
-    CHANGE_POLYGON,
+    CHANGE_POLYGONS,
     SET_POLYGON,
+    SET_ACTIVE_INDEX
 } from './actions';
 import { Coordinate } from 'types';
 
@@ -22,12 +23,12 @@ export interface PolygonEditState {
     selection: Set<number>;
 }
 
-export const polygonEditReducer = (state: PolygonEditState, action: Actions): PolygonEditState => {
+export const polygonEditReducer = (state: PolygonEditState, action: Action): PolygonEditState => {
     switch (action.type) {
         ///////////////////////////////////////////////////////////////////////////////////
         ///                            CHANGE POLYGON CASES                             ///
         ///////////////////////////////////////////////////////////////////////////////////
-        case CHANGE_POLYGON: {
+        case CHANGE_POLYGONS: {
             return {
                 ...state,
                 polygons: [...action.payload],
@@ -59,6 +60,13 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
                     ...polygonList.slice(state.activeIndex + 1),
                 ],
             };
+        }
+
+        case SET_ACTIVE_INDEX: {
+            return {
+                ...state,
+                activeIndex: action.payload
+            }
         }
 
         ///////////////////////////////////////////////////////////////////////////////////

@@ -10,9 +10,9 @@ describe('PolygonDraw reducer', () => {
         selection: new Set(),
     };
 
-    describe('changePolygon', () => {
+    describe('changePolygons', () => {
         it('should change single polygon', () => {
-            const action = actions.changePolygon([MOCK_POLYGON]);
+            const action = actions.changePolygons([MOCK_POLYGON]);
             const expectedState: PolygonEditState = {
                 activeIndex: 0,
                 polygons: [MOCK_POLYGON],
@@ -32,7 +32,7 @@ describe('PolygonDraw reducer', () => {
                 polygons: [POLYGON_ONE, POLYGON_TWO, POLYGON_THREE],
                 selection: new Set(),
             };
-            expect(polygonEditReducer(state, actions.changePolygon([POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]))).toEqual(
+            expect(polygonEditReducer(state, actions.changePolygons([POLYGON_ONE, POLYGON_TWO, POLYGON_THREE]))).toEqual(
                 expectedState
             );
         });
