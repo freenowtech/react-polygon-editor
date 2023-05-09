@@ -8,6 +8,7 @@ module.exports = {
     extends: [
         'plugin:react/recommended',
         'plugin:jest/recommended',
+        'plugin:react-hooks/recommended',
         'plugin:storybook/recommended',
         'prettier',
     ],
@@ -41,11 +42,11 @@ module.exports = {
                 functions: false,
                 classes: true,
                 variables: true,
-                typedefs: true
-            }
+                typedefs: true,
+            },
         ],
         'react/prop-types': 'off',
         'jest/no-conditional-expect': 'off',
-        'react/display-name': 'off'
+        'react/display-name': 'off',
     },
 };
