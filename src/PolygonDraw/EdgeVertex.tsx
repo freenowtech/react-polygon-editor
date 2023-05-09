@@ -11,10 +11,6 @@ interface Props {
     onClick: (coordinate: Coordinate, index: number) => void;
 }
 
-interface State {
-    isHoverActive: boolean;
-}
-
 export const EdgeVertex: FC<Props> = ({ coordinate, index, onClick }) => {
     const [isHoverActive, setIsHoverActive] = useState(false);
 
