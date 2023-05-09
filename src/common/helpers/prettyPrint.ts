@@ -1,2 +1,1 @@
-// tslint:disable-next-line: no-any
-export const prettyPrint = (value: any) => JSON.stringify(value, null, 2);
+export const prettyPrint = (value: unknown): string => JSON.stringify(value, undefined, 2);

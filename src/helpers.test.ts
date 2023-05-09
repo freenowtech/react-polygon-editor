@@ -82,17 +82,16 @@ describe('helpers', () => {
         describe('WHEN one closing point is selected', () => {
             it('should move both closing points', () => {
                 const movedPolygon = movePolygonCoordinates(MOCK_POLYGON, new Set([0, 5]), MOVE_VECTOR);
+                const index = MOCK_POLYGON.length - 1;
                 expect(movedPolygon[0]).toEqual(addCoordinates(MOCK_POLYGON[0], MOVE_VECTOR));
-                expect(movedPolygon[MOCK_POLYGON.length - 1]).toEqual(
-                    addCoordinates(MOCK_POLYGON[MOCK_POLYGON.length - 1], MOVE_VECTOR)
-                );
+                expect(movedPolygon[index]).toEqual(addCoordinates(MOCK_POLYGON[index], MOVE_VECTOR));
             });
         });
     });
 
     describe('removeSelectedPoints', () => {
         const SMALL_POYLGON = [MOCK_POLYGON[0], MOCK_POLYGON[1], MOCK_POLYGON[2], MOCK_POLYGON[3], MOCK_POLYGON[0]];
-        it('should remove selected points ', () => {
+        it('should remove selected points', () => {
             expect(removeSelectedPoints(SMALL_POYLGON, new Set<number>([1]))).toEqual([
                 SMALL_POYLGON[0],
                 SMALL_POYLGON[2],

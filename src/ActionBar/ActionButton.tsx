@@ -56,16 +56,21 @@ const renderIcon = (icon: ActionButtonIcons, inactive?: boolean, activeIconColor
     };
 
     switch (icon) {
-        case ActionButtonIcons.TRASHCAN:
+        case ActionButtonIcons.TRASHCAN: {
             return <Trashcan {...props} />;
-        case ActionButtonIcons.FRAME:
+        }
+        case ActionButtonIcons.FRAME: {
             return <Frame {...props} />;
-        case ActionButtonIcons.VECTOR_MODE:
+        }
+        case ActionButtonIcons.VECTOR_MODE: {
             return <VectorMode {...props} />;
-        case ActionButtonIcons.EXPORT:
+        }
+        case ActionButtonIcons.EXPORT: {
             return <Export {...props} />;
-        case ActionButtonIcons.IMPORT:
+        }
+        case ActionButtonIcons.IMPORT: {
             return <Import {...props} />;
+        }
         default:
             return null;
     }
