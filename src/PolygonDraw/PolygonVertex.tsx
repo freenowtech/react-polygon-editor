@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import 'leaflet-path-drag';
 import { FC, createRef, useCallback, useEffect, useState } from 'react';
 import { CircleMarker, LatLng } from 'leaflet';
