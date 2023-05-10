@@ -23,10 +23,10 @@ module.exports = {
         '@typescript-eslint/naming-convention': [
             'error',
             {
-                functions: false,
-                classes: true,
-                variables: true,
-                typedefs: true,
+                selector: 'variable',
+                format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+                leadingUnderscore: 'forbid',
+                trailingUnderscore: 'forbid',
             },
         ],
         'no-redeclare': 'error',
