@@ -43,26 +43,29 @@ export const usePolygonEditor = (
     const isUndoPossible = undo.isPossible;
     const isRedoPossible = redo.isPossible;
 
+    const isNotSamePolygons = !isEqual(polygons, present.polygons);
+    const isNotSameActiveIndex = activeIndex !== present.activeIndex;
+    const isCoordinatesArray = isPolygonList(polygons);
+    const isEveryPolygonValid = present.polygons.every(isValidPolygon);
+
     useEffect(() => {
-        if (activeIndex !== present.activeIndex) {
+        if (isNotSameActiveIndex) {
             dispatch(actions.setActiveIndex(activeIndex));
         }
-    }, [activeIndex]);
+    }, [activeIndex, dispatch, isNotSameActiveIndex]);
 
     useEffect(() => {
-        if (!isEqual(polygons, present.polygons)) {
+        if (isNotSamePolygons) {
             dispatch(actions.changePolygons(ensurePolygonList(polygons)));
         }
-    }, [polygons]);
+    }, [polygons, dispatch, isNotSamePolygons]);
 
     useEffect(() => {
-        if (!isEqual(polygons, present.polygons)) {
-            onChange(
-                isPolygonList(polygons) ? present.polygons : present.polygons[0],
-                present.polygons.every(isValidPolygon)
-            );
+        if (isNotSamePolygons) {
+            onChange(isCoordinatesArray ? present.polygons : present.polygons[0], isEveryPolygonValid);
         }
-    }, [present.polygons]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isCoordinatesArray, isEveryPolygonValid, isNotSamePolygons]);
 
     const activePolygon = useMemo(() => present.polygons[present.activeIndex], [present.polygons, present.activeIndex]);
 
