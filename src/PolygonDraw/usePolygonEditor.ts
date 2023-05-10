@@ -1,5 +1,5 @@
 import { createUndoRedo } from 'react-undo-redo';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import isEqual from 'lodash.isequal';
 
 import { Coordinate } from '../types';
@@ -40,13 +40,16 @@ export const usePolygonEditor = (
     const [present, dispatch] = usePresent();
     const [undo, redo] = useUndoRedo();
 
-    const isUndoPossible = undo.isPossible;
-    const isRedoPossible = redo.isPossible;
-
     const isNotSamePolygons = !isEqual(polygons, present.polygons);
     const isNotSameActiveIndex = activeIndex !== present.activeIndex;
     const isCoordinatesArray = isPolygonList(polygons);
-    const isEveryPolygonValid = present.polygons.every(isValidPolygon);
+    const isEveryPolygonValid = useMemo(() => present.polygons.every(isValidPolygon), [present.polygons]);
+
+    const handleChange = useCallback(() => {
+        if (isNotSamePolygons) {
+            onChange(isCoordinatesArray ? present.polygons : present.polygons[0], isEveryPolygonValid);
+        }
+    }, [isCoordinatesArray, isNotSamePolygons, isEveryPolygonValid]);
 
     useEffect(() => {
         if (isNotSameActiveIndex) {
@@ -61,11 +64,8 @@ export const usePolygonEditor = (
     }, [polygons, dispatch, isNotSamePolygons]);
 
     useEffect(() => {
-        if (isNotSamePolygons) {
-            onChange(isCoordinatesArray ? present.polygons : present.polygons[0], isEveryPolygonValid);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isCoordinatesArray, isEveryPolygonValid, isNotSamePolygons]);
+        handleChange();
+    }, [handleChange]);
 
     const activePolygon = useMemo(() => present.polygons[present.activeIndex], [present.polygons, present.activeIndex]);
 
@@ -127,7 +127,7 @@ export const usePolygonEditor = (
         setPolygon,
         redo,
         undo,
-        isRedoPossible,
-        isUndoPossible,
+        isRedoPossible: redo.isPossible,
+        isUndoPossible: undo.isPossible,
     };
 };
