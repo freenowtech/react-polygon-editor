@@ -1,5 +1,5 @@
 import { createUndoRedo } from 'react-undo-redo';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import isEqual from 'lodash.isequal';
 
 import { Coordinate } from '../types';
@@ -40,29 +40,32 @@ export const usePolygonEditor = (
     const [present, dispatch] = usePresent();
     const [undo, redo] = useUndoRedo();
 
-    const isUndoPossible = undo.isPossible;
-    const isRedoPossible = redo.isPossible;
+    const isNotSamePolygons = !isEqual(polygons, present.polygons);
+    const isNotSameActiveIndex = activeIndex !== present.activeIndex;
+    const isCoordinatesArray = isPolygonList(polygons);
+    const isEveryPolygonValid = useMemo(() => present.polygons.every(isValidPolygon), [present.polygons]);
+
+    const handleChange = useCallback(() => {
+        if (isNotSamePolygons) {
+            onChange(isCoordinatesArray ? present.polygons : present.polygons[0], isEveryPolygonValid);
+        }
+    }, [isCoordinatesArray, isNotSamePolygons, isEveryPolygonValid]);
 
     useEffect(() => {
-        if (activeIndex !== present.activeIndex) {
+        if (isNotSameActiveIndex) {
             dispatch(actions.setActiveIndex(activeIndex));
         }
-    }, [activeIndex]);
+    }, [activeIndex, dispatch, isNotSameActiveIndex]);
 
     useEffect(() => {
-        if (!isEqual(polygons, present.polygons)) {
+        if (isNotSamePolygons) {
             dispatch(actions.changePolygons(ensurePolygonList(polygons)));
         }
-    }, [polygons]);
+    }, [polygons, dispatch, isNotSamePolygons]);
 
     useEffect(() => {
-        if (!isEqual(polygons, present.polygons)) {
-            onChange(
-                isPolygonList(polygons) ? present.polygons : present.polygons[0],
-                present.polygons.every(isValidPolygon)
-            );
-        }
-    }, [present.polygons]);
+        handleChange();
+    }, [handleChange]);
 
     const activePolygon = useMemo(() => present.polygons[present.activeIndex], [present.polygons, present.activeIndex]);
 
@@ -124,7 +127,7 @@ export const usePolygonEditor = (
         setPolygon,
         redo,
         undo,
-        isRedoPossible,
-        isUndoPossible,
+        isRedoPossible: redo.isPossible,
+        isUndoPossible: undo.isPossible,
     };
 };
