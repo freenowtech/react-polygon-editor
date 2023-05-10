@@ -3,7 +3,7 @@ import { latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaf
 import { useMap } from 'react-leaflet';
 import flatten from 'lodash.flatten';
 
-import { Coordinate, RectangleSelection } from 'types';
+import { Coordinate, RectangleSelection } from '../types';
 
 import {
     createCoordinateFromLeafletLatLng,
@@ -60,6 +60,8 @@ export interface Props {
     setPolygon: (polygon: Coordinate[]) => void;
     onUndo: () => void;
     onRedo: () => void;
+    isRedoPossible: boolean;
+    isUndoPossible: boolean;
 }
 
 type MapType = ReturnType<typeof useMap>;
@@ -345,10 +347,13 @@ export class BaseMap extends React.Component<Props, State> {
             case 'f':
                 this.reframe();
                 break;
-            case 'z':
-                if (e.metaKey && e.shiftKey) {
+            case 'y':
+                if (this.props.isRedoPossible) {
                     this.props.onRedo();
-                } else if (e.metaKey) {
+                }
+                break;
+            case 'z':
+                if (this.props.isUndoPossible) {
                     this.props.onUndo();
                 }
                 break;
@@ -407,6 +412,7 @@ export class BaseMap extends React.Component<Props, State> {
                     {this.props.polygonCoordinates.map((positions, index) => {
                         return index !== this.props.activePolygonIndex ? (
                             <InactivePolygon
+                                key={`${index}-${this.props.activePolygonIndex}`}
                                 activePolygonIsClosed={activePolygonIsClosed}
                                 positions={positions}
                                 isHighlighted={index === this.props.highlightedPolygonIndex}
@@ -463,10 +469,7 @@ export class BaseMap extends React.Component<Props, State> {
 
                 {this.state.showExportPolygonModal && (
                     <Modal onClose={this.handleExportPolygonModalClosed}>
-                        <ExportPolygonForm
-                            polygon={this.props.polygonCoordinates[this.props.activePolygonIndex]}
-                            onSubmit={this.handleExportPolygon}
-                        />
+                        <ExportPolygonForm polygon={activePolygon} onSubmit={this.handleExportPolygon} />
                     </Modal>
                 )}
 
