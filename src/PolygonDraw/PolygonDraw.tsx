@@ -4,7 +4,7 @@ import { Coordinate } from 'types';
 import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers';
 
 import { MAP } from '../constants';
-import Map from './Map';
+import { BaseMap as Map } from './map/MapV2';
 import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor';
 
 export type Props<T extends Coordinate[] | Coordinate[][]> = {
