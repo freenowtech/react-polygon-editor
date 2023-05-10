@@ -1,5 +1,5 @@
 import 'leaflet-path-drag';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { CircleMarker, LatLng } from 'leaflet';
 import { CircleMarker as ReactLeafletCircleMarker } from 'react-leaflet';
 
@@ -32,10 +32,16 @@ export const PolygonVertex: FC<Props> = ({
     const [isDragged, setIsDragged] = useState(false);
     const [latLng, setLatLng] = useState(new LatLng(0, 0));
 
-    let circleMarkerElement: CircleMarker;
+    const circleMarkerRef = useRef<CircleMarker>();
+
+    const setCircleMarkerRef = useCallback((ref: CircleMarker | null) => {
+        if (ref) {
+            circleMarkerRef.current = ref;
+        }
+    }, []);
 
     useEffect(() => {
-        if (!isDragged && !!coordinate) {
+        if (!isDragged) {
             setLatLng(createLeafletLatLngFromCoordinate(coordinate));
         }
     }, [isDragged, coordinate]);
@@ -62,28 +68,20 @@ export const PolygonVertex: FC<Props> = ({
         setIsDragged(false);
     }, [onDragEnd]);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setCircleMarkerRef = (ref: any) => {
-        if (ref) {
-            circleMarkerElement = ref;
-        }
-    };
-
     useEffect(() => {
-        if (circleMarkerElement) {
-            circleMarkerElement.on('dragstart', handleDragStart);
-            circleMarkerElement.on('drag', handleDrag);
-            circleMarkerElement.on('dragend', handleDragEnd);
+        const marker = circleMarkerRef.current;
+        if (marker) {
+            marker.on('dragstart', handleDragStart);
+            marker.on('drag', handleDrag);
+            marker.on('dragend', handleDragEnd);
         }
         return () => {
-            if (circleMarkerElement) {
-                circleMarkerElement.off('dragstart', handleDragStart);
-                circleMarkerElement.off('drag', handleDrag);
-                circleMarkerElement.off('dragend', handleDragEnd);
+            if (marker) {
+                marker.off('dragstart', handleDragStart);
+                marker.off('drag', handleDrag);
+                marker.off('dragend', handleDragEnd);
             }
         };
-        // circleMarkerElement cannot be set as dependency due to assignment issues
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [handleDrag, handleDragEnd, handleDragStart]);
 
     const handleClick = () => onClick(index);
