@@ -41,7 +41,7 @@ const Card = styled.div`
 
 type DismissFunc = () => void;
 
-// tslint:disable-next-line: no-empty
+// eslint-disable-next-line no-empty,no-empty-function,@typescript-eslint/no-empty-function
 const DismissContext = React.createContext<DismissFunc>(() => {});
 
 export const useDismiss = () => useContext(DismissContext);

@@ -42,7 +42,7 @@ export const ImportPolygonForm: React.FC<Props> = ({ onSubmit = () => {} }) => {
         }
 
         setStatus(Status.INVALID);
-    }, [text]);
+    }, [deserialized.valid, text]);
 
     const handleOnSubmit: FormEventHandler = (e) => {
         e.preventDefault();

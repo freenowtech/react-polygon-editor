@@ -86,7 +86,7 @@ export const ExportPolygonForm: React.FC<Props> = ({ polygon, onSubmit }) => {
 
     const [outputFormat, setOutputFormat] = useState(format.geojson);
 
-    const value = useMemo(() => outputFormat.serialize(polygon), [polygon, outputFormat.serialize]);
+    const value = useMemo(() => outputFormat.serialize(polygon), [polygon, outputFormat]);
 
     const handleOutputFormatChanged: ChangeEventHandler<HTMLSelectElement> = (e) => {
         const selectedValue = e.target.value as FormatType;

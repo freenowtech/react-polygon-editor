@@ -53,7 +53,7 @@ export class PolygonVertex extends React.Component<Props, State> {
         }
     }
 
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     setCircleMarkerRef = (ref: any) => {
         if (ref) {
             this.circleMarkerElement = ref;
