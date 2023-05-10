@@ -29,7 +29,7 @@ module.exports = {
                 trailingUnderscore: 'forbid',
             },
         ],
-        'no-redeclare': 'error',
+        '@typescript-eslint/no-use-before-define': 'off',
         'jest/no-conditional-expect': 'off',
         'react/display-name': 'off',
         'react/prop-types': 'off',
