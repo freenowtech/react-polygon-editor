@@ -8,7 +8,7 @@ import {
     isCoordinateInPolygon,
     subtractCoordinates,
 } from '../../helpers';
-import { PolygonVertex } from '../PolygonVertex';
+import { PolygonVertex } from './PolygonVertex';
 import { EdgeVertex } from '../EdgeVertex';
 import { LatLng } from 'leaflet';
 import { useState } from 'react';

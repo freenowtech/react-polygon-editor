@@ -21,11 +21,11 @@ import { Map, Container } from '../leaflet/Map';
 import { ActionBar } from '../ActionBar/ActionBar';
 import { BoundaryPolygon } from './BoundaryPolygon';
 import MapInner from './MapInner';
-import { SelectionRectangle } from './map/SelectionRectangle';
-import { Polyline } from './map/Polyline';
-import { ActivePolygon } from './map/ActivePolygon';
-import { InactivePolygon } from './map/InactivePolygon';
-import { PolygonPane } from './map/PolygonPane';
+import { SelectionRectangle } from './components/SelectionRectangle';
+import { Polyline } from './components/Polyline';
+import { ActivePolygon } from './components/ActivePolygon';
+import { InactivePolygon } from './components/InactivePolygon';
+import { PolygonPane } from './components/PolygonPane';
 
 interface MapSnapshot {
     reframe: boolean;
