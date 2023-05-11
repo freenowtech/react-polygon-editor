@@ -18,7 +18,13 @@ const polygonMouseLeaveAction = action('polygon mouseleave');
 
 const meta: Meta = {
     title: 'PolygonDraw',
-    decorators: [(Story) => <div style={{ height: '100vh', background: 'red' }}><Story /></div>],
+    decorators: [
+        (Story) => (
+            <div style={{ height: '100vh', background: 'red' }}>
+                <Story />
+            </div>
+        ),
+    ],
 };
 
 export default meta;

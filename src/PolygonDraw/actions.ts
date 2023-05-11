@@ -1,4 +1,4 @@
-import { createAction } from '../actionUtils';
+import { createAction, createActionWithPayload } from '../actionUtils';
 import { ActionsUnion, Coordinate } from '../types';
 
 // Selection actions
@@ -24,25 +24,25 @@ export const SET_POLYGON = 'POLYGON_DRAW/SET_POLYGON';
 
 export const actions = {
     // Selections action creators
-    selectPoints: (indices: number[]) => createAction(SELECT_POINTS, indices),
-    addPointsToSelection: (indices: number[]) => createAction(ADD_POINT_TO_SELECTION, indices),
-    removePointFromSelection: (index: number) => createAction(REMOVE_POINT_FROM_SELECTION, index),
+    selectPoints: (indices: number[]) => createActionWithPayload(SELECT_POINTS, indices),
+    addPointsToSelection: (indices: number[]) => createActionWithPayload(ADD_POINT_TO_SELECTION, indices),
+    removePointFromSelection: (index: number) => createActionWithPayload(REMOVE_POINT_FROM_SELECTION, index),
     selectAllPoints: () => createAction(SELECT_ALL_POINTS),
     deselectAllPoints: () => createAction(DESELECT_ALL_POINTS),
 
     // Move action creator
-    moveSelectedPoints: (movement: Coordinate) => createAction(MOVE_SELECTED_POINTS, movement),
+    moveSelectedPoints: (movement: Coordinate) => createActionWithPayload(MOVE_SELECTED_POINTS, movement),
 
     // Add point action creator
-    addPoint: (coordinate: Coordinate) => createAction(ADD_POINT, coordinate),
-    addPointToEdge: (coordinate: Coordinate, index: number) => createAction(ADD_POINT_TO_EDGE, { coordinate, index }),
+    addPoint: (coordinate: Coordinate) => createActionWithPayload(ADD_POINT, coordinate),
+    addPointToEdge: (coordinate: Coordinate, index: number) => createActionWithPayload(ADD_POINT_TO_EDGE, { coordinate, index }),
 
     // Delete action creator
     deletePolygonPoints: () => createAction(DELETE_POLYGON_POINTS),
 
     // Change Polygon
-    changePolygon: (polygon: Coordinate[][]) => createAction(CHANGE_POLYGON, polygon),
-    setPolygon: (polygon: Coordinate[]) => createAction(SET_POLYGON, polygon),
+    changePolygon: (polygon: Coordinate[][]) => createActionWithPayload(CHANGE_POLYGON, polygon),
+    setPolygon: (polygon: Coordinate[]) => createActionWithPayload(SET_POLYGON, polygon),
 };
 
 export type Actions = ActionsUnion<typeof actions>;

@@ -23,12 +23,15 @@ export const enum Status {
 const Container = styled.div<{ status: Status }>`
     background-color: ${({ status }) => {
         switch (status) {
-            case Status.EMPTY:
+            case Status.EMPTY: {
                 return AUTHENTIC_BLUE_50;
-            case Status.VALID:
+            }
+            case Status.VALID: {
                 return POSITIVE_GREEN_50;
-            case Status.INVALID:
+            }
+            case Status.INVALID: {
                 return NEGATIVE_ORANGE_50;
+            }
         }
     }};
     border-radius: 8px;

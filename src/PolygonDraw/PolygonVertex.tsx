@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import 'leaflet-path-drag';
 import React from 'react';
 import { CircleMarker, LatLng } from 'leaflet';
@@ -53,7 +55,7 @@ export class PolygonVertex extends React.Component<Props, State> {
         }
     }
 
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     setCircleMarkerRef = (ref: any) => {
         if (ref) {
             this.circleMarkerElement = ref;
