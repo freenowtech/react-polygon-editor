@@ -1,5 +1,5 @@
 import { createUndoRedo } from 'react-undo-redo';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import isEqual from 'lodash.isequal';
 
 import { Coordinate } from '../types';
@@ -49,6 +49,7 @@ export const usePolygonEditor = (
         if (isNotSamePolygons) {
             onChange(isCoordinatesArray ? present.polygons : present.polygons[0], isEveryPolygonValid);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isCoordinatesArray, isNotSamePolygons, isEveryPolygonValid]);
 
     useEffect(() => {
