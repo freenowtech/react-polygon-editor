@@ -1,5 +1,5 @@
 import 'leaflet-path-drag';
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, createRef, useCallback, useEffect, useState } from 'react';
 import { CircleMarker, LatLng } from 'leaflet';
 import { CircleMarker as ReactLeafletCircleMarker } from 'react-leaflet';
 
@@ -32,13 +32,7 @@ export const PolygonVertex: FC<Props> = ({
     const [isDragged, setIsDragged] = useState(false);
     const [latLng, setLatLng] = useState(new LatLng(0, 0));
 
-    const circleMarkerRef = useRef<CircleMarker>();
-
-    const setCircleMarkerRef = useCallback((ref: CircleMarker | null) => {
-        if (ref) {
-            circleMarkerRef.current = ref;
-        }
-    }, []);
+    const circleMarkerRef = createRef<CircleMarker>();
 
     useEffect(() => {
         if (!isDragged) {
@@ -82,7 +76,7 @@ export const PolygonVertex: FC<Props> = ({
                 marker.off('dragend', handleDragEnd);
             }
         };
-    }, [handleDrag, handleDragEnd, handleDragStart]);
+    }, [circleMarkerRef, handleDrag, handleDragEnd, handleDragStart]);
 
     const handleClick = () => onClick(index);
     const handleMouseOver = () => setIsHovered(true);
@@ -94,7 +88,7 @@ export const PolygonVertex: FC<Props> = ({
     return (
         <ReactLeafletCircleMarker
             aria-label="Polygon"
-            ref={setCircleMarkerRef}
+            ref={circleMarkerRef}
             fillColor={MAP.VERTEX_FILL_COLOR}
             fillOpacity={1}
             color={MAP.POLYGON_ACTIVE_COLOR}
