@@ -19,8 +19,11 @@ export const ADD_POINT = 'POLYGON_DRAW/ADD_POINT';
 export const ADD_POINT_TO_EDGE = 'POLYGON_DRAW/ADD_POINT_TO_EDGE';
 
 // Change polygon actions
-export const CHANGE_POLYGON = 'POLYGON_DRAW/CHANGE_POLYGON';
+export const CHANGE_POLYGONS = 'POLYGON_DRAW/CHANGE_POLYGONS';
 export const SET_POLYGON = 'POLYGON_DRAW/SET_POLYGON';
+
+// Set active index
+export const SET_ACTIVE_INDEX = 'POLYGON_DRAW/SET_ACTIVE_INDEX';
 
 export const actions = {
     // Selections action creators
@@ -35,14 +38,18 @@ export const actions = {
 
     // Add point action creator
     addPoint: (coordinate: Coordinate) => createActionWithPayload(ADD_POINT, coordinate),
-    addPointToEdge: (coordinate: Coordinate, index: number) => createActionWithPayload(ADD_POINT_TO_EDGE, { coordinate, index }),
+    addPointToEdge: (coordinate: Coordinate, index: number) =>
+        createActionWithPayload(ADD_POINT_TO_EDGE, { coordinate, index }),
 
     // Delete action creator
     deletePolygonPoints: () => createAction(DELETE_POLYGON_POINTS),
 
     // Change Polygon
-    changePolygon: (polygon: Coordinate[][]) => createActionWithPayload(CHANGE_POLYGON, polygon),
+    changePolygons: (polygon: Coordinate[][]) => createActionWithPayload(CHANGE_POLYGONS, polygon),
     setPolygon: (polygon: Coordinate[]) => createActionWithPayload(SET_POLYGON, polygon),
+
+    // Set active index
+    setActiveIndex: (index: number) => createActionWithPayload(SET_ACTIVE_INDEX, index),
 };
 
-export type Actions = ActionsUnion<typeof actions>;
+export type Action = ActionsUnion<typeof actions>;
