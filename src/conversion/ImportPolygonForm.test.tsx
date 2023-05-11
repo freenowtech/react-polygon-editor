@@ -79,10 +79,10 @@ describe('ImportPolygonForm', () => {
             target: { value: 'invalid GeoJSON' },
         });
 
-        const submitBtn = screen.getByText('Import');
-        fireEvent.click(submitBtn);
+        const submitButton = screen.getByText('Import');
+        fireEvent.click(submitButton);
 
-        expect(submitBtn).toBeDisabled();
+        expect(submitButton).toBeDisabled();
         expect(onSubmitMock).not.toHaveBeenCalled();
     });
 });

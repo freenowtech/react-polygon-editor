@@ -121,6 +121,10 @@ export const getPolygonEdges = (polygon: Coordinate[]) =>
         return edges;
     }, []);
 
+export const isPolygonList = (polygons: Coordinate[] | Coordinate[][]): polygons is Coordinate[][] => {
+    return Array.isArray(polygons[0]);
+};
+
 // Always returns a list of polygons from a single or multiple polygons
 export const ensurePolygonList = (polygons: Coordinate[] | Coordinate[][]): Coordinate[][] => {
     if (polygons.length === 0) {
@@ -134,8 +138,4 @@ export const ensurePolygonList = (polygons: Coordinate[] | Coordinate[][]): Coor
 
     // we have to cast here because ts can not infer the type from Array.isArray
     return [polygons];
-};
-
-export const isPolygonList = (polygons: Coordinate[] | Coordinate[][]): polygons is Coordinate[][] => {
-    return Array.isArray(polygons[0]);
 };
