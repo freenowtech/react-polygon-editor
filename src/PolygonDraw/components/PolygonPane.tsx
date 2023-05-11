@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Pane } from 'react-leaflet';
+import { LatLng } from 'leaflet';
 
 import { Coordinate } from '../../types';
 import {
@@ -9,9 +11,7 @@ import {
     subtractCoordinates,
 } from '../../helpers';
 import { PolygonVertex } from './PolygonVertex';
-import { EdgeVertex } from '../EdgeVertex';
-import { LatLng } from 'leaflet';
-import { useState } from 'react';
+import { EdgeVertex } from './EdgeVertex';
 
 interface Props {
     activePolygon: Coordinate[];

@@ -21,7 +21,7 @@ import { InactivePolygon } from './InactivePolygon';
 import { PolygonPane } from './PolygonPane';
 import { SelectionRectangle } from './SelectionRectangle';
 import { TileLayer } from '../../leaflet/TileLayer';
-import MapInner from '../MapInner';
+import MapInner from './MapInner';
 import { ActionBar } from '../../ActionBar/ActionBar';
 import { Modal } from '../../common/components/Modal';
 import { ExportPolygonForm } from '../../conversion/ExportPolygonForm';

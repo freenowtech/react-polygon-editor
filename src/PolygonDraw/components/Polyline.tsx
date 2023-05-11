@@ -1,6 +1,6 @@
 import { Polyline as LeafletPolyline } from 'react-leaflet';
 
-import { Coordinate } from '../../types';
+import { Coordinate } from 'types';
 import { MAP } from '../../constants';
 import { createLeafletLatLngFromCoordinate } from '../../helpers';
 

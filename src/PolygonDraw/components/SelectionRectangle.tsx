@@ -2,7 +2,7 @@ import React from 'react';
 import { Rectangle } from 'react-leaflet';
 import { LatLngBounds, latLngBounds } from 'leaflet';
 
-import { RectangleSelection } from '../../types';
+import { RectangleSelection } from 'types';
 import { MAP } from '../../constants';
 import { createLeafletLatLngFromCoordinate } from '../../helpers';
 
