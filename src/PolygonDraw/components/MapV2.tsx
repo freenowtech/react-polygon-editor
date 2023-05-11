@@ -14,14 +14,14 @@ import {
 } from '../../helpers';
 import { MAP } from '../../constants';
 import { Container, Map } from '../../leaflet/Map';
-import { BoundaryPolygon } from '../BoundaryPolygon';
+import { BoundaryPolygon } from './BoundaryPolygon';
 import { ActivePolygon } from './ActivePolygon';
 import { Polyline } from './Polyline';
 import { InactivePolygon } from './InactivePolygon';
 import { PolygonPane } from './PolygonPane';
 import { SelectionRectangle } from './SelectionRectangle';
 import { TileLayer } from '../../leaflet/TileLayer';
-import MapInner from '../MapInner';
+import MapInner from './MapInner';
 import { ActionBar } from '../../ActionBar/ActionBar';
 import { Modal } from '../../common/components/Modal';
 import { ExportPolygonForm } from '../../conversion/ExportPolygonForm';

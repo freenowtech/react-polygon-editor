@@ -2,9 +2,8 @@ import React from 'react';
 
 import { Coordinate } from 'types';
 import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers';
-
 import { MAP } from '../constants';
-import { BaseMap as Map } from './map/MapV2';
+import { BaseMap as Map } from './components/MapV2';
 import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor';
 
 export type Props<T extends Coordinate[] | Coordinate[][]> = {
@@ -51,7 +50,7 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
         undo,
         redo,
         isRedoPossible,
-        isUndoPossible
+        isUndoPossible,
     } = usePolygonEditor(onChange, polygon, activeIndex);
 
     return (
@@ -89,7 +88,11 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
 export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>(props: Props<T>): React.ReactElement {
     return (
         <UndoRedoProvider
-            initialState={{ polygons: ensurePolygonList(props.polygon), selection: new Set(), activeIndex: props.activeIndex || 0 }}
+            initialState={{
+                polygons: ensurePolygonList(props.polygon),
+                selection: new Set(),
+                activeIndex: props.activeIndex || 0,
+            }}
         >
             <PolygonEditor {...props} />
         </UndoRedoProvider>

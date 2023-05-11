@@ -3,7 +3,7 @@ import { latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaf
 import { useMap } from 'react-leaflet';
 import flatten from 'lodash.flatten';
 
-import { Coordinate, RectangleSelection } from '../types';
+import { Coordinate, RectangleSelection } from '../../types';
 
 import {
     createCoordinateFromLeafletLatLng,
@@ -11,21 +11,21 @@ import {
     createLeafletLatLngFromCoordinate,
     isCoordinateInPolygon,
     isPolygonClosed,
-} from '../helpers';
-import { Modal } from '../common/components/Modal';
-import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
-import { ImportPolygonForm } from '../conversion/ImportPolygonForm';
-import { TileLayer } from '../leaflet/TileLayer';
-import { MAP } from '../constants';
-import { Map, Container } from '../leaflet/Map';
-import { ActionBar } from '../ActionBar/ActionBar';
+} from '../../helpers';
+import { Modal } from '../../common/components/Modal';
+import { ExportPolygonForm } from '../../conversion/ExportPolygonForm';
+import { ImportPolygonForm } from '../../conversion/ImportPolygonForm';
+import { TileLayer } from '../../leaflet/TileLayer';
+import { MAP } from '../../constants';
+import { Map, Container } from '../../leaflet/Map';
+import { ActionBar } from '../../ActionBar/ActionBar';
 import { BoundaryPolygon } from './BoundaryPolygon';
 import MapInner from './MapInner';
-import { SelectionRectangle } from './map/SelectionRectangle';
-import { Polyline } from './map/Polyline';
-import { ActivePolygon } from './map/ActivePolygon';
-import { InactivePolygon } from './map/InactivePolygon';
-import { PolygonPane } from './map/PolygonPane';
+import { SelectionRectangle } from './SelectionRectangle';
+import { Polyline } from './Polyline';
+import { ActivePolygon } from './ActivePolygon';
+import { InactivePolygon } from './InactivePolygon';
+import { PolygonPane } from './PolygonPane';
 
 interface MapSnapshot {
     reframe: boolean;
