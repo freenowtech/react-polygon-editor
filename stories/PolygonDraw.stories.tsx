@@ -88,6 +88,9 @@ export const AutomaticReplace = {
     },
 
     name: 'Automatic replace',
+    parameters: {
+        chromatic: { disableSnapshot: true },
+    },
 };
 
 export const New = () => (
