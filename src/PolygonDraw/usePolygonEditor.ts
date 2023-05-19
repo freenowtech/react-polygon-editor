@@ -1,5 +1,5 @@
 import { createUndoRedo } from 'react-undo-redo';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import isEqual from 'lodash.isequal';
 
 import { Coordinate } from '../types';
@@ -11,6 +11,7 @@ import { isValidPolygon } from './validators';
 type PolygonEditor = {
     selection: Set<number>;
     polygons: Coordinate[][];
+    activePolygon: Coordinate [];
     isPolygonClosed: boolean;
     addPoint: (coord: Coordinate) => void;
     addPointToEdge: (coordinate: Coordinate, index: number) => void;
@@ -26,6 +27,8 @@ type PolygonEditor = {
     undo: () => void;
     isUndoPossible: boolean;
     isRedoPossible: boolean;
+    newPointPosition: Coordinate | null;
+    setNewPointPosition: React.Dispatch<React.SetStateAction<Coordinate | null>>;
 };
 
 const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer);
@@ -39,6 +42,8 @@ export const usePolygonEditor = (
 ): PolygonEditor => {
     const [present, dispatch] = usePresent();
     const [undo, redo] = useUndoRedo();
+
+    const [newPointPosition, setNewPointPosition] = useState<Coordinate | null>(null);
 
     const isNotSamePolygons = !isEqual(polygons, present.polygons);
     const isNotSameActiveIndex = activeIndex !== present.activeIndex;
@@ -100,10 +105,12 @@ export const usePolygonEditor = (
         dispatch(actions.selectPoints(indices));
     };
 
+    // triggered with mouse events or undo/redo
     const moveSelectedPoints = (movement: Coordinate) => {
         dispatch(actions.moveSelectedPoints(movement));
     };
 
+    // ActionBar related action
     const deletePolygonPoints = () => {
         dispatch(actions.deletePolygonPoints());
     };
@@ -115,6 +122,7 @@ export const usePolygonEditor = (
     return {
         selection: present.selection,
         polygons: present.polygons,
+        activePolygon,
         isPolygonClosed: polygonIsClosed,
         addPoint,
         addPointToEdge,
@@ -130,5 +138,7 @@ export const usePolygonEditor = (
         undo,
         isRedoPossible: redo.isPossible,
         isUndoPossible: undo.isPossible,
+        setNewPointPosition,
+        newPointPosition
     };
 };

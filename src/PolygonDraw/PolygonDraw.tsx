@@ -33,54 +33,19 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     onMouseEnter,
     onMouseLeave,
 }: Props<T>): React.ReactElement {
-    const {
-        polygons,
-        selection,
-        addPoint,
-        addPointToEdge,
-        setPolygon,
-        deselectAllPoints,
-        removePointFromSelection,
-        addPointsToSelection,
-        selectPoints,
-        moveSelectedPoints,
-        deletePolygonPoints,
-        selectAllPoints,
-        isPolygonClosed,
-        undo,
-        redo,
-        isRedoPossible,
-        isUndoPossible
-    } = usePolygonEditor(onChange, polygon, activeIndex);
-
     return (
         <Map
-            selection={selection}
             editable={editable}
             initialCenter={initialCenter ? createLeafletLatLngTupleFromCoordinate(initialCenter) : MAP.DEFAULT_CENTER}
             initialZoom={initialZoom || MAP.DEFAULT_ZOOM}
             boundaryPolygonCoordinates={boundary || MAP.WORLD_COORDINATES}
             activePolygonIndex={activeIndex}
             highlightedPolygonIndex={highlightedIndex}
-            polygonCoordinates={polygons}
-            setPolygon={setPolygon}
-            addPoint={addPoint}
-            addPointToEdge={addPointToEdge}
-            deselectAllPoints={deselectAllPoints}
-            removePointFromSelection={removePointFromSelection}
-            addPointsToSelection={addPointsToSelection}
-            selectPoints={selectPoints}
-            moveSelectedPoints={moveSelectedPoints}
-            deletePolygonPoints={deletePolygonPoints}
-            selectAllPoints={selectAllPoints}
-            isPolygonClosed={isPolygonClosed}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            onUndo={undo}
-            onRedo={redo}
-            isRedoPossible={isRedoPossible}
-            isUndoPossible={isUndoPossible}
+            polygon={polygon}
+            onChange={onChange}
         />
     );
 }

@@ -18,27 +18,15 @@ describe('Map component', () => {
     beforeEach(() => {
         initialProps = {
             activePolygonIndex: 0,
-            polygonCoordinates: [MOCK_POLYGON],
             boundaryPolygonCoordinates: MOCK_POLYGON,
-            selection: new Set<number>(),
             editable: true,
             initialCenter: MAP.DEFAULT_CENTER,
             initialZoom: MAP.DEFAULT_ZOOM,
-            isPolygonClosed: true,
-            addPoint: jest.fn(),
-            addPointToEdge: jest.fn(),
-            addPointsToSelection: jest.fn(),
-            deselectAllPoints: jest.fn(),
-            removePointFromSelection: jest.fn(),
-            selectPoints: jest.fn(),
-            selectAllPoints: jest.fn(),
-            moveSelectedPoints: jest.fn(),
-            deletePolygonPoints: jest.fn(),
-            setPolygon: jest.fn(),
-            onUndo: jest.fn(),
-            onRedo: jest.fn(),
-            isRedoPossible: false,
-            isUndoPossible: false
+            polygon: [MOCK_POLYGON],
+            onChange: jest.fn(),
+            onClick: jest.fn(),
+            onMouseEnter: jest.fn(),
+            onMouseLeave: jest.fn()
         };
     });
 
