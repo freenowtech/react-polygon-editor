@@ -1,12 +1,12 @@
-import { createUndoRedo } from 'react-undo-redo';
-import { useCallback, useEffect, useMemo } from 'react';
-import isEqual from 'lodash.isequal';
+import isEqual from 'lodash.isequal'
+import { useCallback, useEffect, useMemo } from 'react'
+import { createUndoRedo } from 'react-undo-redo'
 
-import { Coordinate } from '../types';
-import { actions } from './actions';
-import { ensurePolygonList, isPolygonClosed, isPolygonList } from '../helpers';
-import { polygonEditReducer } from './reducer';
-import { isValidPolygon } from './validators';
+import { ensurePolygonList, isPolygonClosed, isPolygonList } from '../helpers'
+import { Coordinate } from '../types'
+import { MOVE_SELECTED_POINTS, actions } from './actions'
+import { polygonEditReducer } from './reducer'
+import { isValidPolygon } from './validators'
 
 type PolygonEditor = {
     selection: Set<number>;
@@ -28,7 +28,9 @@ type PolygonEditor = {
     isRedoPossible: boolean;
 };
 
-const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer);
+const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer, {
+    track: (action) => action.type !== MOVE_SELECTED_POINTS,
+});
 
 export default UndoRedoProvider;
 
@@ -49,7 +51,7 @@ export const usePolygonEditor = (
         if (isNotSamePolygons) {
             onChange(isCoordinatesArray ? present.polygons : present.polygons[0], isEveryPolygonValid);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isCoordinatesArray, isNotSamePolygons, isEveryPolygonValid]);
 
     useEffect(() => {
