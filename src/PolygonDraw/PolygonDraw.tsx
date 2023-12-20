@@ -14,7 +14,7 @@ export type Props<T extends Coordinate[] | Coordinate[][]> = {
     editable?: boolean;
     onChange?: (polygon: T, isValid: boolean) => void;
     polygon: T;
-    activeIndex?: number;
+    activeIndex: number;
     highlightedIndex?: number;
     onClick?: (index: number) => void;
     onMouseEnter?: (index: number) => void;
@@ -51,8 +51,9 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
         undo,
         redo,
         isRedoPossible,
-        isUndoPossible
-    } = usePolygonEditor(onChange, polygon, activeIndex);
+        isUndoPossible,
+        onPolygonClick,
+    } = usePolygonEditor(onChange, polygon, onClick);
 
     return (
         <Map
@@ -75,7 +76,7 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
             deletePolygonPoints={deletePolygonPoints}
             selectAllPoints={selectAllPoints}
             isPolygonClosed={isPolygonClosed}
-            onClick={onClick}
+            onClick={onPolygonClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             onUndo={undo}
@@ -89,7 +90,7 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
 export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>(props: Props<T>): React.ReactElement {
     return (
         <UndoRedoProvider
-            initialState={{ polygons: ensurePolygonList(props.polygon), selection: new Set(), activeIndex: props.activeIndex || 0 }}
+            initialState={{ polygons: ensurePolygonList(props.polygon), selection: new Set(), activeIndex: props.activeIndex }}
         >
             <PolygonEditor {...props} />
         </UndoRedoProvider>

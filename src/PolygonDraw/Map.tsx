@@ -459,12 +459,16 @@ export class BaseMap extends React.Component<Props, State> {
                 <ActionBar
                     editable={editable}
                     isVectorModeEnabled={isPenToolActive}
+                    isRedoable={this.props.isRedoPossible}
+                    isUndoable={this.props.isUndoPossible}
                     onDelete={this.props.deletePolygonPoints}
                     onFocus={this.handleOnFocusClicked}
                     onEnableVectorMode={this.toggleVectorMode}
                     deleteInactive={selection.size === 0}
                     onExport={this.handleExportPolygonActionClicked}
                     onImport={this.handleImportPolygonActionClicked}
+                    onRedo={this.props.onRedo}
+                    onUndo={this.props.onUndo}
                 />
 
                 {this.state.showExportPolygonModal && (

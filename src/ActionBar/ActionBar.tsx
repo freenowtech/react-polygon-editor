@@ -21,31 +21,41 @@ const Container = styled.div`
 `;
 
 export interface Props {
-    editable: boolean;
-
-    onFocus: () => void;
-
-    onEnableVectorMode: () => void;
-    isVectorModeEnabled: boolean;
-
-    onDelete: () => void;
     deleteInactive: boolean;
-
+    editable: boolean;
+    isRedoable: boolean;
+    isUndoable: boolean;
+    isVectorModeEnabled: boolean;
+    onDelete: () => void;
+    onEnableVectorMode: () => void;
     onExport: () => void;
+    onFocus: () => void;
     onImport: () => void;
+    onRedo: () => void;
+    onUndo: () => void;
 }
 
 export const ActionBar: FunctionComponent<Props> = ({
-    editable,
     deleteInactive,
+    editable,
+    isRedoable,
+    isUndoable,
     isVectorModeEnabled,
-    onEnableVectorMode,
-    onFocus,
     onDelete,
+    onEnableVectorMode,
     onExport,
+    onFocus,
     onImport,
+    onRedo,
+    onUndo,
 }) => (
     <Container>
+        <ActionButton onClick={onUndo} icon={ActionButtonIcons.IMPORT} disabled={!isUndoable} inactive={!isUndoable}>
+            undo
+        </ActionButton>
+        <ActionButton onClick={onRedo} icon={ActionButtonIcons.EXPORT} disabled={!isRedoable} inactive={!isRedoable}>
+            redo
+        </ActionButton>
         {editable && (
             <>
                 <ActionButton
