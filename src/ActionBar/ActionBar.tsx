@@ -51,10 +51,10 @@ export const ActionBar: FunctionComponent<Props> = ({
 }) => (
     <Container>
         <ActionButton onClick={onUndo} icon={ActionButtonIcons.IMPORT} disabled={!isUndoable} inactive={!isUndoable}>
-            undo
+            {LABELS.UNDO}
         </ActionButton>
         <ActionButton onClick={onRedo} icon={ActionButtonIcons.EXPORT} disabled={!isRedoable} inactive={!isRedoable}>
-            redo
+            {LABELS.REDO}
         </ActionButton>
         {editable && (
             <>
