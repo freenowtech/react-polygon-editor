@@ -367,7 +367,7 @@ export class BaseMap extends React.Component<Props, State> {
 
     render() {
         const activePolygon = this.props.polygonCoordinates[this.props.activePolygonIndex];
-        const inactivePolygons = this.props.polygonCoordinates.filter((positions, index) => {
+        const inactivePolygons = this.props.polygonCoordinates.filter((_, index) => {
             index !== this.props.activePolygonIndex;
         });
         const activePolygonIsClosed = isPolygonClosed(activePolygon);
