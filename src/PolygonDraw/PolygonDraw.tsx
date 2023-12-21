@@ -14,7 +14,7 @@ export type Props<T extends Coordinate[] | Coordinate[][]> = {
     editable?: boolean;
     onChange?: (polygon: T, isValid: boolean) => void;
     polygon: T;
-    activeIndex: number;
+    activeIndex?: number;
     highlightedIndex?: number;
     onClick?: (index: number) => void;
     onMouseEnter?: (index: number) => void;
@@ -90,7 +90,7 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
 export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>(props: Props<T>): React.ReactElement {
     return (
         <UndoRedoProvider
-            initialState={{ polygons: ensurePolygonList(props.polygon), selection: new Set(), activeIndex: props.activeIndex }}
+            initialState={{ polygons: ensurePolygonList(props.polygon), selection: new Set(), activeIndex: props.activeIndex ?? 0 }}
         >
             <PolygonEditor {...props} />
         </UndoRedoProvider>
