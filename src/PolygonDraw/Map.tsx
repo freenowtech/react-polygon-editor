@@ -367,6 +367,9 @@ export class BaseMap extends React.Component<Props, State> {
 
     render() {
         const activePolygon = this.props.polygonCoordinates[this.props.activePolygonIndex];
+        const inactivePolygons = this.props.polygonCoordinates.filter((positions, index) => {
+            index !== this.props.activePolygonIndex;
+        });
         const activePolygonIsClosed = isPolygonClosed(activePolygon);
         const { editable, selection, initialZoom, initialCenter } = this.props;
         const { newPointPosition, isPenToolActive } = this.state;
@@ -406,20 +409,18 @@ export class BaseMap extends React.Component<Props, State> {
                         />
                     )}
 
-                    {this.props.polygonCoordinates.map((positions, index) => {
-                        return index !== this.props.activePolygonIndex ? (
-                            <InactivePolygon
-                                key={`${index}-${this.props.activePolygonIndex}`}
-                                activePolygonIsClosed={activePolygonIsClosed}
-                                positions={positions}
-                                isHighlighted={index === this.props.highlightedPolygonIndex}
-                                index={index}
-                                onClick={this.props.onClick}
-                                onMouseEnter={this.props.onMouseEnter}
-                                onMouseLeave={this.props.onMouseLeave}
-                            />
-                        ) : null;
-                    })}
+                    {inactivePolygons.map((positions, index) => (
+                        <InactivePolygon
+                            key={`${index}-${this.props.activePolygonIndex}`}
+                            activePolygonIsClosed={activePolygonIsClosed}
+                            positions={positions}
+                            isHighlighted={index === this.props.highlightedPolygonIndex}
+                            index={index}
+                            onClick={this.props.onClick}
+                            onMouseEnter={this.props.onMouseEnter}
+                            onMouseLeave={this.props.onMouseLeave}
+                        />
+                    ))}
 
                     {editable && (
                         <PolygonPane
