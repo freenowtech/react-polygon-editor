@@ -1,7 +1,5 @@
-import undoable, { excludeAction } from 'redux-undo';
-
 import {
-    Actions,
+    Action,
     SELECT_POINTS,
     ADD_POINT_TO_SELECTION,
     REMOVE_POINT_FROM_SELECTION,
@@ -11,12 +9,13 @@ import {
     DELETE_POLYGON_POINTS,
     ADD_POINT,
     ADD_POINT_TO_EDGE,
-    CHANGE_POLYGON,
+    CHANGE_POLYGONS,
     SET_POLYGON,
+    SET_ACTIVE_INDEX,
 } from './actions';
 import { Coordinate } from 'types';
 
-import { movePolygonCoordinates, removeSelectedPoints } from '../helpers';
+import { ensurePolygonList, movePolygonCoordinates, removeSelectedPoints } from '../helpers';
 
 export interface PolygonEditState {
     activeIndex: number;
@@ -24,24 +23,25 @@ export interface PolygonEditState {
     selection: Set<number>;
 }
 
-export const polygonEditReducer = (state: PolygonEditState, action: Actions): PolygonEditState => {
+export const polygonEditReducer = (state: PolygonEditState, action: Action): PolygonEditState => {
     switch (action.type) {
         ///////////////////////////////////////////////////////////////////////////////////
         ///                            CHANGE POLYGON CASES                             ///
         ///////////////////////////////////////////////////////////////////////////////////
-        case CHANGE_POLYGON: {
+        case CHANGE_POLYGONS: {
             return {
                 ...state,
                 polygons: [...action.payload],
             };
         }
         case SET_POLYGON: {
+            const polygonList = ensurePolygonList(state.polygons);
             return {
                 ...state,
                 polygons: [
-                    ...state.polygons.slice(0, state.activeIndex),
+                    ...polygonList.slice(0, state.activeIndex),
                     action.payload,
-                    ...state.polygons.slice(state.activeIndex + 1),
+                    ...polygonList.slice(state.activeIndex + 1),
                 ],
                 selection: new Set(),
             };
@@ -51,18 +51,26 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         ///                            MOVE COORDINATES CASES                           ///
         ///////////////////////////////////////////////////////////////////////////////////
         case MOVE_SELECTED_POINTS: {
+            const polygonList = ensurePolygonList(state.polygons);
             return {
                 ...state,
                 polygons: [
-                    ...state.polygons.slice(0, state.activeIndex),
-                    movePolygonCoordinates(state.polygons[state.activeIndex], state.selection, action.payload),
-                    ...state.polygons.slice(state.activeIndex + 1),
+                    ...polygonList.slice(0, state.activeIndex),
+                    movePolygonCoordinates(polygonList[state.activeIndex], state.selection, action.payload),
+                    ...polygonList.slice(state.activeIndex + 1),
                 ],
             };
         }
 
+        case SET_ACTIVE_INDEX: {
+            return {
+                ...state,
+                activeIndex: action.payload,
+            };
+        }
+
         ///////////////////////////////////////////////////////////////////////////////////
-        ///                              SELECTION CASES                                ///
+        ///                              SELECTION POINTS CASES                         ///
         ///////////////////////////////////////////////////////////////////////////////////
         case SELECT_POINTS: {
             return {
@@ -116,27 +124,29 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         ///                              ADD POINT CASE                                 ///
         ///////////////////////////////////////////////////////////////////////////////////
         case ADD_POINT: {
+            const polygonList = ensurePolygonList(state.polygons);
             return {
                 ...state,
                 polygons: [
-                    ...state.polygons.slice(0, state.activeIndex),
-                    [...state.polygons[state.activeIndex], action.payload],
-                    ...state.polygons.slice(state.activeIndex + 1),
+                    ...polygonList.slice(0, state.activeIndex),
+                    [...polygonList[state.activeIndex], action.payload],
+                    ...polygonList.slice(state.activeIndex + 1),
                 ],
                 selection: new Set([state.polygons.length]),
             };
         }
         case ADD_POINT_TO_EDGE: {
+            const polygonList = ensurePolygonList(state.polygons);
             return {
                 ...state,
                 polygons: [
-                    ...state.polygons.slice(0, state.activeIndex),
+                    ...polygonList.slice(0, state.activeIndex),
                     [
-                        ...state.polygons[state.activeIndex].slice(0, action.payload.index + 1),
+                        ...polygonList[state.activeIndex].slice(0, action.payload.index + 1),
                         action.payload.coordinate,
-                        ...state.polygons[state.activeIndex].slice(action.payload.index + 1),
+                        ...polygonList[state.activeIndex].slice(action.payload.index + 1),
                     ],
-                    ...state.polygons.slice(state.activeIndex + 1),
+                    ...polygonList.slice(state.activeIndex + 1),
                 ],
                 selection: new Set([action.payload.index]),
             };
@@ -146,26 +156,3 @@ export const polygonEditReducer = (state: PolygonEditState, action: Actions): Po
         }
     }
 };
-
-export const EDIT_HISTORY_LIMIT = 20;
-
-export const undoablePolygonEditReducer = undoable(polygonEditReducer, {
-    groupBy: (action, state, history) => {
-        if (action.type === MOVE_SELECTED_POINTS) {
-            return `${action.type}-${[...state.selection].sort().join('-')}`;
-        }
-        return null;
-    },
-    filter: excludeAction([
-        SELECT_POINTS,
-        ADD_POINT_TO_SELECTION,
-        REMOVE_POINT_FROM_SELECTION,
-        SELECT_ALL_POINTS,
-        DESELECT_ALL_POINTS,
-        CHANGE_POLYGON,
-    ]),
-    // see https://github.com/omnidan/redux-undo/issues/6#issuecomment-142089793
-    limit: EDIT_HISTORY_LIMIT + 1,
-    debug: false,
-    syncFilter: true,
-});

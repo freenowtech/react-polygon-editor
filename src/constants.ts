@@ -7,6 +7,8 @@ export const LABELS = {
     FOCUS: 'Focus',
     EXPORT: 'Export',
     IMPORT: 'Import',
+    REDO: 'Redo',
+    UNDO: 'Undo',
 };
 
 export const LEAFLET = {

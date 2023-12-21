@@ -8,14 +8,18 @@ import { ACTION_BLUE_900, AUTHENTIC_BLUE_200, FREEDOM_RED_900 } from '../common/
 afterAll(cleanup);
 describe('ActionBar', () => {
     const props: Props = {
-        onFocus: jest.fn(),
+        deleteInactive: false,
+        editable: false,
+        isRedoable: true,
+        isUndoable: true,
+        isVectorModeEnabled: false,
         onDelete: jest.fn(),
         onEnableVectorMode: jest.fn(),
         onExport: jest.fn(),
+        onFocus: jest.fn(),
         onImport: jest.fn(),
-        deleteInactive: true,
-        editable: false,
-        isVectorModeEnabled: false,
+        onRedo: jest.fn(),
+        onUndo: jest.fn(),
     };
 
     afterEach(() => {
@@ -61,13 +65,25 @@ describe('ActionBar', () => {
             expect(screen.getByText(LABELS.PEN)).toBeTruthy();
         });
 
+        it('should trigger the redo function when isRedoable and the user clicks the redo button', async () => {
+            await userEvent.click(screen.getByText(LABELS.REDO));
+
+            expect(props.onRedo).toHaveBeenCalled();
+        });
+
+        it('should trigger the undo function when isUndoable and the user clicks the undo button', async () => {
+            await userEvent.click(screen.getByText(LABELS.UNDO));
+
+            expect(props.onUndo).toHaveBeenCalled();
+        });
+
         it('should trigger the onFocus callback when user click the focus button', async () => {
             await userEvent.click(screen.getByText(LABELS.FOCUS));
 
             expect(props.onFocus).toHaveBeenCalled();
         });
 
-        it('should trigger the onDelete callback when user click the focus button', async () => {
+        it('should trigger the onDelete callback when isDeleteInactive is false and user click the focus button', async () => {
             await userEvent.click(screen.getByText(LABELS.DELETE));
 
             expect(props.onDelete).toHaveBeenCalled();

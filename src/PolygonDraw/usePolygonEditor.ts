@@ -1,116 +1,125 @@
-import { useMemo, useState } from 'react';
-import { Coordinate } from 'types';
-import isEqual from 'lodash.isequal';
+import { useCallback, useMemo } from 'react';
+import { createUndoRedo } from 'react-undo-redo';
 
-import { Actions, actions } from './actions';
-import { ensurePolygonList, isPolygonClosed, isPolygonList } from '../helpers';
-import { PolygonEditState, undoablePolygonEditReducer } from './reducer';
+import { isPolygonClosed, isPolygonList } from '../helpers';
+import { ActionWithPayload, Coordinate } from '../types';
+import { Action, DESELECT_ALL_POINTS, MOVE_SELECTED_POINTS, SELECT_ALL_POINTS, SET_ACTIVE_INDEX, actions } from './actions';
+import { polygonEditReducer } from './reducer';
 import { isValidPolygon } from './validators';
-import { ActionCreators, StateWithHistory } from 'redux-undo';
 
+type PolygonEditor = {
+    selection: Set<number>;
+    polygons: Coordinate[][];
+    isPolygonClosed: boolean;
+    addPoint: (coord: Coordinate) => void;
+    addPointToEdge: (coordinate: Coordinate, index: number) => void;
+    deselectAllPoints: () => void;
+    removePointFromSelection: (index: number) => void;
+    addPointsToSelection: (indices: number[]) => void;
+    selectPoints: (indices: number[]) => void;
+    moveSelectedPoints: (newPosition: Coordinate) => void;
+    onPolygonClick: (index: number) => void;
+    deletePolygonPoints: () => void;
+    selectAllPoints: () => void;
+    setPolygon: (polygon: Coordinate[]) => void;
+    redo: () => void;
+    undo: () => void;
+    isUndoPossible: boolean;
+    isRedoPossible: boolean;
+};
+
+const unundoableActions = [MOVE_SELECTED_POINTS, SET_ACTIVE_INDEX, DESELECT_ALL_POINTS, SELECT_ALL_POINTS];
+
+const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer, {
+    track: (action) => !unundoableActions.includes(action.type),
+});
+
+export default UndoRedoProvider;
 export const usePolygonEditor = (
     onChange: (polygon: Coordinate[] | Coordinate[][], isValid: boolean) => void = () => {},
     polygons: Coordinate[] | Coordinate[][],
-    activeIndex: number
-) => {
-    const polygonList = ensurePolygonList(polygons);
+    onClick?: (index: number) => void
+): PolygonEditor => {
+    const [present, dispatch] = usePresent();
+    const [undo, redo] = useUndoRedo();
 
-    const [selection, setSelection] = useState<Set<number>>(new Set());
-    const [editHistory, setEditHistory] = useState<Omit<StateWithHistory<PolygonEditState>, 'present'>>({
-        past: [],
-        future: [],
-    });
+    const dispatchWithCallback = (dispatchAction: Action) => {
+        dispatch(dispatchAction)
+        onChange(
+            isPolygonList(polygons) ? present.polygons : present.polygons[0],
+            present.polygons.every(isValidPolygon)
+        );
+    }
 
-    const state: StateWithHistory<PolygonEditState> = {
-        present: {
-            polygons: polygonList,
-            activeIndex: activeIndex,
-            selection: selection,
-        },
-        ...editHistory,
+    const activePolygon: Coordinate[] = useMemo(() => {
+        return present.polygons[present.activeIndex];
+    }, [present.polygons, present.activeIndex]);
+
+    const onPolygonClick = (polygonIndex: number) => {
+        onClick && onClick(polygonIndex);
+        dispatchWithCallback(actions.setActiveIndex(polygonIndex));
     };
 
-    const dispatch = (action: Actions) => {
-        const {
-            present: { polygons: newPolygons, selection: newSelection },
-            ...rest
-        } = undoablePolygonEditReducer(state, action);
-        setEditHistory(rest);
-        if (!isEqual(selection, newSelection)) {
-            setSelection(newSelection);
-        }
-        onChange(isPolygonList(polygons) ? newPolygons : newPolygons[0], newPolygons.every(isValidPolygon));
-    };
-
-    const activePolygon = useMemo(
-        () => state.present.polygons[state.present.activeIndex],
-        [state.present.polygons, state.present.activeIndex]
-    );
     const polygonIsClosed: boolean = useMemo(() => isPolygonClosed(activePolygon), [activePolygon]);
 
     const setPolygon = (polygon: Coordinate[]) => {
-        dispatch(actions.setPolygon(polygon));
+        dispatchWithCallback(actions.setPolygon(polygon));
     };
 
     const addPoint = (coordinate: Coordinate) => {
-        dispatch(actions.addPoint(coordinate));
+        dispatchWithCallback(actions.addPoint(coordinate));
     };
 
     const addPointToEdge = (coordinate: Coordinate, index: number) => {
-        dispatch(actions.addPointToEdge(coordinate, index));
+        dispatchWithCallback(actions.addPointToEdge(coordinate, index));
     };
 
     const deselectAllPoints = () => {
-        dispatch(actions.deselectAllPoints());
+        dispatchWithCallback(actions.deselectAllPoints());
     };
 
     const removePointFromSelection = (index: number) => {
-        dispatch(actions.removePointFromSelection(index));
+        dispatchWithCallback(actions.removePointFromSelection(index));
     };
 
     const addPointsToSelection = (indices: number[]) => {
-        dispatch(actions.addPointsToSelection(indices));
+        dispatchWithCallback(actions.addPointsToSelection(indices));
     };
 
     const selectPoints = (indices: number[]) => {
-        dispatch(actions.selectPoints(indices));
+        dispatchWithCallback(actions.selectPoints(indices));
     };
 
     const moveSelectedPoints = (movement: Coordinate) => {
-        dispatch(actions.moveSelectedPoints(movement));
+        dispatchWithCallback(actions.moveSelectedPoints(movement));
     };
 
     const deletePolygonPoints = () => {
-        dispatch(actions.deletePolygonPoints());
+        dispatchWithCallback(actions.deletePolygonPoints());
     };
 
     const selectAllPoints = () => {
         dispatch(actions.selectAllPoints());
     };
 
-    const undo = () => {
-        dispatch(ActionCreators.undo());
-    };
-
-    const redo = () => {
-        dispatch(ActionCreators.redo());
-    };
-
     return {
-        selection: state.present.selection,
-        polygons: state.present.polygons,
-        isPolygonClosed: polygonIsClosed,
         addPoint,
-        addPointToEdge,
-        deselectAllPoints,
-        removePointFromSelection,
         addPointsToSelection,
-        selectPoints,
-        moveSelectedPoints,
+        addPointToEdge,
         deletePolygonPoints,
+        deselectAllPoints,
+        isPolygonClosed: polygonIsClosed,
+        isRedoPossible: redo.isPossible,
+        isUndoPossible: undo.isPossible,
+        moveSelectedPoints,
+        onPolygonClick,
+        polygons: present.polygons,
+        redo,
+        removePointFromSelection,
         selectAllPoints,
+        selection: present.selection,
+        selectPoints,
         setPolygon,
         undo,
-        redo,
     };
 };

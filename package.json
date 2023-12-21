@@ -48,7 +48,7 @@
         "leaflet-path-drag": "^1.8.0-beta.3",
         "lodash.flatten": "^4.4.0",
         "lodash.isequal": "^4.5.0",
-        "redux-undo": "^1.0.1"
+        "react-undo-redo": "^3.0.0"
     },
     "devDependencies": {
         "@babel/core": "^7.21.0",
@@ -77,7 +77,7 @@
         "@types/styled-components": "^5.1.26",
         "@typescript-eslint/eslint-plugin": "^5.59.5",
         "@typescript-eslint/parser": "^5.59.5",
-        "chromatic": "^6.17.3",
+        "chromatic": "^10.1.0",
         "eslint": "^8.40.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-formatter-pretty": "^4.1.0",

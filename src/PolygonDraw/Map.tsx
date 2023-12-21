@@ -3,7 +3,7 @@ import { latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaf
 import { useMap } from 'react-leaflet';
 import flatten from 'lodash.flatten';
 
-import { Coordinate, RectangleSelection } from 'types';
+import { Coordinate, RectangleSelection } from '../types';
 
 import {
     createCoordinateFromLeafletLatLng,
@@ -60,6 +60,8 @@ export interface Props {
     setPolygon: (polygon: Coordinate[]) => void;
     onUndo: () => void;
     onRedo: () => void;
+    isRedoPossible: boolean;
+    isUndoPossible: boolean;
 }
 
 type MapType = ReturnType<typeof useMap>;
@@ -346,9 +348,9 @@ export class BaseMap extends React.Component<Props, State> {
                 this.reframe();
                 break;
             case 'z':
-                if (e.metaKey && e.shiftKey) {
+                if (e.metaKey && e.shiftKey && this.props.isRedoPossible) {
                     this.props.onRedo();
-                } else if (e.metaKey) {
+                } else if (e.metaKey && this.props.isUndoPossible) {
                     this.props.onUndo();
                 }
                 break;
@@ -407,6 +409,7 @@ export class BaseMap extends React.Component<Props, State> {
                     {this.props.polygonCoordinates.map((positions, index) => {
                         return index !== this.props.activePolygonIndex ? (
                             <InactivePolygon
+                                key={`${index}-${this.props.activePolygonIndex}`}
                                 activePolygonIsClosed={activePolygonIsClosed}
                                 positions={positions}
                                 isHighlighted={index === this.props.highlightedPolygonIndex}
@@ -453,20 +456,21 @@ export class BaseMap extends React.Component<Props, State> {
                 <ActionBar
                     editable={editable}
                     isVectorModeEnabled={isPenToolActive}
+                    isRedoable={this.props.isRedoPossible}
+                    isUndoable={this.props.isUndoPossible}
                     onDelete={this.props.deletePolygonPoints}
                     onFocus={this.handleOnFocusClicked}
                     onEnableVectorMode={this.toggleVectorMode}
                     deleteInactive={selection.size === 0}
                     onExport={this.handleExportPolygonActionClicked}
                     onImport={this.handleImportPolygonActionClicked}
+                    onRedo={this.props.onRedo}
+                    onUndo={this.props.onUndo}
                 />
 
                 {this.state.showExportPolygonModal && (
                     <Modal onClose={this.handleExportPolygonModalClosed}>
-                        <ExportPolygonForm
-                            polygon={this.props.polygonCoordinates[this.props.activePolygonIndex]}
-                            onSubmit={this.handleExportPolygon}
-                        />
+                        <ExportPolygonForm polygon={activePolygon} onSubmit={this.handleExportPolygon} />
                     </Modal>
                 )}
 

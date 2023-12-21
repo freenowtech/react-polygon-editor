@@ -20,7 +20,7 @@ export enum ActionButtonIcons {
 interface ContainerProps {
     disabled?: boolean;
 }
-const Container = styled('div')<ContainerProps>`
+const Container = styled('button').attrs(() => ({type: 'button'}))<ContainerProps>`
     position: relative;
     width: 42px;
     height: 42px;
