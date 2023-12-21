@@ -347,13 +347,10 @@ export class BaseMap extends React.Component<Props, State> {
             case 'f':
                 this.reframe();
                 break;
-            case 'y':
-                if (this.props.isRedoPossible) {
-                    this.props.onRedo();
-                }
-                break;
             case 'z':
-                if (this.props.isUndoPossible) {
+                if (e.metaKey && e.shiftKey && this.props.isRedoPossible) {
+                    this.props.onRedo();
+                } else if (e.metaKey && this.props.isUndoPossible) {
                     this.props.onUndo();
                 }
                 break;
