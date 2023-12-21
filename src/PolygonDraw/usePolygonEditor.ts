@@ -1,11 +1,11 @@
-import { useCallback, useMemo } from 'react';
-import { createUndoRedo } from 'react-undo-redo';
+import { useMemo } from 'react'
+import { createUndoRedo } from 'react-undo-redo'
 
-import { isPolygonClosed, isPolygonList } from '../helpers';
-import { ActionWithPayload, Coordinate } from '../types';
-import { Action, DESELECT_ALL_POINTS, MOVE_SELECTED_POINTS, SELECT_ALL_POINTS, SET_ACTIVE_INDEX, actions } from './actions';
-import { polygonEditReducer } from './reducer';
-import { isValidPolygon } from './validators';
+import { isPolygonClosed, isPolygonList } from '../helpers'
+import { Coordinate } from '../types'
+import { Action, DESELECT_ALL_POINTS, MOVE_SELECTED_POINTS, SELECT_ALL_POINTS, SET_ACTIVE_INDEX, actions } from './actions'
+import { polygonEditReducer } from './reducer'
+import { isValidPolygon } from './validators'
 
 type PolygonEditor = {
     selection: Set<number>;
