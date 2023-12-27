@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-import { Coordinate } from 'types';
-import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers';
+import { Coordinate } from 'types'
+import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers'
 
-import { MAP } from '../constants';
-import Map from './Map';
-import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor';
+import { MAP } from '../constants'
+import { PolygonMap } from './PolygonMap'
+import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor'
 
 export type Props<T extends Coordinate[] | Coordinate[][]> = {
     boundary?: Coordinate[];
@@ -35,6 +35,7 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     onMouseLeave,
 }: Props<T>): React.ReactElement {
     const {
+        activePolygon,
         polygons,
         selection,
         addPoint,
@@ -56,7 +57,8 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     } = usePolygonEditor(onChange, polygon, onClick);
 
     return (
-        <Map
+        <PolygonMap
+            activePolygon={activePolygon}
             selection={selection}
             editable={editable}
             initialCenter={initialCenter ? createLeafletLatLngTupleFromCoordinate(initialCenter) : MAP.DEFAULT_CENTER}

@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { MAP } from '../constants';
-import { Props, BaseMap } from './Map';
+import { Props, PolygonMap } from './PolygonMap';
 import { MOCK_POLYGON } from '../mockPolygon';
 
 jest.mock('react-leaflet', () => ({
@@ -17,6 +17,7 @@ describe('Map component', () => {
 
     beforeEach(() => {
         initialProps = {
+            activePolygon: MOCK_POLYGON,
             activePolygonIndex: 0,
             polygonCoordinates: [MOCK_POLYGON],
             boundaryPolygonCoordinates: MOCK_POLYGON,
@@ -48,7 +49,7 @@ describe('Map component', () => {
 
     describe('WHEN polygon is NOT disabled', () => {
         it('should NOT enable pen tool', () => {
-            render(<BaseMap {...initialProps} editable={false} />);
+            render(<PolygonMap {...initialProps} editable={false} />);
 
             expect(screen.queryByText('Pen')).not.toBeInTheDocument();
         });
@@ -56,7 +57,7 @@ describe('Map component', () => {
 
     describe('WHEN polygon is disabled', () => {
         it('should enable pen tool', () => {
-            render(<BaseMap {...initialProps} />);
+            render(<PolygonMap {...initialProps} />);
             const editButton = screen.getByText('Pen');
             expect(editButton).toBeInTheDocument();
         });

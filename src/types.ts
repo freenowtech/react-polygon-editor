@@ -1,3 +1,4 @@
+import { useMap } from 'react-leaflet'
 import { ActionCreatorsMapObject } from 'redux';
 
 export type Coordinate = {
@@ -20,3 +21,5 @@ export interface RectangleSelection {
     endPosition: Coordinate;
     startTime: number;
 }
+
+export type MapType = ReturnType<typeof useMap>;

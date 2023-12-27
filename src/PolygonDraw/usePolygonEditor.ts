@@ -1,13 +1,21 @@
-import { useMemo } from 'react'
-import { createUndoRedo } from 'react-undo-redo'
+import { useMemo } from 'react';
+import { createUndoRedo } from 'react-undo-redo';
 
-import { isPolygonClosed, isPolygonList } from '../helpers'
-import { Coordinate } from '../types'
-import { Action, DESELECT_ALL_POINTS, MOVE_SELECTED_POINTS, SELECT_ALL_POINTS, SET_ACTIVE_INDEX, actions } from './actions'
-import { polygonEditReducer } from './reducer'
-import { isValidPolygon } from './validators'
+import { isPolygonClosed, isPolygonList } from '../helpers';
+import { Coordinate } from '../types';
+import {
+    Action,
+    DESELECT_ALL_POINTS,
+    MOVE_SELECTED_POINTS,
+    SELECT_ALL_POINTS,
+    SET_ACTIVE_INDEX,
+    actions,
+} from './actions';
+import { polygonEditReducer } from './reducer';
+import { isValidPolygon } from './validators';
 
 type PolygonEditor = {
+    activePolygon: Coordinate[];
     selection: Set<number>;
     polygons: Coordinate[][];
     isPolygonClosed: boolean;
@@ -44,12 +52,12 @@ export const usePolygonEditor = (
     const [undo, redo] = useUndoRedo();
 
     const dispatchWithCallback = (dispatchAction: Action) => {
-        dispatch(dispatchAction)
+        dispatch(dispatchAction);
         onChange(
             isPolygonList(polygons) ? present.polygons : present.polygons[0],
             present.polygons.every(isValidPolygon)
         );
-    }
+    };
 
     const activePolygon: Coordinate[] = useMemo(() => {
         return present.polygons[present.activeIndex];
@@ -103,6 +111,7 @@ export const usePolygonEditor = (
     };
 
     return {
+        activePolygon,
         addPoint,
         addPointsToSelection,
         addPointToEdge,
