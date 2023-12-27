@@ -6,6 +6,7 @@ import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../he
 import { MAP } from '../constants';
 import Map from './Map';
 import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor';
+import { PolygonMap } from './PolygonMap';
 
 export type Props<T extends Coordinate[] | Coordinate[][]> = {
     boundary?: Coordinate[];
@@ -35,6 +36,7 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     onMouseLeave,
 }: Props<T>): React.ReactElement {
     const {
+        activePolygon,
         polygons,
         selection,
         addPoint,
@@ -56,7 +58,9 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     } = usePolygonEditor(onChange, polygon, onClick);
 
     return (
-        <Map
+        <PolygonMap
+            //@ts-ignore
+            activePolygon={activePolygon}
             selection={selection}
             editable={editable}
             initialCenter={initialCenter ? createLeafletLatLngTupleFromCoordinate(initialCenter) : MAP.DEFAULT_CENTER}
@@ -90,7 +94,11 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
 export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>(props: Props<T>): React.ReactElement {
     return (
         <UndoRedoProvider
-            initialState={{ polygons: ensurePolygonList(props.polygon), selection: new Set(), activeIndex: props.activeIndex ?? 0 }}
+            initialState={{
+                polygons: ensurePolygonList(props.polygon),
+                selection: new Set(),
+                activeIndex: props.activeIndex ?? 0,
+            }}
         >
             <PolygonEditor {...props} />
         </UndoRedoProvider>

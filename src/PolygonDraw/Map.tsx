@@ -35,7 +35,8 @@ interface MapSnapshot {
 export interface Props {
     /**
      * activePolygonIndex is the index of the polygon that is currently available for editing
-     */
+    */
+    activePolygon: Coordinate[]
     activePolygonIndex: number;
     highlightedPolygonIndex?: number;
     polygonCoordinates: Coordinate[][];
@@ -366,8 +367,7 @@ export class BaseMap extends React.Component<Props, State> {
     };
 
     render() {
-        const activePolygon = this.props.polygonCoordinates[this.props.activePolygonIndex];
-        const activePolygonIsClosed = isPolygonClosed(activePolygon);
+        const activePolygonIsClosed = this.props.isPolygonClosed;
         const { editable, selection, initialZoom, initialCenter } = this.props;
         const { newPointPosition, isPenToolActive } = this.state;
 
@@ -423,7 +423,7 @@ export class BaseMap extends React.Component<Props, State> {
 
                     {editable && (
                         <PolygonPane
-                            activePolygon={activePolygon}
+                            activePolygon={this.props.activePolygon}
                             addPoint={this.props.addPoint}
                             addPointsToSelection={this.props.addPointsToSelection}
                             addPointToEdge={this.props.addPointToEdge}
@@ -470,7 +470,7 @@ export class BaseMap extends React.Component<Props, State> {
 
                 {this.state.showExportPolygonModal && (
                     <Modal onClose={this.handleExportPolygonModalClosed}>
-                        <ExportPolygonForm polygon={activePolygon} onSubmit={this.handleExportPolygon} />
+                        <ExportPolygonForm polygon={this.props.activePolygon} onSubmit={this.handleExportPolygon} />
                     </Modal>
                 )}
 
