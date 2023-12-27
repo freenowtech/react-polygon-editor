@@ -1,12 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-import { Coordinate } from 'types';
-import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers';
+import { Coordinate } from 'types'
+import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers'
 
-import { MAP } from '../constants';
-import Map from './Map';
-import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor';
-import { PolygonMap } from './PolygonMap';
+import { MAP } from '../constants'
+import { PolygonMap } from './PolygonMap'
+import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor'
 
 export type Props<T extends Coordinate[] | Coordinate[][]> = {
     boundary?: Coordinate[];
@@ -59,7 +58,6 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
 
     return (
         <PolygonMap
-            //@ts-ignore
             activePolygon={activePolygon}
             selection={selection}
             editable={editable}

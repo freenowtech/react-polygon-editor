@@ -57,7 +57,7 @@ export interface PolygonMapProps {
 
 type MapType = ReturnType<typeof useMap>;
 
-export const PolygonMap: React.FC = ({
+export const PolygonMap = ({
     activePolygon,
     activePolygonIndex,
     addPoint,
@@ -85,7 +85,7 @@ export const PolygonMap: React.FC = ({
     selection,
     selectPoints,
     setPolygon,
-}: PolygonMapProps) => {
+}: PolygonMapProps): React.ReactElement => {
     const map = useRef<MapType | null>();
 
     const [isMovedPointInBoundary, setIsMovedPointInBoundary] = useState(true);
