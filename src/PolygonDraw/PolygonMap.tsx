@@ -1,86 +1,80 @@
-import { LatLngBounds, LatLngTuple, LeafletMouseEvent, latLngBounds } from 'leaflet'
-import flatten from 'lodash.flatten'
-import React, { useCallback, useRef, useState } from 'react'
-import { ActionBar } from '../ActionBar/ActionBar'
-import { Modal } from '../common/components/Modal'
-import { MAP } from '../constants'
-import { ExportPolygonForm } from '../conversion/ExportPolygonForm'
-import { ImportPolygonForm } from '../conversion/ImportPolygonForm'
-import { createCoordinateFromLeafletLatLng, createLeafletLatLngBoundsFromCoordinates, createLeafletLatLngFromCoordinate, isCoordinateInPolygon } from '../helpers'
-import { Container, Map } from '../leaflet/Map'
-import { TileLayer } from '../leaflet/TileLayer'
-import { Coordinate, MapType, RectangleSelection } from '../types'
-import { BoundaryPolygon } from './BoundaryPolygon'
-import MapInner from './MapInner'
-import { ActivePolygon } from './map/ActivePolygon'
-import { InactivePolygon } from './map/InactivePolygon'
-import { PolygonPane } from './map/PolygonPane'
-import { Polyline } from './map/Polyline'
-import { SelectionRectangle } from './map/SelectionRectangle'
+import { LatLngBounds, LatLngTuple, LeafletMouseEvent, latLngBounds } from 'leaflet';
+import flatten from 'lodash.flatten';
+import React, { useCallback, useRef, useState } from 'react';
+import { ActionBar } from '../ActionBar/ActionBar';
+import { Modal } from '../common/components/Modal';
+import { MAP } from '../constants';
+import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
+import { ImportPolygonForm } from '../conversion/ImportPolygonForm';
+import {
+    createCoordinateFromLeafletLatLng,
+    createLeafletLatLngBoundsFromCoordinates,
+    createLeafletLatLngFromCoordinate,
+    ensurePolygonList,
+    isCoordinateInPolygon,
+} from '../helpers';
+import { Container, Map } from '../leaflet/Map';
+import { TileLayer } from '../leaflet/TileLayer';
+import { Coordinate, MapType, RectangleSelection } from '../types';
+import { BoundaryPolygon } from './BoundaryPolygon';
+import MapInner from './MapInner';
+import { ActivePolygon } from './map/ActivePolygon';
+import { InactivePolygon } from './map/InactivePolygon';
+import { PolygonPane } from './map/PolygonPane';
+import { Polyline } from './map/Polyline';
+import { SelectionRectangle } from './map/SelectionRectangle';
+import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor';
 
 export interface Props {
-    /**
-     * activePolygonIndex is the index of the polygon that is currently available for editing
-     */
-    activePolygon: Coordinate[];
     activePolygonIndex: number;
-    highlightedPolygonIndex?: number;
-    polygonCoordinates: Coordinate[][];
     boundaryPolygonCoordinates: Coordinate[];
-    selection: Set<number>;
     editable: boolean;
+    highlightedPolygonIndex?: number;
     initialCenter: LatLngTuple;
     initialZoom: number;
-    isPolygonClosed: boolean;
+    onChange?: (polygon: Coordinate[] | Coordinate[][], isValid: boolean) => void;
     onClick?: (index: number) => void;
     onMouseEnter?: (index: number) => void;
     onMouseLeave?: (index: number) => void;
-    addPoint: (coord: Coordinate) => void;
-    addPointToEdge: (coordinate: Coordinate, index: number) => void;
-    deselectAllPoints: () => void;
-    removePointFromSelection: (index: number) => void;
-    addPointsToSelection: (indices: number[]) => void;
-    selectPoints: (indices: number[]) => void;
-    moveSelectedPoints: (newPosition: Coordinate) => void;
-    deletePolygonPoints: () => void;
-    selectAllPoints: () => void;
-    setPolygon: (polygon: Coordinate[]) => void;
-    onUndo: () => void;
-    onRedo: () => void;
-    isRedoPossible: boolean;
-    isUndoPossible: boolean;
+    polygon: Coordinate[] | Coordinate[][];
 }
 
 export const PolygonMap = React.memo(
     ({
-        activePolygon,
         activePolygonIndex,
         highlightedPolygonIndex,
-        polygonCoordinates,
         boundaryPolygonCoordinates,
-        selection,
         editable,
         initialCenter,
         initialZoom,
-        isPolygonClosed,
         onClick,
+        onChange,
         onMouseEnter,
         onMouseLeave,
-        addPoint,
-        addPointToEdge,
-        deselectAllPoints,
-        removePointFromSelection,
-        addPointsToSelection,
-        selectPoints,
-        moveSelectedPoints,
-        deletePolygonPoints,
-        selectAllPoints,
-        setPolygon,
-        onUndo,
-        onRedo,
-        isRedoPossible,
-        isUndoPossible,
+        polygon,
     }: Props) => {
+        const {
+            activePolygon,
+            polygons: polygonCoordinates,
+            selection,
+            addPoint,
+            addPointToEdge,
+            setPolygon,
+            deselectAllPoints,
+            removePointFromSelection,
+            addPointsToSelection,
+            selectPoints,
+            moveSelectedPoints,
+            deletePolygonPoints,
+            selectAllPoints,
+            isPolygonClosed,
+            undo: onUndo,
+            redo: onRedo,
+            isRedoPossible,
+            isUndoPossible,
+            onPolygonClick,
+        } = usePolygonEditor(onChange, polygon, onClick);
+
         const map = useRef<MapType | null>(null);
         const [isShiftPressed, setIsShiftPressed] = useState(false);
         const [isMovedPointInBoundary, setIsMovedPointInBoundary] = useState(true);
@@ -278,7 +272,6 @@ export const PolygonMap = React.memo(
             }
         }, [activePolygon.length, polygonCoordinates, reframeOnPolygon, reframe]);
 
-
         const handleExportPolygon = (serialized: string) => {
             navigator.clipboard.writeText(serialized);
         };
@@ -324,7 +317,7 @@ export const PolygonMap = React.memo(
                         <ActivePolygon
                             index={activePolygonIndex}
                             coordinates={polygonCoordinates}
-                            onClick={onClick}
+                            onClick={onPolygonClick}
                             onMouseEnter={onMouseEnter}
                             onMouseLeave={onMouseLeave}
                         />
@@ -343,7 +336,7 @@ export const PolygonMap = React.memo(
                             positions={positions}
                             isHighlighted={index === highlightedPolygonIndex}
                             index={index}
-                            onClick={onClick}
+                            onClick={onPolygonClick}
                             onMouseEnter={onMouseEnter}
                             onMouseLeave={onMouseLeave}
                         />
@@ -409,3 +402,17 @@ export const PolygonMap = React.memo(
         );
     }
 );
+
+export const BaseMap = (props: Props) => {
+    return (
+        <UndoRedoProvider
+            initialState={{
+                polygons: ensurePolygonList(props.polygon),
+                selection: new Set(),
+                activeIndex: props.activePolygonIndex ?? 0,
+            }}
+        >
+            <PolygonMap {...props} />
+        </UndoRedoProvider>
+    );
+};
