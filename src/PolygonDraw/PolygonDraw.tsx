@@ -23,7 +23,6 @@ export type Props<T extends Coordinate[] | Coordinate[][]> = {
 
 function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     polygon,
-    activeIndex = 0,
     highlightedIndex,
     boundary,
     initialCenter,
@@ -36,6 +35,7 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
 }: Props<T>): React.ReactElement {
     const {
         activePolygon,
+        activePolygonIndex,
         polygons,
         selection,
         addPoint,
@@ -64,7 +64,7 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
             initialCenter={initialCenter ? createLeafletLatLngTupleFromCoordinate(initialCenter) : MAP.DEFAULT_CENTER}
             initialZoom={initialZoom || MAP.DEFAULT_ZOOM}
             boundaryPolygonCoordinates={boundary || MAP.WORLD_COORDINATES}
-            activePolygonIndex={activeIndex}
+            activePolygonIndex={activePolygonIndex}
             highlightedPolygonIndex={highlightedIndex}
             polygonCoordinates={polygons}
             setPolygon={setPolygon}

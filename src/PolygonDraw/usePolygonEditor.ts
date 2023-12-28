@@ -9,6 +9,7 @@ import { isValidPolygon } from './validators'
 
 type PolygonEditor = {
     activePolygon: Coordinate[];
+    activePolygonIndex: number,
     selection: Set<number>;
     polygons: Coordinate[][];
     isPolygonClosed: boolean;
@@ -29,7 +30,7 @@ type PolygonEditor = {
     isRedoPossible: boolean;
 };
 
-const unundoableActions = [MOVE_SELECTED_POINTS, SET_ACTIVE_INDEX, DESELECT_ALL_POINTS, SELECT_ALL_POINTS];
+const unundoableActions = [MOVE_SELECTED_POINTS, DESELECT_ALL_POINTS, SELECT_ALL_POINTS];
 
 const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer, {
     track: (action) => !unundoableActions.includes(action.type),
@@ -43,6 +44,7 @@ export const usePolygonEditor = (
 ): PolygonEditor => {
     const [present, dispatch] = usePresent();
     const [undo, redo] = useUndoRedo();
+    console.log('🚀 ~ file: usePolygonEditor.ts:45 ~ present:', present)
 
     const dispatchWithCallback = (dispatchAction: Action) => {
         dispatch(dispatchAction)
@@ -105,6 +107,7 @@ export const usePolygonEditor = (
 
     return {
         activePolygon,
+        activePolygonIndex: present.activeIndex,
         addPoint,
         addPointsToSelection,
         addPointToEdge,
