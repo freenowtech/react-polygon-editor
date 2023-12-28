@@ -44,7 +44,6 @@ export const usePolygonEditor = (
 ): PolygonEditor => {
     const [present, dispatch] = usePresent();
     const [undo, redo] = useUndoRedo();
-    console.log('🚀 ~ file: usePolygonEditor.ts:45 ~ present:', present)
 
     const dispatchWithCallback = (dispatchAction: Action) => {
         dispatch(dispatchAction)
