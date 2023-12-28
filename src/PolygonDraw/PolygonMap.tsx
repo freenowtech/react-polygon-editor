@@ -1,58 +1,53 @@
-import { latLngBounds, LatLngBounds, LatLngTuple, LeafletMouseEvent } from 'leaflet';
+import { LatLngTuple } from 'leaflet';
 import flatten from 'lodash.flatten';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMap } from 'react-leaflet';
 
+import { ActionBar } from '../ActionBar/ActionBar';
+import { Modal } from '../common/components/Modal';
 import { MAP } from '../constants';
-import {
-    createCoordinateFromLeafletLatLng,
-    createLeafletLatLngBoundsFromCoordinates,
-    createLeafletLatLngFromCoordinate,
-    isCoordinateInPolygon,
-} from '../helpers';
+import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
+import { ImportPolygonForm } from '../conversion/ImportPolygonForm';
+import { createLeafletLatLngBoundsFromCoordinates } from '../helpers';
 import { Container, Map } from '../leaflet/Map';
+import { TileLayer } from '../leaflet/TileLayer';
 import { Coordinate, RectangleSelection } from '../types';
 import { BoundaryPolygon } from './BoundaryPolygon';
 import { ActivePolygon } from './map/ActivePolygon';
 import { InactivePolygon } from './map/InactivePolygon';
-import { Polyline } from './map/Polyline';
 import { PolygonPane } from './map/PolygonPane';
+import { Polyline } from './map/Polyline';
 import { SelectionRectangle } from './map/SelectionRectangle';
-import { TileLayer } from '../leaflet/TileLayer';
-import MapInner from './MapInner';
-import { ActionBar } from '../ActionBar/ActionBar';
-import { Modal } from '../common/components/Modal';
-import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
-import { ImportPolygonForm } from '../conversion/ImportPolygonForm';
+import { MapInner } from './MapInner';
 
 export interface PolygonMapProps {
     activePolygon: Coordinate[];
     activePolygonIndex: number;
-    highlightedPolygonIndex?: number;
-    polygonCoordinates: Coordinate[][];
+    addPoint: (coord: Coordinate) => void;
+    addPointsToSelection: (indices: number[]) => void;
+    addPointToEdge: (coordinate: Coordinate, index: number) => void;
     boundaryPolygonCoordinates: Coordinate[];
-    selection: Set<number>;
+    deletePolygonPoints: () => void;
+    deselectAllPoints: () => void;
     editable: boolean;
+    highlightedPolygonIndex?: number;
     initialCenter: LatLngTuple;
     initialZoom: number;
     isPolygonClosed: boolean;
+    isRedoPossible: boolean;
+    isUndoPossible: boolean;
+    moveSelectedPoints: (newPosition: Coordinate) => void;
     onClick?: (index: number) => void;
     onMouseEnter?: (index: number) => void;
     onMouseLeave?: (index: number) => void;
-    addPoint: (coord: Coordinate) => void;
-    addPointToEdge: (coordinate: Coordinate, index: number) => void;
-    deselectAllPoints: () => void;
-    removePointFromSelection: (index: number) => void;
-    addPointsToSelection: (indices: number[]) => void;
-    selectPoints: (indices: number[]) => void;
-    moveSelectedPoints: (newPosition: Coordinate) => void;
-    deletePolygonPoints: () => void;
-    selectAllPoints: () => void;
-    setPolygon: (polygon: Coordinate[]) => void;
-    onUndo: () => void;
     onRedo: () => void;
-    isRedoPossible: boolean;
-    isUndoPossible: boolean;
+    onUndo: () => void;
+    polygonCoordinates: Coordinate[][];
+    removePointFromSelection: (index: number) => void;
+    selectAllPoints: () => void;
+    selection: Set<number>;
+    selectPoints: (indices: number[]) => void;
+    setPolygon: (polygon: Coordinate[]) => void;
 }
 
 type MapType = ReturnType<typeof useMap>;
@@ -135,82 +130,18 @@ export const PolygonMap = ({
     ///////////////////////////////////////////////////////////////////////////
 
     const handleExportPolygon = (serialized: string) => navigator.clipboard.writeText(serialized);
+
     const handleExportPolygonActionClicked = () => setShowExportPolygonModal(true);
+
     const handleExportPolygonModalClosed = () => setShowExportPolygonModal(false);
+
     const handleImportPolygonActionClicked = () => setShowImportPolygonModal(true);
+
     const handleImportPolygonModalClosed = () => setShowImportPolygonModal(false);
+
     const handleImportPolygon = (coordinates: Coordinate[]) => {
         setPolygon(coordinates);
         reframeOnPolygon(coordinates);
-    };
-
-    ///////////////////////////////////////////////////////////////////////////
-    //                          Map Events methods                           //
-    ///////////////////////////////////////////////////////////////////////////
-
-    const handleMapClick = (event: LeafletMouseEvent) => {
-        const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
-        if (isPenToolActive && !isPolygonClosed && isCoordinateInPolygon(coordinate, boundaryPolygonCoordinates)) {
-            addPoint(coordinate);
-        } else if (!isShiftPressed) {
-            deselectAllPoints();
-        }
-    };
-
-    const handleMouseDownOnMap = (event: LeafletMouseEvent) => {
-        const coordinate = createCoordinateFromLeafletLatLng(event.latlng);
-
-        if (isShiftPressed) {
-            setRectangleSelection({
-                startPosition: coordinate,
-                endPosition: coordinate,
-                startTime: new Date().getTime(),
-            });
-        }
-    };
-
-    const handleMouseUpOnMap = () => {
-        if (rectangleSelection) {
-            setRectangleSelection(null);
-        }
-    };
-
-    const handleMouseMoveOnMap = (event: LeafletMouseEvent) => {
-        const mouseCoordinate = createCoordinateFromLeafletLatLng(event.latlng);
-        if (rectangleSelection && new Date().getTime() - rectangleSelection?.startTime >= 100) {
-            const start = rectangleSelection.startPosition;
-            if (start) {
-                const bounds: LatLngBounds = latLngBounds(createLeafletLatLngFromCoordinate(start), event.latlng);
-
-                if (activePolygon) {
-                    const pointsInsideBounds: number[] = [];
-                    activePolygon.forEach((point, index) => {
-                        if (bounds.contains(createLeafletLatLngFromCoordinate(point))) {
-                            pointsInsideBounds.push(index);
-                        }
-                    });
-                    selectPoints(pointsInsideBounds);
-                }
-            }
-            setRectangleSelection({
-                ...rectangleSelection,
-                endPosition: mouseCoordinate,
-            });
-        } else {
-            const newPointPosition =
-                isPenToolActive &&
-                !isPolygonClosed &&
-                isCoordinateInPolygon(mouseCoordinate, boundaryPolygonCoordinates)
-                    ? mouseCoordinate
-                    : null;
-
-            setNewPointPosition(newPointPosition);
-        }
-    };
-
-    const handleMouseOutOfMap = () => {
-        setRectangleSelection(null);
-        setNewPointPosition(null);
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -277,25 +208,6 @@ export const PolygonMap = ({
         }
     }, []);
 
-    useEffect(() => {
-        reframe();
-        toggleVectorMode();
-
-        const container = map?.current?.getContainer();
-
-        if (container) {
-            container.addEventListener('keydown', handleKeyDown, false);
-            container.addEventListener('keyup', handleKeyUp);
-        }
-
-        return () => {
-            if (container) {
-                container.removeEventListener('keydown', handleKeyDown, false);
-                container.removeEventListener('keyup', handleKeyUp);
-            }
-        };
-    }, [map, handleKeyDown, handleKeyUp, reframe, toggleVectorMode]);
-
     const setMap = useCallback(
         (ref: MapType | null) => {
             if (ref) {
@@ -314,6 +226,25 @@ export const PolygonMap = ({
         },
         [handleKeyDown, handleKeyUp, reframe, toggleVectorMode]
     );
+
+    useEffect(() => {
+        reframe();
+        toggleVectorMode();
+
+        const container = map?.current?.getContainer();
+
+        if (container) {
+            container.addEventListener('keydown', handleKeyDown, false);
+            container.addEventListener('keyup', handleKeyUp);
+        }
+
+        return () => {
+            if (container) {
+                container.removeEventListener('keydown', handleKeyDown, false);
+                container.removeEventListener('keyup', handleKeyUp);
+            }
+        };
+    }, [map, handleKeyDown, handleKeyUp, reframe, toggleVectorMode]);
 
     return (
         <Container>
@@ -385,11 +316,16 @@ export const PolygonMap = ({
 
                 <TileLayer />
                 <MapInner
-                    onClick={handleMapClick}
-                    onMouseOut={handleMouseOutOfMap}
-                    onMouseMove={handleMouseMoveOnMap}
-                    onMouseDown={handleMouseDownOnMap}
-                    onMouseUp={handleMouseUpOnMap}
+                    activePolygon={activePolygon}
+                    addPoint={addPoint}
+                    boundaryPolygonCoordinates={boundaryPolygonCoordinates}
+                    isPenToolActive={isPenToolActive}
+                    isShiftPressed={isShiftPressed}
+                    deselectAllPoints={deselectAllPoints}
+                    setRectangleSelection={setRectangleSelection}
+                    selectPoints={selectPoints}
+                    rectangleSelection={rectangleSelection}
+                    setNewPointPosition={setNewPointPosition}
                 />
             </Map>
             <ActionBar
