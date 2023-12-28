@@ -8,6 +8,9 @@ import { Trashcan } from './Icons/Trashcan';
 import { VectorMode } from './Icons/VectorMode';
 import { Export } from './Icons/Export';
 import { Import } from './Icons/Import';
+import { Redo } from './Icons/Redo'
+import { Undo } from './Icons/Undo'
+import { IconProps } from './Icons/types'
 
 export enum ActionButtonIcons {
     TRASHCAN = 'TRASHCAN',
@@ -15,6 +18,8 @@ export enum ActionButtonIcons {
     VECTOR_MODE = 'VECTOR_MODE',
     EXPORT = 'EXPORT',
     IMPORT = 'IMPORT',
+    UNDO = 'UNDO',
+    REDO = 'REDO',
 }
 
 interface ContainerProps {
@@ -70,6 +75,12 @@ const renderIcon = (icon: ActionButtonIcons, inactive?: boolean, activeIconColor
         }
         case ActionButtonIcons.IMPORT: {
             return <Import {...props} />;
+        }
+        case ActionButtonIcons.REDO: {
+            return <Redo {...props} />;
+        }
+        case ActionButtonIcons.UNDO: {
+            return <Undo {...props} />;
         }
         default:
             return null;
