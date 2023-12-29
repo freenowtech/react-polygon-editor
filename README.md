@@ -43,6 +43,8 @@ You can also link the css style from a CDN in your index.html
 
 ##### PolygonDraw
 
+![Editing Polygon](docs/polygon-editor.gif)
+
 **Props**
 
 -   **polygon**: _Coordinate[] | Coordinate[][]_ (Single or list of polygons to render)
@@ -60,7 +62,7 @@ You can also link the css style from a CDN in your index.html
 The initialCenter and initialZoom props are applicable only when both the polygon and the boundary coordinates are empty.
 This flow explains which parameters are used to focus the map:
 
-![Focus flow](map_focus_flow.png)
+![Focus flow](docs/map_focus_flow.png)
 
 For more details, have a look at the Component definition in [PolygonDraw](src/PolygonDraw/PolygonDraw.tsx)
 
