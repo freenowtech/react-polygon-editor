@@ -45,7 +45,17 @@ You can also link the css style from a CDN in your index.html
 
 ![Editing Polygon](docs/polygon-editor.gif)
 
-**Props**
+**Editing functionalities:**
+- Undo: undoes the last action
+- Redo: redoes the last action
+- Pen: adds small points between each vertex to enable editing the polygon shape and creating more vertexes.
+- Delete: deletes selected vertex(es)
+- Import: enables the import of a polygon with GeoJSON format
+- Export: exports the polygon in GEOJson, JTS, or LtnLng formats
+- Focus: refocuses the map to the selected polygon
+
+
+**Component Props**
 
 -   **polygon**: _Coordinate[] | Coordinate[][]_ (Single or list of polygons to render)
 -   **activeIndex**?: _number_ (index of currently active polygon, can be omitted when only one polygon exists. **Default value: 0**)
