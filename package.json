@@ -46,7 +46,6 @@
         "@mapbox/geojson-rewind": "^0.5.2",
         "@mapbox/geojsonhint": "^3.1.0",
         "leaflet-path-drag": "^1.8.0-beta.3",
-        "lodash.flatten": "^4.4.0",
         "react-undo-redo": "^3.0.0"
     },
     "devDependencies": {
@@ -66,7 +65,6 @@
         "@testing-library/user-event": "^14.4.3",
         "@types/jest": "^29.4.0",
         "@types/leaflet": "^1.9.1",
-        "@types/lodash.flatten": "^4.4.7",
         "@types/node": "^18.14.2",
         "@types/react": "^18.0.28",
         "@types/react-leaflet": "^3.0.0",

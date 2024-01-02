@@ -1,24 +1,23 @@
-import { LatLngTuple } from 'leaflet';
-import flatten from 'lodash.flatten';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useMap } from 'react-leaflet';
+import { LatLngTuple } from 'leaflet'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useMap } from 'react-leaflet'
 
-import { ActionBar } from '../ActionBar/ActionBar';
-import { Modal } from '../common/components/Modal';
-import { MAP } from '../constants';
-import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
-import { ImportPolygonForm } from '../conversion/ImportPolygonForm';
-import { createLeafletLatLngBoundsFromCoordinates } from '../helpers';
-import { Container, Map } from '../leaflet/Map';
-import { TileLayer } from '../leaflet/TileLayer';
-import { Coordinate, RectangleSelection } from '../types';
-import { BoundaryPolygon } from './components/BoundaryPolygon';
-import { ActivePolygon } from './components/ActivePolygon';
-import { InactivePolygon } from './components/InactivePolygon';
-import { PolygonPane } from './components/PolygonPane';
-import { Polyline } from './components/Polyline';
-import { SelectionRectangle } from './components/SelectionRectangle';
-import { MapInner } from './components/MapInner';
+import { ActionBar } from '../ActionBar/ActionBar'
+import { Modal } from '../common/components/Modal'
+import { MAP } from '../constants'
+import { ExportPolygonForm } from '../conversion/ExportPolygonForm'
+import { ImportPolygonForm } from '../conversion/ImportPolygonForm'
+import { createLeafletLatLngBoundsFromCoordinates } from '../helpers'
+import { Container, Map } from '../leaflet/Map'
+import { TileLayer } from '../leaflet/TileLayer'
+import { Coordinate, RectangleSelection } from '../types'
+import { ActivePolygon } from './components/ActivePolygon'
+import { BoundaryPolygon } from './components/BoundaryPolygon'
+import { InactivePolygon } from './components/InactivePolygon'
+import { MapInner } from './components/MapInner'
+import { PolygonPane } from './components/PolygonPane'
+import { Polyline } from './components/Polyline'
+import { SelectionRectangle } from './components/SelectionRectangle'
 
 export interface PolygonMapProps {
     activePolygon: Coordinate[];
@@ -103,7 +102,7 @@ export const PolygonMap = ({
 
     const reframeOnPolygon = (polygonCoordinates: Coordinate[] | Coordinate[][]) => {
         if (map.current && !!polygonCoordinates.length) {
-            const bounds = createLeafletLatLngBoundsFromCoordinates(flatten(polygonCoordinates));
+            const bounds = createLeafletLatLngBoundsFromCoordinates(polygonCoordinates.flat());
 
             map.current.fitBounds(bounds);
         }
