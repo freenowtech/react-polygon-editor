@@ -1,13 +1,13 @@
 import { Pane } from 'react-leaflet';
 
-import { Coordinate } from '../../../types';
+import { Coordinate } from '../../types';
 import {
     addCoordinates,
     createCoordinateFromLeafletLatLng,
     getPolygonEdges,
     isCoordinateInPolygon,
     subtractCoordinates,
-} from '../../../helpers';
+} from '../../helpers';
 import { PolygonVertex } from './PolygonVertex';
 import { EdgeVertex } from './EdgeVertex';
 import { LatLng } from 'leaflet';

@@ -4,8 +4,8 @@ import { CircleMarker, LatLng } from 'leaflet';
 import { CircleMarker as ReactLeafletCircleMarker } from 'react-leaflet';
 
 import { Coordinate } from 'types';
-import { createLeafletLatLngFromCoordinate } from '../../../helpers';
-import { MAP } from '../../../constants';
+import { createLeafletLatLngFromCoordinate } from '../../helpers';
+import { MAP } from '../../constants';
 
 type DragEvent = { target: { getLatLng: () => LatLng } };
 
