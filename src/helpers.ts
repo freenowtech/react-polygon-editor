@@ -1,5 +1,4 @@
 import { LatLng, LatLngBounds, LatLngTuple } from 'leaflet';
-import isEqual from 'lodash.isequal';
 
 import { Coordinate } from './types';
 
@@ -30,7 +29,7 @@ export const subtractCoordinates = (coordA: Coordinate, coordB: Coordinate): Coo
 });
 
 export const isPolygonClosed = (coordinates: Coordinate[]): boolean =>
-    coordinates && coordinates.length > 2 && isEqual(coordinates[0], coordinates[coordinates.length - 1]);
+    coordinates && coordinates.length > 2 && isSameCoordinate(coordinates[0], coordinates[coordinates.length - 1]);
 
 export const isClosingPointsSelected = (coordinates: Coordinate[], selection: Set<number>): boolean =>
     isPolygonClosed(coordinates) && (selection.has(coordinates.length - 1) || selection.has(0));
@@ -74,14 +73,18 @@ export const movePolygonCoordinates = (
     });
 };
 
+const isSameCoordinate = (firstCoordinate: Coordinate, secondCoordinate: Coordinate) =>
+    firstCoordinate.latitude === secondCoordinate.latitude &&
+    firstCoordinate.longitude === secondCoordinate.longitude;
+
 export const removeSelectedPoints = (polygonCoordinates: Coordinate[], selectedPoints: Set<number>) => {
     const newPolygonCoordinates = polygonCoordinates.filter((polygonCoordinate, index) => !selectedPoints.has(index));
     const isOldPathClosed =
         polygonCoordinates.length > 1 &&
-        isEqual(polygonCoordinates[0], polygonCoordinates[polygonCoordinates.length - 1]);
+        isSameCoordinate(polygonCoordinates[0], polygonCoordinates[polygonCoordinates.length - 1]);
     const isNewPathClosed =
         newPolygonCoordinates.length > 1 &&
-        isEqual(newPolygonCoordinates[0], newPolygonCoordinates[newPolygonCoordinates.length - 1]);
+        isSameCoordinate(newPolygonCoordinates[0], newPolygonCoordinates[newPolygonCoordinates.length - 1]);
 
     // Open closed path if it has 3 points or less
     if (newPolygonCoordinates.length < 4 && isNewPathClosed) {
@@ -114,7 +117,7 @@ export const getCenterCoordinate = (coordA: Coordinate, coordB: Coordinate): Coo
 // Returns the center coordinates of the polygon edges
 export const getPolygonEdges = (polygon: Coordinate[]) =>
     polygon.reduce<Coordinate[]>((edges, coordinate, index) => {
-        if (index === 0 || isEqual(polygon[index], polygon[index - 1])) {
+        if (index === 0 || isSameCoordinate(polygon[index], polygon[index - 1])) {
             return edges;
         }
         edges.push(getCenterCoordinate(polygon[index], polygon[index - 1]));
