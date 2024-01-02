@@ -1,7 +1,7 @@
-import { getCenterCoordinate, movePolygonCoordinates, removeSelectedPoints } from '../helpers';
+import { getCenterCoordinate, movePolygonCoordinates, removeSelectedPoints } from '../../helpers';
 import { polygonEditReducer, PolygonEditState } from './reducer';
 import { actions } from './actions';
-import { MOCK_POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from '../mockPolygon';
+import { MOCK_POLYGON, POLYGON_ONE, POLYGON_TWO, POLYGON_THREE } from '../../mockPolygon';
 
 describe('PolygonDraw reducer', () => {
     const initialState: PolygonEditState = {

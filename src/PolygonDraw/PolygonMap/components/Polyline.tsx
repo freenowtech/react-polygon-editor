@@ -1,8 +1,8 @@
 import { Polyline as LeafletPolyline } from 'react-leaflet';
 
-import { Coordinate } from '../../types';
-import { MAP } from '../../constants';
-import { createLeafletLatLngFromCoordinate } from '../../helpers';
+import { Coordinate } from '../../../types';
+import { MAP } from '../../../constants';
+import { createLeafletLatLngFromCoordinate } from '../../../helpers';
 
 interface Props {
     activePolygonIndex: number;

@@ -1,5 +1,5 @@
-import { createAction, createActionWithPayload } from '../actionUtils';
-import { ActionsUnion, Coordinate } from '../types';
+import { createAction, createActionWithPayload } from '../utils/actionUtils';
+import { ActionsUnion, Coordinate } from '../../types';
 
 // Selection actions
 export const SELECT_POINTS = 'POLYGON_DRAW/SELECT_POINTS';

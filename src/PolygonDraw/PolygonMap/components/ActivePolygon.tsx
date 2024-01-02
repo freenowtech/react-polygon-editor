@@ -1,5 +1,5 @@
-import { Coordinate } from '../../types';
-import { Polygon } from '../Polygon';
+import { Coordinate } from '../../../types';
+import { Polygon } from './Polygon';
 
 interface Props {
     index: number;

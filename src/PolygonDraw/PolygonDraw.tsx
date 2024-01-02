@@ -4,8 +4,8 @@ import { Coordinate } from 'types'
 import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers'
 
 import { MAP } from '../constants'
-import { PolygonMap } from './PolygonMap'
-import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor'
+import { PolygonMap } from './PolygonMap/PolygonMap'
+import UndoRedoProvider, { usePolygonEditor } from './hooks/usePolygonEditor'
 
 export type Props<T extends Coordinate[] | Coordinate[][]> = {
     boundary?: Coordinate[];

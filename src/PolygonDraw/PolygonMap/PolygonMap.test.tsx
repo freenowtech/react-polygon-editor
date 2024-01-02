@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import { MAP } from '../constants';
+import { MAP } from '../../constants';
 import { PolygonMapProps, PolygonMap } from './PolygonMap';
-import { MOCK_POLYGON } from '../mockPolygon';
+import { MOCK_POLYGON } from '../../mockPolygon';
 
 jest.mock('react-leaflet', () => ({
     __esModule: true,

@@ -3,22 +3,22 @@ import flatten from 'lodash.flatten';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMap } from 'react-leaflet';
 
-import { ActionBar } from '../ActionBar/ActionBar';
-import { Modal } from '../common/components/Modal';
-import { MAP } from '../constants';
-import { ExportPolygonForm } from '../conversion/ExportPolygonForm';
-import { ImportPolygonForm } from '../conversion/ImportPolygonForm';
-import { createLeafletLatLngBoundsFromCoordinates } from '../helpers';
-import { Container, Map } from '../leaflet/Map';
-import { TileLayer } from '../leaflet/TileLayer';
-import { Coordinate, RectangleSelection } from '../types';
-import { BoundaryPolygon } from './BoundaryPolygon';
-import { ActivePolygon } from './map/ActivePolygon';
-import { InactivePolygon } from './map/InactivePolygon';
-import { PolygonPane } from './map/PolygonPane';
-import { Polyline } from './map/Polyline';
-import { SelectionRectangle } from './map/SelectionRectangle';
-import { MapInner } from './MapInner';
+import { ActionBar } from '../../ActionBar/ActionBar';
+import { Modal } from '../../common/components/Modal';
+import { MAP } from '../../constants';
+import { ExportPolygonForm } from '../../conversion/ExportPolygonForm';
+import { ImportPolygonForm } from '../../conversion/ImportPolygonForm';
+import { createLeafletLatLngBoundsFromCoordinates } from '../../helpers';
+import { Container, Map } from '../../leaflet/Map';
+import { TileLayer } from '../../leaflet/TileLayer';
+import { Coordinate, RectangleSelection } from '../../types';
+import { BoundaryPolygon } from './components/BoundaryPolygon';
+import { ActivePolygon } from './components/ActivePolygon';
+import { InactivePolygon } from './components/InactivePolygon';
+import { PolygonPane } from './components/PolygonPane';
+import { Polyline } from './components/Polyline';
+import { SelectionRectangle } from './components/SelectionRectangle';
+import { MapInner } from './components/MapInner';
 
 export interface PolygonMapProps {
     activePolygon: Coordinate[];

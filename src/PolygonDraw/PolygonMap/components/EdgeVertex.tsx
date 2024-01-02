@@ -2,8 +2,8 @@ import { FC, useState } from 'react';
 import { CircleMarker as LeafletCircleMarker } from 'react-leaflet';
 
 import { Coordinate } from 'types';
-import { createLeafletLatLngFromCoordinate } from '../helpers';
-import { MAP } from '../constants';
+import { createLeafletLatLngFromCoordinate } from '../../../helpers';
+import { MAP } from '../../../constants';
 
 interface Props {
     coordinate: Coordinate;
