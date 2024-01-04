@@ -178,10 +178,13 @@ export const PolygonMap = ({
                     reframe();
                     break;
                 case 'z':
+                    if (e.metaKey && isUndoPossible) {
+                        onUndo();
+                    }
+                    break;
+                case 'Z':
                     if (e.metaKey && e.shiftKey && isRedoPossible) {
                         onRedo();
-                    } else if (e.metaKey && isUndoPossible) {
-                        onUndo();
                     }
                     break;
             }
