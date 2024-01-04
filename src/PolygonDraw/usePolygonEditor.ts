@@ -30,10 +30,10 @@ type PolygonEditor = {
     isRedoPossible: boolean;
 };
 
-const unundoableActions = [MOVE_SELECTED_POINTS, DESELECT_ALL_POINTS, SELECT_ALL_POINTS];
+const notTrackedActions = [MOVE_SELECTED_POINTS, DESELECT_ALL_POINTS, SELECT_ALL_POINTS];
 
 const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer, {
-    track: (action) => !unundoableActions.includes(action.type),
+    track: (action) => !notTrackedActions.includes(action.type),
 });
 
 export default UndoRedoProvider;
