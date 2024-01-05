@@ -151,15 +151,17 @@ export const PolygonMap = ({
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
             e.preventDefault();
-            switch (e.key) {
-                case 'Escape':
+            switch (e.key.toLocaleLowerCase()) {
+                case 'escape':
                     deselectAllPoints();
                     break;
-                case 'Backspace':
+                case 'backspace':
                     deletePolygonPoints();
                     break;
-                case 'Shift':
-                    setIsShiftPressed(true);
+                case 'shift':
+                    if (!e.metaKey) {
+                        setIsShiftPressed(true);
+                    }
                     break;
                 case 'p':
                     toggleVectorMode();
@@ -178,13 +180,12 @@ export const PolygonMap = ({
                     reframe();
                     break;
                 case 'z':
-                    if (e.metaKey && isUndoPossible) {
-                        onUndo();
-                    }
-                    break;
-                case 'Z':
-                    if (e.metaKey && e.shiftKey && isRedoPossible) {
-                        onRedo();
+                    if (e.metaKey) {
+                        if (e.shiftKey && isRedoPossible) {
+                            onRedo();
+                        } else if (isUndoPossible) {
+                            onUndo();
+                        }
                     }
                     break;
             }
