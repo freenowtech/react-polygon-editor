@@ -1,4 +1,4 @@
-import { MOCK_POLYGON } from '../mockPolygon';
+import { MOCK_POLYGON } from '../../mockPolygon';
 import { isValidPolygon } from './validators';
 
 describe('isValidPolygon', () => {

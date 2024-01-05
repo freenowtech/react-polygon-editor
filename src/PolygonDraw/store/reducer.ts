@@ -15,7 +15,7 @@ import {
 } from './actions';
 import { Coordinate } from 'types';
 
-import { ensurePolygonList, movePolygonCoordinates, removeSelectedPoints } from '../helpers';
+import { ensurePolygonList, movePolygonCoordinates, removeSelectedPoints } from '../../helpers';
 
 export interface PolygonEditState {
     activeIndex: number;

@@ -5,8 +5,8 @@ import {
     isPolygonClosed,
     isCoordinateInPolygon,
     createLeafletLatLngFromCoordinate,
-} from '../helpers';
-import { Coordinate, RectangleSelection } from '../types';
+} from '../../helpers';
+import { Coordinate, RectangleSelection } from '../../types';
 
 type Props = {
     activePolygon: Coordinate[];
