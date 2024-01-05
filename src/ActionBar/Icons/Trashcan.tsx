@@ -1,12 +1,7 @@
-import { FunctionComponent, SVGProps } from 'react';
-
 import { AUTHENTIC_BLUE_900 } from '../../common/colors';
+import { IconProps } from './types';
 
-interface Props extends SVGProps<SVGSVGElement> {
-    iconColor?: string;
-}
-
-export const Trashcan: FunctionComponent<Props> = ({ iconColor = AUTHENTIC_BLUE_900, ...props }) => (
+export const Trashcan = ({ iconColor = AUTHENTIC_BLUE_900, ...props }: IconProps): React.ReactElement => (
     <svg width={24} height={24} viewBox="4 4 19 19" {...props}>
         <path
             fill={iconColor}

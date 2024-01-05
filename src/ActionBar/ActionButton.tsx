@@ -1,13 +1,15 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
-import { AUTHENTIC_BLUE_900, AUTHENTIC_BLUE_200, ACTION_BLUE_900, WHITE } from '../common/colors';
+import { ACTION_BLUE_900, AUTHENTIC_BLUE_200, AUTHENTIC_BLUE_900, WHITE } from '../common/colors';
 
-import { Frame } from './Icons/Frame';
-import { Trashcan } from './Icons/Trashcan';
-import { VectorMode } from './Icons/VectorMode';
 import { Export } from './Icons/Export';
+import { Frame } from './Icons/Frame';
 import { Import } from './Icons/Import';
+import { Redo } from './Icons/Redo';
+import { Trashcan } from './Icons/Trashcan';
+import { Undo } from './Icons/Undo';
+import { VectorMode } from './Icons/VectorMode';
 
 export enum ActionButtonIcons {
     TRASHCAN = 'TRASHCAN',
@@ -15,12 +17,15 @@ export enum ActionButtonIcons {
     VECTOR_MODE = 'VECTOR_MODE',
     EXPORT = 'EXPORT',
     IMPORT = 'IMPORT',
+    UNDO = 'UNDO',
+    REDO = 'REDO',
 }
 
 interface ContainerProps {
     disabled?: boolean;
 }
-const Container = styled('button').attrs(() => ({type: 'button'}))<ContainerProps>`
+
+const Container = styled('button').attrs(() => ({ type: 'button' }))<ContainerProps>`
     position: relative;
     width: 42px;
     height: 42px;
@@ -70,6 +75,12 @@ const renderIcon = (icon: ActionButtonIcons, inactive?: boolean, activeIconColor
         }
         case ActionButtonIcons.IMPORT: {
             return <Import {...props} />;
+        }
+        case ActionButtonIcons.REDO: {
+            return <Redo {...props} />;
+        }
+        case ActionButtonIcons.UNDO: {
+            return <Undo {...props} />;
         }
         default:
             return null;

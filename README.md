@@ -43,7 +43,19 @@ You can also link the css style from a CDN in your index.html
 
 ##### PolygonDraw
 
-**Props**
+![Editing Polygon](docs/polygon-editor.gif)
+
+**Editing functionalities:**
+- Undo: undoes the last action
+- Redo: redoes the last action
+- Pen: adds small points between each vertex to enable editing the polygon shape and creating more vertexes.
+- Delete: deletes selected vertex(es)
+- Import: enables the import of a polygon with GeoJSON format
+- Export: exports the polygon in GEOJson, JTS, or LtnLng formats
+- Focus: refocuses the map to the selected polygon
+
+
+**Component Props**
 
 -   **polygon**: _Coordinate[] | Coordinate[][]_ (Single or list of polygons to render)
 -   **activeIndex**?: _number_ (index of currently active polygon, can be omitted when only one polygon exists. **Default value: 0**)
@@ -60,7 +72,7 @@ You can also link the css style from a CDN in your index.html
 The initialCenter and initialZoom props are applicable only when both the polygon and the boundary coordinates are empty.
 This flow explains which parameters are used to focus the map:
 
-![Focus flow](map_focus_flow.png)
+![Focus flow](docs/map_focus_flow.png)
 
 For more details, have a look at the Component definition in [PolygonDraw](src/PolygonDraw/PolygonDraw.tsx)
 
