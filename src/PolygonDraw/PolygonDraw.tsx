@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-import { Coordinate } from 'types';
-import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers';
+import { Coordinate } from 'types'
+import { createLeafletLatLngTupleFromCoordinate, ensurePolygonList } from '../helpers'
 
-import { MAP } from '../constants';
-import Map from './Map';
-import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor';
+import { MAP } from '../constants'
+import { PolygonMap } from './PolygonMap'
+import UndoRedoProvider, { usePolygonEditor } from './usePolygonEditor'
 
 export type Props<T extends Coordinate[] | Coordinate[][]> = {
     boundary?: Coordinate[];
@@ -23,7 +23,6 @@ export type Props<T extends Coordinate[] | Coordinate[][]> = {
 
 function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     polygon,
-    activeIndex = 0,
     highlightedIndex,
     boundary,
     initialCenter,
@@ -35,6 +34,8 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     onMouseLeave,
 }: Props<T>): React.ReactElement {
     const {
+        activePolygon,
+        activePolygonIndex,
         polygons,
         selection,
         addPoint,
@@ -56,13 +57,14 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
     } = usePolygonEditor(onChange, polygon, onClick);
 
     return (
-        <Map
+        <PolygonMap
+            activePolygon={activePolygon}
             selection={selection}
             editable={editable}
             initialCenter={initialCenter ? createLeafletLatLngTupleFromCoordinate(initialCenter) : MAP.DEFAULT_CENTER}
             initialZoom={initialZoom || MAP.DEFAULT_ZOOM}
             boundaryPolygonCoordinates={boundary || MAP.WORLD_COORDINATES}
-            activePolygonIndex={activeIndex}
+            activePolygonIndex={activePolygonIndex}
             highlightedPolygonIndex={highlightedIndex}
             polygonCoordinates={polygons}
             setPolygon={setPolygon}
@@ -90,7 +92,11 @@ function PolygonEditor<T extends Coordinate[] | Coordinate[][]>({
 export function PolygonDraw<T extends Coordinate[] | Coordinate[][]>(props: Props<T>): React.ReactElement {
     return (
         <UndoRedoProvider
-            initialState={{ polygons: ensurePolygonList(props.polygon), selection: new Set(), activeIndex: props.activeIndex ?? 0 }}
+            initialState={{
+                polygons: ensurePolygonList(props.polygon),
+                selection: new Set(),
+                activeIndex: props.activeIndex ?? 0,
+            }}
         >
             <PolygonEditor {...props} />
         </UndoRedoProvider>

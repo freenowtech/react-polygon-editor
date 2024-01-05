@@ -1,13 +1,15 @@
-import { useCallback, useMemo } from 'react';
-import { createUndoRedo } from 'react-undo-redo';
+import { useMemo } from 'react'
+import { createUndoRedo } from 'react-undo-redo'
 
-import { isPolygonClosed, isPolygonList } from '../helpers';
-import { ActionWithPayload, Coordinate } from '../types';
-import { Action, DESELECT_ALL_POINTS, MOVE_SELECTED_POINTS, SELECT_ALL_POINTS, SET_ACTIVE_INDEX, actions } from './actions';
-import { polygonEditReducer } from './reducer';
-import { isValidPolygon } from './validators';
+import { isPolygonClosed, isPolygonList } from '../helpers'
+import { Coordinate } from '../types'
+import { Action, DESELECT_ALL_POINTS, MOVE_SELECTED_POINTS, SELECT_ALL_POINTS, actions } from './actions'
+import { polygonEditReducer } from './reducer'
+import { isValidPolygon } from './validators'
 
 type PolygonEditor = {
+    activePolygon: Coordinate[];
+    activePolygonIndex: number,
     selection: Set<number>;
     polygons: Coordinate[][];
     isPolygonClosed: boolean;
@@ -28,10 +30,10 @@ type PolygonEditor = {
     isRedoPossible: boolean;
 };
 
-const unundoableActions = [MOVE_SELECTED_POINTS, SET_ACTIVE_INDEX, DESELECT_ALL_POINTS, SELECT_ALL_POINTS];
+const notTrackedActions = [MOVE_SELECTED_POINTS, DESELECT_ALL_POINTS, SELECT_ALL_POINTS];
 
 const { UndoRedoProvider, usePresent, useUndoRedo } = createUndoRedo(polygonEditReducer, {
-    track: (action) => !unundoableActions.includes(action.type),
+    track: (action) => !notTrackedActions.includes(action.type),
 });
 
 export default UndoRedoProvider;
@@ -103,6 +105,8 @@ export const usePolygonEditor = (
     };
 
     return {
+        activePolygon,
+        activePolygonIndex: present.activeIndex,
         addPoint,
         addPointsToSelection,
         addPointToEdge,
