@@ -15,8 +15,4 @@ module.exports = {
         '!**/*.d.ts'
     ],
     roots: ['<rootDir>/src'],
-    collectCoverageFrom: [
-        'src/modules/**/*.{ts,tsx}',
-        '!**/node_modules/**'
-    ],
 };
