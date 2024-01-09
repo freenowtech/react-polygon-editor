@@ -1,7 +1,11 @@
 
 name: "size"
 
-on: [push]
+on: 
+  pull_request: 
+    branches:
+      - master
+      - next
 
 jobs:
   size:
