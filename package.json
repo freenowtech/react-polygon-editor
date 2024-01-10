@@ -3,14 +3,6 @@
     "version": "2.0.1",
     "description": "A react component for displaying and drawing geo polygons",
     "main": "dist/index.js",
-    "size-limit": [
-        {   
-            "path": "dist/index.js"
-        }
-    ],
-    "browser": {
-        "fs": false
-    },
     "scripts": {
         "test": "jest && npm run size",
         "test:watch": "jest --watch",
@@ -96,7 +88,6 @@
         "jest-environment-jsdom": "^29.4.3",
         "jest-styled-components": "^7.1.1",
         "leaflet": "^1.9.3",
-        "path": "^0.12.7",
         "prettier": "^2.8.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
