@@ -1,11 +1,10 @@
 
-name: "size"
+name: Size Limit
 
 on: 
   pull_request: 
     branches:
-      - master
-      - next
+      - '*'
 
 jobs:
   size:
