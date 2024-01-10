@@ -4,8 +4,7 @@ name: "size"
 on: 
   pull_request: 
     branches:
-      - master
-      - next
+      - '*'
 
 jobs:
   size:
